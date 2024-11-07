@@ -1,20 +1,44 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import LoginScreen from "./screens/LoginScreen";
+import SignupScreen from "./screens/SignupScreen";
+import StartScreen from "./screens/StartScreen";
+
+const Stack = createStackNavigator();
+
+function App() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    // Simulate an authentication check (in reality, this would involve checking secure storage or an auth API)
+    useEffect(() => {
+        const checkAuth = async () => {
+            // Logic to check if user is logged in
+            // Example: setIsLoggedIn(true) if token exists
+        };
+        checkAuth();
+    }, []);
+
+    return (
+        <SafeAreaProvider>
+            <NavigationContainer>
+                {isLoggedIn ? (
+                    <Stack.Navigator screenOptions={{ headerShown: false }}>
+                        {/* Main App Stack */}
+                        <Stack.Screen name="Start" component={StartScreen} />
+                    </Stack.Navigator>
+                ) : (
+                    <Stack.Navigator screenOptions={{ headerShown: false }}>
+                        {/* Auth Stack */}
+                        <Stack.Screen name="Login" component={LoginScreen} />
+                        <Stack.Screen name="Signup" component={SignupScreen} />
+                    </Stack.Navigator>
+                )}
+            </NavigationContainer>
+        </SafeAreaProvider>
+    );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
