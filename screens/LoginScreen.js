@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Button, Alert } from "react-native";
-import { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "../services/firebaseConfig";
+import { auth } from "../services/firebaseConfig";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously } from "@firebase/auth";
 
 function LoginScreen() {
     const [email, setEmail] = useState();
@@ -9,7 +10,7 @@ function LoginScreen() {
     // Function to handle sign-in
     const handleLogin = async () => {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            const user = await signInWithEmailAndPassword(auth, email, password);
             Alert.alert("Success", "Logged in successfully!");
         } catch (error) {
             console.error("Error logging in:", error);
@@ -17,16 +18,29 @@ function LoginScreen() {
         }
     };
 
-    // Function to handle sign-up (optional)
+    // Function to handle sign-up and login if sucressful
     const handleSignUp = async () => {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
-            Alert.alert("Success", "Account created successfully!");
+            const user = await signInWithEmailAndPassword(auth, email, password);
+
+            Alert.alert("Success", "Account created and logged in successfully!");
         } catch (error) {
             console.error("Error signing up:", error);
             Alert.alert("Sign Up Failed", error.message);
         }
     };
+
+    // Function to hadle anonymous login
+    const handleAnonymousLogin = async () => {
+        try {
+            const user = await signInAnonymously(auth);
+            Alert.alert("Success", "Logged in Anonymously!");
+        } catch (error) {
+            Alert.alert("Error logging in anonymously", error.message);
+
+        }
+    }
 
     return (
         <View style={styles.root}>
@@ -46,6 +60,7 @@ function LoginScreen() {
             />
             <Button title="Login" onPress={handleLogin} />
             <Button title="Sign Up" onPress={handleSignUp} />
+            <Button title="I don't wanna create an account" onPress={handleAnonymousLogin} />
         </View>
     );
 }
