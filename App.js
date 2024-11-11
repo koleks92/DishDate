@@ -21,8 +21,6 @@ function App() {
         checkAuth();
     }, []);
 
-    
-
     return (
         <SafeAreaProvider>
             <NavigationContainer>
