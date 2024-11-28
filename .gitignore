@@ -28,10 +28,16 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# Android
+android/
+.idea/
+
 # local env files
 .env*.local
 
 # typescript
 *.tsbuildinfo
+
+
 
 TODO.md
