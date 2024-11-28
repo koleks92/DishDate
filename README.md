@@ -6,3 +6,9 @@
 
 ### Important
     For app to work make sure you have configured service/firebaseConfig.js and google services files for auth
+
+## Deployment
+    Make sure to read https://rnfirebase.io/auth/social-auth before production !
+
+## Development build
+```eas build --profile development --platform android```
