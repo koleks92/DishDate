@@ -164,7 +164,7 @@ function StartScreen({navigation}) {
     return (
         <View style={styles.root}>
             <Button title="Profile" onPress={() => {navigation.navigate('ProfileScreen')}} />
-            <Button title="Game" onPress={() => {navigation.navigate('GameScreen')}} />
+            <Button title="Start Game" onPress={() => {navigation.navigate('StartGameScreen')}} />
             <Button title="Dishes" onPress={() => {navigation.navigate('DishesScreen')}} />
 
             <Button title="SignOut" onPress={handleSignOut}/>
