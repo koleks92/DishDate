@@ -5,7 +5,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { DDContext } from "../store/ContextStore";
 
 
-function StartScreen() {
+function StartScreen({navigation}) {
     // Set an initializing state whilst Firebase connects
     const [initializing, setInitializing] = useState(true);
     const [email, setEmail] = useState();
@@ -163,7 +163,10 @@ function StartScreen() {
 
     return (
         <View style={styles.root}>
-            <Text>Start</Text>
+            <Button title="Profile" onPress={() => {navigation.navigate('ProfileScreen')}} />
+            <Button title="Game" onPress={() => {navigation.navigate('GameScreen')}} />
+            <Button title="Dishes" onPress={() => {navigation.navigate('DishesScreen')}} />
+
             <Button title="SignOut" onPress={handleSignOut}/>
         </View>
     )

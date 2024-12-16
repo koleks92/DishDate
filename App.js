@@ -4,6 +4,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import StartScreen from "./screens/StartScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import DishesScreen from "./screens/DishesScreen";
+import GameScreen from "./screens/GameScreen";
 import DDProvider from "./store/ContextStore";
 
 const Stack = createStackNavigator();
@@ -20,6 +23,18 @@ function App() {
                         <Stack.Screen
                             name="StartScreen"
                             component={StartScreen}
+                        />
+                        <Stack.Screen
+                            name="ProfileScreen"
+                            component={ProfileScreen}
+                        />
+                        <Stack.Screen
+                            name="GameScreen"
+                            component={GameScreen}
+                        />
+                        <Stack.Screen
+                            name="DishesScreen"
+                            component={DishesScreen}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>
