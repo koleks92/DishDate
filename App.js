@@ -9,12 +9,14 @@ import DDProvider from "./store/ContextStore";
 const Stack = createStackNavigator();
 
 function App() {
-
     return (
         <SafeAreaProvider>
             <DDProvider>
                 <NavigationContainer>
-                    <Stack.Navigator screenOptions={{ headerShown: false }}>
+                    <Stack.Navigator
+                        initialRouteName="StartScreen" // Set the initial screen here
+                        screenOptions={{ headerShown: false }}
+                    >
                         <Stack.Screen
                             name="StartScreen"
                             component={StartScreen}
