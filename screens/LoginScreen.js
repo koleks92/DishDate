@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, Button, Alert } from "react-native";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
+
 function LoginScreen({ navigation }) {
     // Set an initializing state whilst Firebase connects
     const [initializing, setInitializing] = useState(true);
@@ -50,7 +51,8 @@ function LoginScreen({ navigation }) {
 
         // Sign-in the user with the credential
         return auth().signInWithCredential(googleCredential);
-    };
+    }
+
 
     // Handle anonymous SignIn
     const handleAnonymousSignIn = () => {

@@ -5,4 +5,4 @@
 
 ## Login
 
-Add login thorugh twitter, google, facebook
+Add login thorugh apple !
