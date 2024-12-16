@@ -1,41 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-
-import LoginScreen from "./screens/LoginScreen";
 import StartScreen from "./screens/StartScreen";
+import DDProvider from "./store/ContextStore";
 
 const Stack = createStackNavigator();
 
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    // Simulate an authentication check (in reality, this would involve checking secure storage or an auth API)
-    useEffect(() => {
-        const checkAuth = async () => {
-            // Logic to check if user is logged in
-            // Example: setIsLoggedIn(true) if token exists
-        };
-        checkAuth();
-    }, []);
 
     return (
         <SafeAreaProvider>
-            <NavigationContainer>
-                {isLoggedIn ? (
+            <DDProvider>
+                <NavigationContainer>
                     <Stack.Navigator screenOptions={{ headerShown: false }}>
-                        {/* Main App Stack */}
-                        <Stack.Screen name="Start" component={StartScreen} />
+                        <Stack.Screen
+                            name="StartScreen"
+                            component={StartScreen}
+                        />
                     </Stack.Navigator>
-                ) : (
-                    <Stack.Navigator screenOptions={{ headerShown: false }}>
-                        {/* Auth Stack */}
-                        <Stack.Screen name="Login" component={LoginScreen} />
-                    </Stack.Navigator>
-                )}
-            </NavigationContainer>
+                </NavigationContainer>
+            </DDProvider>
         </SafeAreaProvider>
     );
 }
