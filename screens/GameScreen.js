@@ -1,9 +1,18 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Button } from "react-native";
 
 function GameScreen() {
+    const newGameHandler = () => {
+        console.log("New Game");
+    };
+
+    const joinGameHandler = () => {
+        console.log("Join Game");
+    };
+
     return (
         <View style={styles.root}>
-            <Text>GameScreen</Text>
+            <Button title="New Game" onPress={newGameHandler} />
+            <Button title="Join Game" onPress={joinGameHandler} />
         </View>
     )
 }
