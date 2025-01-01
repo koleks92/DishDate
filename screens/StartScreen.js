@@ -12,7 +12,7 @@ function StartScreen({navigation}) {
     const [password, setPassword] = useState();
 
     // Context Store
-    const { user, setUser, handleSignOut } = useContext(DDContext);
+    const { user, setUser, handleSignOut, loadDishesHandler } = useContext(DDContext);
 
     // Configure Google Cloud SignIn
     GoogleSignin.configure({
@@ -23,6 +23,7 @@ function StartScreen({navigation}) {
     // Handle user state changes
     function onAuthStateChanged(user) {
         setUser(user);
+        loadDishesHandler();
         if (initializing) setInitializing(false);
     }
 
