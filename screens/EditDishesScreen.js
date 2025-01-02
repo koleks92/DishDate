@@ -1,6 +1,8 @@
 import { Text, View, StyleSheet } from "react-native";
 
-function EditDishesScreen() {
+function EditDishesScreen({ route }) {
+    const { edit } = route.params || {};
+    console.log(edit); // Will print 'true' if passed as a prop
     return (
         <View style={styles.root}>
             <Text>EditDishesScreen</Text>
