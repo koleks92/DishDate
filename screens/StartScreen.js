@@ -14,6 +14,7 @@ function StartScreen({navigation}) {
     // Context Store
     const { user, setUser, handleSignOut, loadDishesHandler } = useContext(DDContext);
 
+
     // Configure Google Cloud SignIn
     GoogleSignin.configure({
         webClientId:
@@ -164,13 +165,16 @@ function StartScreen({navigation}) {
 
     return (
         <View style={styles.root}>
-            <Button title="Profile" onPress={() => {navigation.navigate('ProfileScreen')}} />
-            <Button title="Start Game" onPress={() => {navigation.navigate('StartGameScreen')}} />
-            <Button title="Dishes" onPress={() => {navigation.navigate('DishesScreen')}} />
-
-            <Button title="SignOut" onPress={handleSignOut}/>
+            <Button title="Start Game" onPress={() => { navigation.navigate('StartGameScreen') }} />
+            <Button title="SignOut" onPress={handleSignOut} />
+            {!user.isAnonymous && (
+                <>
+                    <Button title="Profile" onPress={() => { navigation.navigate('ProfileScreen') }} />
+                    <Button title="Dishes" onPress={() => { navigation.navigate('DishesScreen') }} />
+                </>
+            )}
         </View>
-    )
+    );
 }
 
 export default StartScreen;
