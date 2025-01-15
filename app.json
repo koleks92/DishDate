@@ -12,17 +12,13 @@
       "backgroundColor": "#ffffff"
     },
     "plugins": [
-      "@react-native-google-signin/google-signin",
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth"
+      "@react-native-google-signin/google-signin"
     ],
     "ios": {
       "supportsTablet": true,
-      "googleServicesFile": "services/GoogleService-Info.plist",
       "bundleIdentifier": "com.koleks92.DishDate"
     },
     "android": {
-      "googleServicesFile": "services/google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
