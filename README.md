@@ -5,10 +5,22 @@
 ## Installation
 
 ### Important
-    For app to work make sure you have configured service/firebaseConfig.js and google services files for auth
+    Make sure that codes/secrests are in env files
 
 ## Deployment
-    Make sure to read https://rnfirebase.io/auth/social-auth before production !
+    Make sure to read supabase auth before production ! SHA1 etc.
 
 ## Development build
+Using EAS
 ```eas build --profile development --platform android```
+To get EAS Sha1:
+
+
+Using locally:
+````npx expo run:android````
+To get local SHA1:
+````../gradlew signingReport```` in android folder
+or
+````eas build --platform android --local````
+
+See https://docs.expo.dev/build-reference/local-builds/
