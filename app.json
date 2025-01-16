@@ -1,37 +1,35 @@
 {
-  "expo": {
-    "name": "DishDate",
-    "slug": "DishDate",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "plugins": [
-      "@react-native-google-signin/google-signin"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.koleks92.DishDate"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.koleks92.DishDate"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "48da0c2c-3538-4f0e-848b-2b9f73087662"
-      }
+    "expo": {
+        "name": "DishDate",
+        "slug": "DishDate",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "light",
+        "splash": {
+            "image": "./assets/splash-icon.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "plugins": ["@react-native-google-signin/google-signin"],
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.koleks92.DishDate"
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon.png",
+                "backgroundColor": "#ffffff"
+            },
+            "package": "com.koleks92.DishDate"
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        },
+        "extra": {
+            "eas": {
+                "projectId": "48da0c2c-3538-4f0e-848b-2b9f73087662"
+            }
+        }
     }
-  }
 }
