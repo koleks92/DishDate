@@ -5,6 +5,8 @@ export const DDContext = createContext();
 
 export const DDProvider = ({ children }) => {
     const [dishes, setDishes] = useState(null);
+    const [session, setSession] = useState(null);
+
 
     // Handle SignOut
     const handleSignOut = async () => {
@@ -37,6 +39,8 @@ export const DDProvider = ({ children }) => {
                 handleSignOut,
                 loadDishesHandler,
                 dishes,
+                session,
+                setSession
             }}
         >
             {children}

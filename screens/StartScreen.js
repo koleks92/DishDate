@@ -8,10 +8,9 @@ function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [loading, setLoading] = useState(false);
-    const [session, setSession] = useState(null);
 
     // Context Store
-    const { handleSignOut, loadDishesHandler } = useContext(DDContext);
+    const { handleSignOut, loadDishesHandler, session, setSession } = useContext(DDContext);
 
     // Configure Google Cloud SignIn
     GoogleSignin.configure({
