@@ -5,4 +5,4 @@
 
 ## Login
 
-Add login thorugh apple !
+Add login Apple Auth !
