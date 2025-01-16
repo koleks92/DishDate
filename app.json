@@ -11,7 +11,15 @@
             "resizeMode": "contain",
             "backgroundColor": "#ffffff"
         },
-        "plugins": ["@react-native-google-signin/google-signin"],
+        "plugins": [
+            "@react-native-google-signin/google-signin",
+            [
+                "expo-image-picker",
+                {
+                    "photosPermission": "The app accesses your photos to let you select photos."
+                }
+            ]
+        ],
         "ios": {
             "supportsTablet": true,
             "bundleIdentifier": "com.koleks92.DishDate"
