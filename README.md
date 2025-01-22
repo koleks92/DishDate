@@ -13,7 +13,6 @@
 ## Development build
 Using EAS
 ```eas build --profile development --platform android```
-To get EAS Sha1:
 
 
 Using locally:
@@ -22,5 +21,8 @@ To get local SHA1:
 ````../gradlew signingReport```` in android folder
 or
 ````eas build --platform android --local````
+
+To get EAS Sha1:
+````eas credentials  ````
 
 See https://docs.expo.dev/build-reference/local-builds/
