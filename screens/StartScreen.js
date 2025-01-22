@@ -106,7 +106,6 @@ function StartScreen({ navigation }) {
 
             if (error) Alert.alert(error.message);
             setLoading(false);
-            Alert.alert("Logged in!");
         }
     };
 
