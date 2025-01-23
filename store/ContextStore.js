@@ -5,14 +5,33 @@ export const DDContext = createContext();
 
 export const DDProvider = ({ children }) => {
     const [dishes, setDishes] = useState(null);
+    const [userDishes, setUserDishes] = useState(null);
     const [session, setSession] = useState(null);
-
 
     // Handle SignOut
     const handleSignOut = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) {
             console.log("Error: ", error);
+        }
+    };
+
+    // Get all dishes for the current user
+    const loadUserDishes = async () => {
+        const { data, error } = await supabase
+            .from("UsersDishes")
+            .select("*")
+            .eq("user_id", session["user"]["id"]);
+
+        console.log(data)
+
+        if (error) {
+            console.error("Error fetching data:", error.message);
+            return null;
+        }
+
+        if (data) {
+            setUserDishes(data)
         }
     };
 
@@ -24,15 +43,11 @@ export const DDProvider = ({ children }) => {
             console.log("Error fetching dishes", error);
         }
 
-        fetchedDishes = [];
-
-        data.forEach((dish) => {
-            fetchedDishes.push(dish);
-        });
-
-        setDishes(fetchedDishes);
+        if (data) {
+            setDishes(data)
+        }
     };
-    
+
     return (
         <DDContext.Provider
             value={{
@@ -40,7 +55,9 @@ export const DDProvider = ({ children }) => {
                 loadDishesHandler,
                 dishes,
                 session,
-                setSession
+                setSession,
+                loadUserDishes,
+                userDishes
             }}
         >
             {children}
