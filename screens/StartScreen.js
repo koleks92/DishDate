@@ -18,7 +18,7 @@ function StartScreen({ navigation }) {
             "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com",
     });
 
-    // Get dishes from database ( TODO )
+    // Get dishes from database
     useEffect(() => {
         loadDishesHandler();
     }, []);
@@ -41,7 +41,6 @@ function StartScreen({ navigation }) {
             const userInfo = await GoogleSignin.signIn();
 
             if (userInfo.data.idToken) {
-                console.log(userInfo.data.idToken)
                 const { data, error } = await supabase.auth.signInWithIdToken({
                     provider: "google",
                     token: userInfo.data.idToken,
