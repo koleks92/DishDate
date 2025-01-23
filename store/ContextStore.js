@@ -23,8 +23,6 @@ export const DDProvider = ({ children }) => {
             .select("*")
             .eq("user_id", session["user"]["id"]);
 
-        console.log(data)
-
         if (error) {
             console.error("Error fetching data:", error.message);
             return null;
