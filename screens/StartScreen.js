@@ -18,11 +18,11 @@ function StartScreen({ navigation }) {
         loadDishesHandler();
         
         // Configure Google Cloud SignIn
-            GoogleSignin.configure({
-            webClientId:
-                "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com",
-            iosClientId: "602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg.apps.googleusercontent.com"
-        });
+        GoogleSignin.configure({
+        webClientId:
+            "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com",
+        iosClientId: "602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg.apps.googleusercontent.com"
+    });
     }, []);
 
     // Handle session
