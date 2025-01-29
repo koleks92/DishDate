@@ -13,6 +13,8 @@
 ## Development build
 Using EAS
 ```eas build --profile development --platform android```
+or
+```eas build --profile development-simulator --platform ios```
 
 
 Using locally:
@@ -26,3 +28,5 @@ To get EAS Sha1:
 ````eas credentials  ````
 
 See https://docs.expo.dev/build-reference/local-builds/
+
+## Test
