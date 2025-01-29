@@ -13,17 +13,17 @@ import { useEffect, useState, useContext, useCallback } from "react";
 import { supabase } from "../util/supabase";
 import { DDContext } from "../store/ContextStore";
 import { useFocusEffect } from "@react-navigation/native";
+import DishesList from "../components/DishesList";
 
 function EditDishesScreen({ route, navigation }) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [image, setImage] = useState("");
-    const [userDishes, setUserDishes] = useState([]);
 
-    const { session, loadUserDishes } = useContext(DDContext);
+    const { session } = useContext(DDContext);
 
     // Get edit form the route
-    let { edit } = route.params || {};
+    let { edit, dish } = route.params || {};
 
     // Request permission for camera and media library
     const requestPermission = async () => {
@@ -42,28 +42,26 @@ function EditDishesScreen({ route, navigation }) {
         requestPermission();
     }, []);
 
-    useFocusEffect(
-        useCallback(() => {
-            if (edit) {
-                const getUserDishes = async () => {
-                    const data = await loadUserDishes();
+    useEffect(() => {
+        if (edit && dish) {
+            setName(dish.name);
+            setDescription(dish.description);
+            setImage({uri: dish.image})
+        }
+    }, [edit])
 
-                    console.log(data);
 
-                    // Check if `userDishes` is empty after loading
-                    if (!data || data.length === 0) {
-                        Alert.alert(
-                            "Error",
-                            "There are no dishes in the database. Please add some."
-                        );
-                        navigation.goBack();
-                    }
-                    setUserDishes(data);
-                };
-                getUserDishes();
-            }
-        }, [edit]) // Dependencies for memoized callback
-    );
+    // Update dish
+
+    const updateDish = async () => {
+        if (!name || !description) {
+            Alert.alert("Error", "Missing name, description or image");
+            return;
+        }
+
+        // Best way i think, first remove from database and then add new !
+        // What to do with storage ?? 
+    }
 
     // Save dish
     const saveDish = async () => {
@@ -212,7 +210,31 @@ function EditDishesScreen({ route, navigation }) {
         return (
             <View style={styles.root}>
                 <Text>Edit Dish</Text>
-                <Text>TODO</Text>
+                <TextInput
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="Enter name"
+                />
+                <TextInput
+                    value={description}
+                    onChangeText={setDescription}
+                    placeholder="Enter description"
+                />
+                <Button
+                    title="Pick an image from camera roll"
+                    onPress={pickImageHandler}
+                />
+                <Button title="Take a picture" onPress={openCameraHandler} />
+                {image && (
+                    <Image source={{ uri: image.uri }} style={styles.image} />
+                )}
+
+                <Button
+                    title="Save"
+                    onPress={() => {
+                        saveDish();
+                    }}
+                />
             </View>
         );
 
@@ -243,7 +265,7 @@ function EditDishesScreen({ route, navigation }) {
                 <Button
                     title="Save"
                     onPress={() => {
-                        saveDish();
+                        updateDish();
                     }}
                 />
             </View>
