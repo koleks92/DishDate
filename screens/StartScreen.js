@@ -9,18 +9,20 @@ function StartScreen({ navigation }) {
     const [password, setPassword] = useState();
     const [loading, setLoading] = useState(false);
 
-    // Context Store
+    // Context StoreS
     const { handleSignOut, loadDishesHandler, session, setSession } = useContext(DDContext);
 
-    // Configure Google Cloud SignIn
-    GoogleSignin.configure({
-        webClientId:
-            "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com",
-    });
-
+    
     // Get dishes from database
     useEffect(() => {
         loadDishesHandler();
+        
+        // Configure Google Cloud SignIn
+            GoogleSignin.configure({
+            webClientId:
+                "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com",
+            iosClientId: "602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg.apps.googleusercontent.com"
+        });
     }, []);
 
     // Handle session
@@ -39,6 +41,8 @@ function StartScreen({ navigation }) {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
+
+            console.log(userInfo.data.idToken)
 
             if (userInfo.data.idToken) {
                 const { data, error } = await supabase.auth.signInWithIdToken({
