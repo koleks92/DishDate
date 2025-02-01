@@ -12,8 +12,6 @@ import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState, useContext, useCallback } from "react";
 import { supabase } from "../util/supabase";
 import { DDContext } from "../store/ContextStore";
-import { useFocusEffect } from "@react-navigation/native";
-import DishesList from "../components/DishesList";
 
 function EditDishesScreen({ route, navigation }) {
     const [name, setName] = useState("");
@@ -28,9 +26,12 @@ function EditDishesScreen({ route, navigation }) {
     // Request permission for camera and media library
     const requestPermission = async () => {
         if (Platform.OS !== "web") {
-            const { status } =
+            const { status: cameraStatus } =
+                await ImagePicker.requestCameraPermissionsAsync();
+            const { status: libraryStatus } =
                 await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== "granted") {
+
+            if (cameraStatus !== "granted" || libraryStatus !== "granted") {
                 alert(
                     "Sorry, we need camera roll permissions to make this work!"
                 );
@@ -46,22 +47,47 @@ function EditDishesScreen({ route, navigation }) {
         if (edit && dish) {
             setName(dish.name);
             setDescription(dish.description);
-            setImage({uri: dish.image})
+            setImage({ uri: dish.image });
         }
-    }, [edit])
-
+    }, [edit]);
 
     // Update dish
-
     const updateDish = async () => {
         if (!name || !description) {
             Alert.alert("Error", "Missing name, description or image");
             return;
         }
 
-        // Best way i think, first remove from database and then add new !
-        // What to do with storage ?? 
-    }
+        // Remove old image if new image is selected
+        if (dish.image != image.uri) {
+            await removeImageFromStorage(dish.image);
+            await saveImageToStorage();
+        }
+
+        console.log(dish.id)
+        console.log(name)
+
+        // Update dish in database  
+        const { data, error } = await supabase
+            .from("UsersDishes")
+            .update({
+                name: name,
+                description: description,
+                image: image.uri,
+            })
+            .eq("id", dish.id);
+
+        if (error) {
+            console.error("Error updating data:", error.message);
+        } else {
+            console.log("Data updated successfully:", data);
+        }   
+
+        Alert.alert("Updated!", `Dish named ${name} was sucessfully updated`);
+
+        navigation.goBack();
+
+    };
 
     // Save dish
     const saveDish = async () => {
@@ -170,6 +196,27 @@ function EditDishesScreen({ route, navigation }) {
         }
     };
 
+    // Remove image from supabase storage
+    const removeImageFromStorage = async (publicURL) => {
+        const imagePath = extractFilePath(publicURL);
+
+        const { data, error } = await supabase.storage
+            .from("dishesImages")
+            .remove([imagePath]);
+
+        if (error) {
+            console.error("Error removing file:", error);
+            return;
+        } else {
+            console.log("Sucessfully removed from storage");
+        }
+    };
+
+    const extractFilePath = (publicURL) => {
+        const baseURL = `${supabase.storageUrl}/dishesImages/`; // Your storage bucket URL
+        return publicURL.replace(baseURL, ""); // Remove the base URL to get the file path
+    };
+
     // Get publicUrl
     const getPublicUrl = async (filepath) => {
         const { data } = supabase.storage
@@ -230,9 +277,9 @@ function EditDishesScreen({ route, navigation }) {
                 )}
 
                 <Button
-                    title="Save"
+                    title="Update"
                     onPress={() => {
-                        saveDish();
+                        updateDish();
                     }}
                 />
             </View>
@@ -265,7 +312,7 @@ function EditDishesScreen({ route, navigation }) {
                 <Button
                     title="Save"
                     onPress={() => {
-                        updateDish();
+                        saveDish();
                     }}
                 />
             </View>

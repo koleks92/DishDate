@@ -41,8 +41,7 @@ function StartScreen({ navigation }) {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-
-            console.log(userInfo.data.idToken)
+                const super2 = "";
 
             if (userInfo.data.idToken) {
                 const { data, error } = await supabase.auth.signInWithIdToken({
