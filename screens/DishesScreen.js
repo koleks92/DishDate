@@ -13,7 +13,7 @@ function DishesScreen({ navigation }) {
             <Button
                 title="Edit Dish"
                 onPress={() => {
-                    navigation.navigate("EditDishesScreen", { edit: true });
+                    navigation.navigate("DishesListScreen", { edit: true });
                 }}
             />
         </View>

@@ -8,6 +8,8 @@ import ProfileScreen from "./screens/ProfileScreen";
 import DishesScreen from "./screens/DishesScreen";
 import StartGameScreen from "./screens/StartGameScreen";
 import EditDishesScreen from "./screens/EditDishesScreen";
+import DishesListScreen from "./screens/DishesListScreen";
+
 import DDProvider from "./store/ContextStore";
 
 const Stack = createStackNavigator();
@@ -40,6 +42,10 @@ function App() {
                         <Stack.Screen
                             name="EditDishesScreen"
                             component={EditDishesScreen}
+                        />
+                        <Stack.Screen
+                            name="DishesListScreen"
+                            component={DishesListScreen}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>

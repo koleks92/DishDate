@@ -5,7 +5,6 @@ export const DDContext = createContext();
 
 export const DDProvider = ({ children }) => {
     const [dishes, setDishes] = useState(null);
-    const [userDishes, setUserDishes] = useState(null);
     const [session, setSession] = useState(null);
 
     // Handle SignOut
@@ -23,16 +22,12 @@ export const DDProvider = ({ children }) => {
             .select("*")
             .eq("user_id", session["user"]["id"]);
 
-        console.log(data)
-
         if (error) {
             console.error("Error fetching data:", error.message);
             return null;
         }
 
-        if (data) {
-            setUserDishes(data)
-        }
+        return data
     };
 
     // Get Dishes from the database
@@ -56,8 +51,7 @@ export const DDProvider = ({ children }) => {
                 dishes,
                 session,
                 setSession,
-                loadUserDishes,
-                userDishes
+                loadUserDishes
             }}
         >
             {children}
