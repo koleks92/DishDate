@@ -9,7 +9,7 @@ import {
     Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { useEffect, useState, useContext, useCallback } from "react";
+import { useEffect, useState, useContext } from "react";
 import { supabase } from "../util/supabase";
 import { DDContext } from "../store/ContextStore";
 
@@ -122,7 +122,7 @@ function EditDishesScreen({ route, navigation }) {
 
         Alert.alert("Updated!", `Dish named ${name} was sucessfully updated`);
 
-        navigation.goBack();    
+        navigation.goBack();
     };
 
     // Save dish

@@ -1,5 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, TextInput, Button, Alert } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    Button,
+    Alert,
+    Platform,
+} from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
@@ -10,19 +18,20 @@ function StartScreen({ navigation }) {
     const [loading, setLoading] = useState(false);
 
     // Context StoreS
-    const { handleSignOut, loadDishesHandler, session, setSession } = useContext(DDContext);
+    const { handleSignOut, loadDishesHandler, session, setSession } =
+        useContext(DDContext);
 
-    
     // Get dishes from database
     useEffect(() => {
         loadDishesHandler();
-        
+
         // Configure Google Cloud SignIn
         GoogleSignin.configure({
-        webClientId:
-            "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com",
-        iosClientId: "602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg.apps.googleusercontent.com"
-    });
+            webClientId:
+                "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com",
+            iosClientId:
+                "602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg.apps.googleusercontent.com",
+        });
     }, []);
 
     // Handle session
@@ -41,7 +50,6 @@ function StartScreen({ navigation }) {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-                const super2 = "";
 
             if (userInfo.data.idToken) {
                 const { data, error } = await supabase.auth.signInWithIdToken({
