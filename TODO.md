@@ -6,3 +6,5 @@
 ## Login
 
 Add login Apple Auth !
+
+Screen refresh on update (picture, rest is working)

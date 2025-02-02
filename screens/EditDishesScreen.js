@@ -51,6 +51,35 @@ function EditDishesScreen({ route, navigation }) {
         }
     }, [edit]);
 
+    // Delete dish
+    const deleteDish = async () => {
+        // Show confirm alert
+        const confirm = await showConfirmAlert();
+
+        if (!confirm) {
+            return;
+        }
+
+        // Remove image from storage
+        await removeImageFromStorage(dish.image);
+
+        // Delete dish from database
+        const { data, error } = await supabase
+            .from("UsersDishes")
+            .delete()
+            .eq("id", dish.id);
+
+        if (error) {
+            console.error("Error deleting data:", error.message);
+        } else {
+            console.log("Data deleted successfully:", data);
+        }
+
+        Alert.alert("Deleted!", `Dish named ${name} was sucessfully deleted`);
+
+        navigation.goBack();
+    };
+
     // Update dish
     const updateDish = async () => {
         if (!name || !description) {
@@ -58,22 +87,30 @@ function EditDishesScreen({ route, navigation }) {
             return;
         }
 
+        // Check if not already in database
+        const inDatabase = await databaseCheck(dish.id);
+
+        if (inDatabase) {
+            Alert.alert("Error", `Dish named ${name} is already in database`);
+            return;
+        }
+
+        let imageURL = image.uri;
+
         // Remove old image if new image is selected
         if (dish.image != image.uri) {
             await removeImageFromStorage(dish.image);
-            await saveImageToStorage();
+            imageURL = await saveImageToStorage();
+            setImage({ uri: imageURL });
         }
 
-        console.log(dish.id)
-        console.log(name)
-
-        // Update dish in database  
+        // Update dish in database
         const { data, error } = await supabase
             .from("UsersDishes")
             .update({
                 name: name,
                 description: description,
-                image: image.uri,
+                image: imageURL,
             })
             .eq("id", dish.id);
 
@@ -81,12 +118,11 @@ function EditDishesScreen({ route, navigation }) {
             console.error("Error updating data:", error.message);
         } else {
             console.log("Data updated successfully:", data);
-        }   
+        }
 
         Alert.alert("Updated!", `Dish named ${name} was sucessfully updated`);
 
-        navigation.goBack();
-
+        navigation.goBack();    
     };
 
     // Save dish
@@ -115,20 +151,31 @@ function EditDishesScreen({ route, navigation }) {
         navigation.goBack();
     };
 
-    // Check if name is not already in database !
-    const databaseCheck = async () => {
-        const { data, error } = await supabase
-            .from("UsersDishes")
-            .select("*")
-            .eq("user_id", session["user"]["id"])
-            .eq("name", name);
+    // Check if name is not already in database
+    const databaseCheck = async (id) => {
+        let data, error;
+
+        if (!id) {
+            ({ data, error } = await supabase
+                .from("UsersDishes")
+                .select("*")
+                .eq("user_id", session["user"]["id"])
+                .eq("name", name));
+        } else {
+            ({ data, error } = await supabase
+                .from("UsersDishes")
+                .select("*")
+                .eq("user_id", session["user"]["id"])
+                .eq("name", name)
+                .neq("id", id));
+        }
 
         if (error) {
             console.error("Error fetching data:", error.message);
             return null;
         }
 
-        return data && data.length > 0 ? true : false;
+        return data && data.length > 0; // Return true if duplicate exists, else false
     };
 
     // Save dish to Supabase database
@@ -213,7 +260,7 @@ function EditDishesScreen({ route, navigation }) {
     };
 
     const extractFilePath = (publicURL) => {
-        const baseURL = `${supabase.storageUrl}/dishesImages/`; // Your storage bucket URL
+        const baseURL = `${supabase.storageUrl}/object/public/dishesImages/`; // Your storage bucket URL
         return publicURL.replace(baseURL, ""); // Remove the base URL to get the file path
     };
 
@@ -252,6 +299,28 @@ function EditDishesScreen({ route, navigation }) {
             setImage(result.assets[0]);
         }
     };
+
+    const showConfirmAlert = () => {
+        return new Promise((resolve) => {
+            Alert.alert(
+                "Delete",
+                `Are you sure you want to delete ${dish.name}?`, // Message
+                [
+                    {
+                        text: "No",
+                        style: "cancel",
+                        onPress: () => resolve(false), // Return false when user cancels
+                    },
+                    {
+                        text: "Yes",
+                        onPress: () => resolve(true), // Return true when user confirms
+                    },
+                ],
+                { cancelable: true }
+            );
+        });
+    };
+
     // EDIT DISHES MODE
     if (edit) {
         return (
@@ -275,13 +344,15 @@ function EditDishesScreen({ route, navigation }) {
                 {image && (
                     <Image source={{ uri: image.uri }} style={styles.image} />
                 )}
-
-                <Button
-                    title="Update"
-                    onPress={() => {
-                        updateDish();
-                    }}
-                />
+                <View style={{ flexDirection: "row" }}>
+                    <Button
+                        title="Update"
+                        onPress={() => {
+                            updateDish();
+                        }}
+                    />
+                    <Button title="Delete" onPress={deleteDish} />
+                </View>
             </View>
         );
 
