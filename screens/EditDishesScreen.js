@@ -213,7 +213,7 @@ function EditDishesScreen({ route, navigation }) {
             return;
         }
 
-        const fileName = `${session["user"]["id"]}/${name}.jpeg`;
+        const fileName = `${session["user"]["id"]}/${name}-${image.fileSize}.jpeg`;
 
         // Create new FormData to upload to supabase
         const formData = new FormData();
