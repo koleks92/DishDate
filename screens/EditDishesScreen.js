@@ -88,7 +88,7 @@ function EditDishesScreen({ route, navigation }) {
 
     // Update dish
     const updateDish = async () => {
-        if (!name || !description) {
+        if (!name || !description || !cuisine) {
             Alert.alert("Error", "Missing name, description or image");
             return;
         }
@@ -134,7 +134,7 @@ function EditDishesScreen({ route, navigation }) {
 
     // Save dish
     const saveDish = async () => {
-        if (!name || !description) {
+        if (!name || !description || !cuisine) {
             Alert.alert("Error", "Missing name, description or image");
             return;
         }
