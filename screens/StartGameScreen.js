@@ -4,7 +4,8 @@ import { TextInput } from "react-native-gesture-handler";
 import { DDContext } from "../store/ContextStore";
 import SelectDropdown from "react-native-select-dropdown";
 
-// Select dishes for the game
+// Select dishes disabled styling !
+// Make sure even number of dishes are selected when mix !
 // Create a new game with the selected dishes
 
 function StartGameScreen({ navigation }) {
@@ -20,9 +21,9 @@ function StartGameScreen({ navigation }) {
     const { loadUserDishes, dishes } = useContext(DDContext);
 
     let dishesDatabaseChoice = [
-        { title: "Standard Dishes", choice: 0},
-        { title: "My Dishes", choice: 1},
-        { title: "Mix Dishes", choice: 2},
+        { title: "Standard Dishes", choice: 0, disabled: false },
+        { title: "My Dishes", choice: 1,disabled: false },
+        { title: "Mix Dishes", choice: 2,disabled: false },
     ];
 
     const newGameHandler = () => {
@@ -39,15 +40,6 @@ function StartGameScreen({ navigation }) {
         }
     }, [choice]);
 
-    useEffect(() => {
-        if (selectedDishesChoice == 0) {
-            setSelectedDishes(dishes);
-        } else if (selectedDishesChoice == 1) {
-            setSelectedDishes(userDishes);
-        } else {
-            setSelectedDishes(dishes.concat(userDishes));
-        }
-    }, [selectedDishesChoice]);
 
     // Get user dishes from the database
     const getUserDishes = async () => {
@@ -125,9 +117,11 @@ function StartGameScreen({ navigation }) {
                                 </View>
                             );
                         }}
-                        renderItem={(item, index, isSelected) => {
-                            console.log(item); // Check the value of item.disabled
-
+                        renderItem={(item, index, isSelected) => { 
+                            if (disabledIndexes.includes(item.choice)) {
+                                item.disabled = true;
+                            }
+                            
                             return (
                                 <View
                                     style={{
@@ -136,8 +130,8 @@ function StartGameScreen({ navigation }) {
                                             backgroundColor: "#D2D9DF",
                                         }),
                                         ...(item.disabled && {
-                                            backgroundColor: "#CCCCCC",
-                                        }),
+                                            opacity: 0.4,
+                                        })
                                     }}
                                 >
                                     <Text style={styles.dropdownItemTxtStyle}>
