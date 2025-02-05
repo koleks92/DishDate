@@ -18,12 +18,13 @@ function StartScreen({ navigation }) {
     const [loading, setLoading] = useState(false);
 
     // Context StoreS
-    const { handleSignOut, loadDishesHandler, session, setSession } =
+    const { handleSignOut, loadDishesHandler, session, setSession, loadCuisinesHandler } =
         useContext(DDContext);
 
     // Get dishes from database
     useEffect(() => {
         loadDishesHandler();
+        loadCuisinesHandler();
 
         // Configure Google Cloud SignIn
         GoogleSignin.configure({
