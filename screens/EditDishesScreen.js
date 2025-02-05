@@ -12,13 +12,17 @@ import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState, useContext } from "react";
 import { supabase } from "../util/supabase";
 import { DDContext } from "../store/ContextStore";
+import CuisinesList from "../components/CuisinesList";
 
 function EditDishesScreen({ route, navigation }) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [image, setImage] = useState("");
+    const [cuisine, setCuisine] = useState("");
 
-    const { session } = useContext(DDContext);
+    const { session, cuisinesList } = useContext(DDContext);
+
+
 
     // Get edit form the route
     let { edit, dish } = route.params || {};
@@ -48,6 +52,8 @@ function EditDishesScreen({ route, navigation }) {
             setName(dish.name);
             setDescription(dish.description);
             setImage({ uri: dish.image });
+            const cuisine = cuisinesList.find(c => c.id === dish.cuisine_id)
+            setCuisine(cuisine);
         }
     }, [edit]);
 
@@ -111,6 +117,7 @@ function EditDishesScreen({ route, navigation }) {
                 name: name,
                 description: description,
                 image: imageURL,
+                cuisine_id: cuisine.id,
             })
             .eq("id", dish.id);
 
@@ -193,6 +200,7 @@ function EditDishesScreen({ route, navigation }) {
                         name: name,
                         description: description,
                         image: imageURL,
+                        cuisine_id: cuisine.id,
                     },
                 ]);
 
@@ -300,6 +308,7 @@ function EditDishesScreen({ route, navigation }) {
         }
     };
 
+    // Show confirm alert
     const showConfirmAlert = () => {
         return new Promise((resolve) => {
             Alert.alert(
@@ -321,6 +330,11 @@ function EditDishesScreen({ route, navigation }) {
         });
     };
 
+    // Select cuisine handler
+    const selectedCuisineHandler = (cuisine) => {
+        setCuisine(cuisine);
+    };
+
     // EDIT DISHES MODE
     if (edit) {
         return (
@@ -336,6 +350,7 @@ function EditDishesScreen({ route, navigation }) {
                     onChangeText={setDescription}
                     placeholder="Enter description"
                 />
+                <CuisinesList cuisinesList={cuisinesList} selectedCuisine={selectedCuisineHandler} selectedCuisineEdit={cuisine}/>
                 <Button
                     title="Pick an image from camera roll"
                     onPress={pickImageHandler}
@@ -371,6 +386,7 @@ function EditDishesScreen({ route, navigation }) {
                     onChangeText={setDescription}
                     placeholder="Enter description"
                 />
+                <CuisinesList cuisinesList={cuisinesList} selectedCuisine={selectedCuisineHandler}/>
                 <Button
                     title="Pick an image from camera roll"
                     onPress={pickImageHandler}
