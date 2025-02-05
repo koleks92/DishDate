@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Button, Alert } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { DDContext } from "../store/ContextStore";
 import SelectDropdown from "react-native-select-dropdown";
+import CuisinesList from "../components/CuisinesList";
 
 // Select dishes disabled styling !
 // Make sure even number of dishes are selected when mix !
@@ -18,7 +19,7 @@ function StartGameScreen({ navigation }) {
     const [isLoading, setIsLoading] = useState(false);
     const [userDishes, setUserDishes] = useState([]);
 
-    const { loadUserDishes, dishes } = useContext(DDContext);
+    const { loadUserDishes, dishes, cuisinesList } = useContext(DDContext);
 
     let dishesDatabaseChoice = [
         { title: "Standard Dishes", choice: 0, disabled: false },
@@ -65,6 +66,11 @@ function StartGameScreen({ navigation }) {
         } else {
             return true;
         }
+    };
+
+    // Selected cuisine handler
+    const selectedCuisineHandler = (selectedCuisine) => {
+        console.log("Selected cuisine:", selectedCuisine);
     };
 
     // Create new game
@@ -143,6 +149,7 @@ function StartGameScreen({ navigation }) {
                         showsVerticalScrollIndicator={false}
                         dropdownStyle={styles.dropdownMenuStyle}
                     />
+                    <CuisinesList cuisinesList={cuisinesList} selectedCuisineHandler={selectedCuisineHandler}/>
                     <Button title="Start Game" onPress={createNewGameHandler} />
                 </View>
             </View>
