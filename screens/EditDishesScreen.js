@@ -350,7 +350,7 @@ function EditDishesScreen({ route, navigation }) {
                     onChangeText={setDescription}
                     placeholder="Enter description"
                 />
-                <CuisinesList cuisinesList={cuisinesList} selectedCuisine={selectedCuisineHandler} selectedCuisineEdit={cuisine}/>
+                <CuisinesList cuisinesList={cuisinesList} selectedCuisineHandler={selectedCuisineHandler} selectedCuisine={cuisine}/>
                 <Button
                     title="Pick an image from camera roll"
                     onPress={pickImageHandler}
@@ -386,7 +386,7 @@ function EditDishesScreen({ route, navigation }) {
                     onChangeText={setDescription}
                     placeholder="Enter description"
                 />
-                <CuisinesList cuisinesList={cuisinesList} selectedCuisine={selectedCuisineHandler}/>
+                <CuisinesList cuisinesList={cuisinesList} selectedCuisineHandler={selectedCuisineHandler}/>
                 <Button
                     title="Pick an image from camera roll"
                     onPress={pickImageHandler}
