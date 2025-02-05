@@ -6,6 +6,7 @@ export const DDContext = createContext();
 export const DDProvider = ({ children }) => {
     const [dishes, setDishes] = useState(null);
     const [session, setSession] = useState(null);
+    const [cuisinesList, setCuisinesList] = useState(null);
 
     // Handle SignOut
     const handleSignOut = async () => {
@@ -43,6 +44,19 @@ export const DDProvider = ({ children }) => {
         }
     };
 
+    // Get Cuisines from the database
+    const loadCuisinesHandler = async () => {
+        const { data, error } = await supabase.from("Cuisines").select("*");
+
+        if (error) {
+            console.log("Error fetching cuisines", error);
+        }
+
+        if (data) {
+            setCuisinesList(data);
+        }
+    };
+
     return (
         <DDContext.Provider
             value={{
@@ -51,7 +65,9 @@ export const DDProvider = ({ children }) => {
                 dishes,
                 session,
                 setSession,
-                loadUserDishes
+                loadUserDishes,
+                loadCuisinesHandler,
+                cuisinesList
             }}
         >
             {children}
