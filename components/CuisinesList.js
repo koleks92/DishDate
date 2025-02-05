@@ -1,13 +1,14 @@
 import { View, Text, StyleSheet } from "react-native";
 import SelectDropdown from 'react-native-select-dropdown'
 
-function CuisinesList({ cuisinesList, selectedCuisine }) {
+function CuisinesList({ cuisinesList, selectedCuisine, selectedCuisineEdit }) {
     return (
         <SelectDropdown
     data={cuisinesList}
     onSelect={(selectedItem, index) => {
         selectedCuisine(selectedItem);
     }}
+    defaultValue={selectedCuisineEdit}
     renderButton={(selectedItem) => {
       return (
         <View style={styles.dropdownButtonStyle}>
