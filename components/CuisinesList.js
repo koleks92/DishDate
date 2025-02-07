@@ -1,5 +1,5 @@
 import { Dropdown, MultiSelect } from "react-native-element-dropdown";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text , TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 
 function CuisinesList({
@@ -11,6 +11,7 @@ function CuisinesList({
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
     const [selected, setSelected] = useState([]);
+    const [allCuisinesView, setAllCuisinesView] = useState(false);
 
     useEffect(() => {
         if (selectedCuisine) {
@@ -18,11 +19,16 @@ function CuisinesList({
         }
     }, [selectedCuisine]);
 
+
     useEffect(() => {
         if (selected.length > 0) {
             selectedCuisineHandler(
                 cuisinesList.filter((cuisine) => selected.includes(cuisine.id))
             );
+            setAllCuisinesView(false);
+        } else {
+            selectedCuisineHandler(999);
+            setAllCuisinesView(true);
         }
     }, [selected]);
 
@@ -48,6 +54,9 @@ function CuisinesList({
                     }}
                     selectedStyle={styles.selectedStyle}
                 />
+                {allCuisinesView && (
+  <Text>All cuisines</Text>
+)}
             </View>
         );
     } else {
@@ -67,7 +76,7 @@ function CuisinesList({
                     maxHeight={300}
                     labelField="name"
                     valueField="id"
-                    placeholder={!isFocus ? "Select item" : "..."}
+                    placeholder={!isFocus ? "Select cuisine" : "..."}
                     searchPlaceholder="Search..."
                     value={value}
                     onFocus={() => setIsFocus(true)}
