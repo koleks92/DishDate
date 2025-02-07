@@ -1,5 +1,5 @@
 import { Dropdown, MultiSelect } from "react-native-element-dropdown";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React, { useState, useEffect } from "react";
 
 function CuisinesList({
