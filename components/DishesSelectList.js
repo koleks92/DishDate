@@ -1,6 +1,6 @@
 import { Dropdown } from "react-native-element-dropdown";
 import { StyleSheet, View } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function DishesSelectList({ selectedDishesHandler, disabledIndexes }) {
     let dishes = [
@@ -13,6 +13,10 @@ function DishesSelectList({ selectedDishesHandler, disabledIndexes }) {
     dishes = dishes.filter((dish, index) => !disabledIndexes.includes(index));
 
     const [value, setValue] = useState(0);
+
+    useEffect(() => {
+            selectedDishesHandler(value);
+        }, [value]);
 
     return (
         <View style={styles.container}>
@@ -30,7 +34,6 @@ function DishesSelectList({ selectedDishesHandler, disabledIndexes }) {
                 value={value}
                 onChange={(item) => {
                     setValue(item.choice);
-                    selectedDishesHandler(item.choice);
                 }}
                 visibleSelectedItem={false}
             />
