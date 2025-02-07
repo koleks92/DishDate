@@ -12,7 +12,7 @@ function DishesSelectList({ selectedDishesHandler, disabledIndexes }) {
     // Filter out disabled indexes
     dishes = dishes.filter((dish, index) => !disabledIndexes.includes(index));
 
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState(0);
 
     return (
         <View style={styles.container}>
