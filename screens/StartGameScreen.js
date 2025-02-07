@@ -5,7 +5,7 @@ import { DDContext } from "../store/ContextStore";
 import SelectDropdown from "react-native-select-dropdown";
 import CuisinesList from "../components/CuisinesList";
 
-// Select dishes disabled styling !
+// Select cuisnes ! Make sure to be able to select multiple cuisines
 // Make sure even number of dishes are selected when mix !
 // Create a new game with the selected dishes
 
@@ -149,7 +149,7 @@ function StartGameScreen({ navigation }) {
                         showsVerticalScrollIndicator={false}
                         dropdownStyle={styles.dropdownMenuStyle}
                     />
-                    <CuisinesList cuisinesList={cuisinesList} selectedCuisineHandler={selectedCuisineHandler}/>
+                    <CuisinesList cuisinesList={cuisinesList} selectedCuisineHandler={selectedCuisineHandler} multiselect={true}/>
                     <Button title="Start Game" onPress={createNewGameHandler} />
                 </View>
             </View>
