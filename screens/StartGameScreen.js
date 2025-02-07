@@ -100,7 +100,6 @@ function StartGameScreen({ navigation }) {
     if (choice == 1) {
         return (
             <View style={styles.root}>
-                <View>
                     <TextInput
                         value={numOfDishes}
                         keyboardType="numeric" // Show numeric keyboard
@@ -151,7 +150,6 @@ function StartGameScreen({ navigation }) {
                     />
                     <CuisinesList cuisinesList={cuisinesList} selectedCuisineHandler={selectedCuisineHandler} multiselect={true}/>
                     <Button title="Start Game" onPress={createNewGameHandler} />
-                </View>
             </View>
         );
     }

@@ -20,10 +20,11 @@ function CuisinesList({
 
     useEffect(() => {
         if (selected.length > 0) {
-            selectedCuisineHandler(cuisinesList.filter((cuisine) => selected.includes(cuisine.id)));
+            selectedCuisineHandler(
+                cuisinesList.filter((cuisine) => selected.includes(cuisine.id))
+            );
         }
-    }, [selected])
-
+    }, [selected]);
 
     if (multiselect) {
         return (
@@ -43,7 +44,6 @@ function CuisinesList({
                     maxSelect={6}
                     value={selected}
                     onChange={(item) => {
-                        console.log(item);
                         setSelected(item);
                     }}
                     selectedStyle={styles.selectedStyle}
@@ -52,27 +52,35 @@ function CuisinesList({
         );
     } else {
         return (
-          <View style={styles.container}>
-          <MultiSelect
-              style={styles.dropdown}
-              placeholderStyle={styles.placeholderStyle}
-              selectedTextStyle={styles.selectedTextStyle}
-              inputSearchStyle={styles.inputSearchStyle}
-              iconStyle={styles.iconStyle}
-              search
-              data={cuisinesList}
-              labelField="name"
-              valueField="id"
-              placeholder="Select cuisines"
-              searchPlaceholder="Search..."
-              maxSelect={6}
-              value={selected} // Pass only the IDs to the MultiSelect
-              onChange={(item) => {              
-                  setSelected(item); // Update the state with the full items
-              }}
-              selectedStyle={styles.selectedStyle}
-          />
-      </View>
+            <View style={styles.container}>
+                <Dropdown
+                    style={[
+                        styles.dropdown,
+                        isFocus && { borderColor: "blue" },
+                    ]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={cuisinesList}
+                    search
+                    maxHeight={300}
+                    labelField="name"
+                    valueField="id"
+                    placeholder={!isFocus ? "Select item" : "..."}
+                    searchPlaceholder="Search..."
+                    value={value}
+                    onFocus={() => setIsFocus(true)}
+                    onBlur={() => setIsFocus(false)}
+                    onChange={(item) => {
+                        selectedCuisineHandler({
+                            id: item.id,
+                            name: item.name,
+                        });
+                        setIsFocus(false);
+                    }}
+                />
+            </View>
         );
     }
 }
@@ -83,6 +91,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: "white",
         padding: 16,
+        width: "60%",
     },
     dropdown: {
         height: 50,
