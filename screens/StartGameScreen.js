@@ -1,11 +1,10 @@
-import { useState, useContext, useEffect, useRef } from "react";
+import { useState, useContext, useEffect} from "react";
 import { Text, View, StyleSheet, Button, Alert } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { DDContext } from "../store/ContextStore";
-import SelectDropdown from "react-native-select-dropdown";
 import CuisinesList from "../components/CuisinesList";
+import DishesSelectList from "../components/DishesSelectList";
 
-// Select cuisnes ! Make sure to be able to select multiple cuisines
 // Make sure even number of dishes are selected when mix !
 // Create a new game with the selected dishes
 
@@ -21,11 +20,6 @@ function StartGameScreen({ navigation }) {
 
     const { loadUserDishes, dishes, cuisinesList } = useContext(DDContext);
 
-    let dishesDatabaseChoice = [
-        { title: "Standard Dishes", choice: 0, disabled: false },
-        { title: "My Dishes", choice: 1,disabled: false },
-        { title: "Mix Dishes", choice: 2,disabled: false },
-    ];
 
     const newGameHandler = () => {
         setChoice(1);
@@ -73,6 +67,11 @@ function StartGameScreen({ navigation }) {
         console.log("Selected cuisine:", selectedCuisine);
     };
 
+    // Selected dishes handler
+    const selectedDishesHandler = (selectedDishes) => {
+        console.log("Selected dishes:", selectedDishes);
+    };
+
     // Create new game
     const createNewGameHandler = () => {
         if (validateNumOfDishes()) {
@@ -106,48 +105,7 @@ function StartGameScreen({ navigation }) {
                         onChangeText={setNumOfDishes}
                         placeholder="Enter number of dishes ( 5 - 25 )"
                     />
-                    <SelectDropdown
-                        data={dishesDatabaseChoice}
-                        disabledIndexes={disabledIndexes}
-                        onSelect={(selectedItem, index) => {
-                            setSelectedDishesChoice(selectedItem.choice);
-                        }}
-                        renderButton={(selectedItem) => {
-                            return (
-                                <View style={styles.dropdownButtonStyle}>
-                                    <Text style={styles.dropdownButtonTxtStyle}>
-                                        {(selectedItem && selectedItem.title) ||
-                                            "Select Dishes"}
-                                    </Text>
-                                </View>
-                            );
-                        }}
-                        renderItem={(item, index, isSelected) => { 
-                            if (disabledIndexes.includes(item.choice)) {
-                                item.disabled = true;
-                            }
-                            
-                            return (
-                                <View
-                                    style={{
-                                        ...styles.dropdownItemStyle,
-                                        ...(isSelected && {
-                                            backgroundColor: "#D2D9DF",
-                                        }),
-                                        ...(item.disabled && {
-                                            opacity: 0.4,
-                                        })
-                                    }}
-                                >
-                                    <Text style={styles.dropdownItemTxtStyle}>
-                                        {item.title}
-                                    </Text>
-                                </View>
-                            );
-                        }}
-                        showsVerticalScrollIndicator={false}
-                        dropdownStyle={styles.dropdownMenuStyle}
-                    />
+                    <DishesSelectList selectedDishesHandler={selectedDishesHandler} disabledIndexes={disabledIndexes} />
                     <CuisinesList cuisinesList={cuisinesList} selectedCuisineHandler={selectedCuisineHandler} multiselect={true}/>
                     <Button title="Start Game" onPress={createNewGameHandler} />
             </View>
