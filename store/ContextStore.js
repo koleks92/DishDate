@@ -46,7 +46,7 @@ export const DDProvider = ({ children }) => {
 
     // Get Cuisines from the database
     const loadCuisinesHandler = async () => {
-        const { data, error } = await supabase.from("Cuisines").select("*");
+        const { data, error } = await supabase.from("Cuisines").select("id, name");
 
         if (error) {
             console.log("Error fetching cuisines", error);
