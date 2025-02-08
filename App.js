@@ -6,9 +6,11 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import StartScreen from "./screens/StartScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import DishesScreen from "./screens/DishesScreen";
-import StartGameScreen from "./screens/StartGameScreen";
+import NewGameScreen from "./screens/NewGameScreen";
 import EditDishesScreen from "./screens/EditDishesScreen";
 import DishesListScreen from "./screens/DishesListScreen";
+import GameScreen from "./screens/GameScreen";
+import JoinGameScreen from "./screens/JoinGameScreen";
 
 import DDProvider from "./store/ContextStore";
 
@@ -32,8 +34,12 @@ function App() {
                             component={ProfileScreen}
                         />
                         <Stack.Screen
-                            name="StartGameScreen"
-                            component={StartGameScreen}
+                            name="NewGameScreen"
+                            component={NewGameScreen}
+                        />
+                        <Stack.Screen
+                            name="JoinGameScreen"
+                            component={JoinGameScreen}
                         />
                         <Stack.Screen
                             name="DishesScreen"
@@ -46,6 +52,10 @@ function App() {
                         <Stack.Screen
                             name="DishesListScreen"
                             component={DishesListScreen}
+                        />
+                        <Stack.Screen
+                            name="GameScreen"
+                            component={GameScreen}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>
