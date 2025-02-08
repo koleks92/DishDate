@@ -57,6 +57,21 @@ export const DDProvider = ({ children }) => {
         }
     };
 
+    // Get dishes from the database based on the cuisine
+    const loadDishesByCuisines = async (cuisinesIds) => {
+        const { data, error } = await supabase
+            .from("Dishes")
+            .select("*")
+            .in("cuisine_id", cuisinesIds);
+
+        if (error) {
+            console.error("Error fetching data:", error.message);
+            return null;
+        }
+
+        return data;
+    }
+
     return (
         <DDContext.Provider
             value={{
@@ -67,7 +82,8 @@ export const DDProvider = ({ children }) => {
                 setSession,
                 loadUserDishes,
                 loadCuisinesHandler,
-                cuisinesList
+                cuisinesList,
+                loadDishesByCuisines
             }}
         >
             {children}
