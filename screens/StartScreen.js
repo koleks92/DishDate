@@ -167,9 +167,15 @@ function StartScreen({ navigation }) {
         return (
             <View style={styles.root}>
                 <Button
-                    title="Start Game"
+                    title="New Game"
                     onPress={() => {
-                        navigation.navigate("StartGameScreen");
+                        navigation.navigate("NewGameScreen");
+                    }}
+                />
+                <Button
+                    title="Join Game"
+                    onPress={() => {
+                        navigation.navigate("JoinGameScreen");
                     }}
                 />
                 <Button title="SignOut" onPress={handleSignOut} />
