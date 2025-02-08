@@ -2,7 +2,7 @@ import { Text, View, StyleSheet } from "react-native";
 
 function JoinGameScreen() {
     return (
-        <View style={Styl}>
+        <View style={styles.root}>
             <Text>Join Game</Text>
         </View>
     )
