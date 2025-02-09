@@ -25,12 +25,15 @@ function NewGameScreen({ navigation }) {
         useContext(DDContext);
 
     useEffect(() => {
-        loadUserDishes()
-    }, [])
+        loadUserDishes();
+    }, []);
 
     useEffect(() => {
         if (newGameDishes.length > 0) {
-            navigation.navigate("GameScreen", { dishes: newGameDishes, newGame: true });
+            navigation.navigate("GameScreen", {
+                dishes: newGameDishes,
+                newGame: true,
+            });
         }
     }, [newGameDishes]);
 
@@ -74,8 +77,13 @@ function NewGameScreen({ navigation }) {
     const createDishesArray = (dishes, length) => {
         let dishesArray = [];
         for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * dishes.length);
-            dishesArray.push(dishes[randomIndex]);
+            let randomDish;
+            do {
+                const randomIndex = Math.floor(Math.random() * dishes.length);
+                randomDish = dishes[randomIndex];
+            } while (dishesArray.includes(randomDish)); // Check if already in the array
+
+            dishesArray.push(randomDish);
         }
         return dishesArray;
     };
