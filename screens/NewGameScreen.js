@@ -30,7 +30,7 @@ function NewGameScreen({ navigation }) {
 
     useEffect(() => {
         if (newGameDishes.length > 0) {
-            navigation.navigate("GameScreen", { dishes: newGameDishes });
+            navigation.navigate("GameScreen", { dishes: newGameDishes, newGame: true });
         }
     }, [newGameDishes]);
 
