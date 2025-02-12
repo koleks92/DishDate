@@ -72,6 +72,23 @@ export const DDProvider = ({ children }) => {
         return data;
     }
 
+        // Get all dishes for the current user
+        const loadUserDishesByCuisines = async (cuisinesIds) => {
+            const { data, error } = await supabase
+                .from("UsersDishes")
+                .select("*")
+                .eq("user_id", session["user"]["id"])
+                .in("cuisine_id", cuisinesIds);
+    
+            if (error) {
+                console.error("Error fetching data:", error.message);
+                return null;
+            }
+
+    
+            return data
+        };
+
     return (
         <DDContext.Provider
             value={{
@@ -83,7 +100,8 @@ export const DDProvider = ({ children }) => {
                 loadUserDishes,
                 loadCuisinesHandler,
                 cuisinesList,
-                loadDishesByCuisines
+                loadDishesByCuisines,
+                loadUserDishesByCuisines
             }}
         >
             {children}
