@@ -5,8 +5,7 @@ import { DDContext } from "../store/ContextStore";
 import CuisinesList from "../components/CuisinesList";
 import DishesSelectList from "../components/DishesSelectList";
 
-// Make sure even number of dishes are selected when mix !
-// Create a new game with the selected dishes
+// Fix user dishes filerting, now return empty array !
 
 function NewGameScreen({ navigation }) {
     const [choice, setChoice] = useState(null);
@@ -21,11 +20,16 @@ function NewGameScreen({ navigation }) {
 
     const [newGameDishes, setNewGameDishes] = useState([]);
 
-    const { loadUserDishes, dishes, cuisinesList, loadDishesByCuisines } =
-        useContext(DDContext);
+    const {
+        loadUserDishes,
+        dishes,
+        cuisinesList,
+        loadDishesByCuisines,
+        loadUserDishesByCuisines,
+    } = useContext(DDContext);
 
     useEffect(() => {
-        loadUserDishes();
+        getUserDishes();
     }, []);
 
     useEffect(() => {
@@ -75,71 +79,102 @@ function NewGameScreen({ navigation }) {
 
     // Create dishes array
     const createDishesArray = (dishes, length) => {
-        let dishesArray = [];
-        for (let i = 0; i < length; i++) {
-            let randomDish;
-            do {
-                const randomIndex = Math.floor(Math.random() * dishes.length);
-                randomDish = dishes[randomIndex];
-            } while (dishesArray.includes(randomDish)); // Check if already in the array
+        if (dishes.length < length) {
+            return dishes;
+        } else {
+            let dishesArray = [];
+            for (let i = 0; i < length; i++) {
+                let randomDish;
+                do {
+                    const randomIndex = Math.floor(
+                        Math.random() * dishes.length
+                    );
+                    randomDish = dishes[randomIndex];
+                } while (dishesArray.includes(randomDish)); // Check if already in the array
 
-            dishesArray.push(randomDish);
+                dishesArray.push(randomDish);
+            }
+            return dishesArray;
         }
-        return dishesArray;
     };
 
     // Create new game
-    const createNewGameHandler = () => {
+    const createNewGameHandler = async () => {
         setIsLoading(true);
 
-        let tempDishesArray = [];
+        let standardDishesArray = [];
+        let userDishesArray = [];
         let selectedCuisinesIds = [];
 
         // Validate number of dishes
         if (validateNumOfDishes()) {
-            if (selectedCuisine !== 999) {
-                // Get standard dishes by cuisine
+            if (selectedCuisine === 999) {
+                // Get all standard dishes
+                standardDishesArray = dishes;
+                userDishesArray = userDishes;
+            } else {
+                // Get cuisines Ids
                 selectedCuisinesIds = selectedCuisine.map(
                     (cuisine) => cuisine.id
                 );
-                const dishesByCuisine =
-                    loadDishesByCuisines(selectedCuisinesIds);
-                if (dishesByCuisine) {
-                    tempDishesArray = dishesByCuisine();
+
+                // Get standard dishes by cuisine
+                const standardDishesByCuisine = await loadDishesByCuisines(
+                    selectedCuisinesIds
+                );
+                if (standardDishesByCuisine) {
+                    standardDishesArray = standardDishesByCuisine;
                 }
-            } else {
-                // Get all standard dishes
-                tempDishesArray = dishes;
+
+                // Get user dishes by cuisine
+                const userDishesByCuisine = await loadUserDishesByCuisines(
+                    selectedCuisinesIds
+                );
+                if (userDishesByCuisine) {
+                    userDishesArray = userDishesByCuisine;
+                }
             }
 
             if (selectedDishes === 0) {
-                const standardDishesArray = createDishesArray(
-                    tempDishesArray,
+                // Only standard dishes
+                if (standardDishesArray.length < numOfDishes) {
+                    Alert.alert("Error", "Not enough dishes in selected cuisine!");
+                    setIsLoading(false);
+                    return;
+                }
+                const dishesArray = createDishesArray(
+                    standardDishesArray,
                     numOfDishes
                 );
-                setNewGameDishes(standardDishesArray);
+                setNewGameDishes(dishesArray);
             } else if (selectedDishes === 1) {
-                const filteredUserDishes = userDishes.filter((dish) =>
-                    selectedCuisinesIds.includes(dish.id)
-                );
-                const userDishesArray = createDishesArray(
-                    filteredUserDishes,
+                // Only user dishes
+                if (userDishesArray.length < numOfDishes) {
+                    Alert.alert("Error", "Not enough dishes in selected cuisine!");
+                    setIsLoading(false);
+                    return;
+                }
+                const dishesArray = createDishesArray(
+                    userDishesArray,
                     numOfDishes
                 );
-                setNewGameDishes(userDishesArray);
+                setNewGameDishes(dishesArray);
             } else if (selectedDishes === 2) {
-                const filteredUserDishes = userDishes.filter((dish) =>
-                    selectedCuisinesIds.includes(dish.id)
-                );
-                const userDishesArray = createDishesArray(
-                    filteredUserDishes,
+                // Mix dishes
+                const dishesArrayUser = createDishesArray(
+                    userDishesArray,
                     numOfDishes
                 );
-                const standardDishesArray = createDishesArray(
-                    tempDishesArray,
+                const dishesArrayStandard = createDishesArray(
+                    standardDishesArray,
                     numOfDishes
                 );
-                const mixedDishes = standardDishesArray.concat(userDishesArray);
+                const mixedDishes = dishesArrayUser.concat(dishesArrayStandard);
+                if (mixedDishes.length < numOfDishes) {
+                    Alert.alert("Error", "Not enough dishes in selected cuisine!");
+                    setIsLoading(false);
+                    return;
+                }
                 const mixedDishesArray = createDishesArray(
                     mixedDishes,
                     numOfDishes
