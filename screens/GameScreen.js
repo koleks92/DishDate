@@ -3,8 +3,8 @@ import { supabase } from "../util/supabase";
 import { generate6DigitNumber } from "../util/extras";
 import { useContext, useEffect, useState } from "react";
 import { DDContext } from "../store/ContextStore";
+import DishSelector from "../components/gameMode/DishSelector";
 
-// It doesnt return a created gameRoom
 
 function GameScreen({ route }) {
     const dishes = route.params.dishes;
@@ -13,9 +13,7 @@ function GameScreen({ route }) {
     const [gameId, setGameId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [newGame, setNewGame] = useState(route.params.newGame);
-    const [gameMode, setGameMode] = useState('waiting')
-
-    
+    const [gameMode, setGameMode] = useState('waiting');
 
     const { session } = useContext(DDContext);
 
@@ -115,7 +113,7 @@ function GameScreen({ route }) {
     if (gameMode === 'playing') {
         return (
             <View style={styles.container}>
-                <Text></Text>
+                <DishSelector dishes={dishes} />
             </View>
         )
     }
