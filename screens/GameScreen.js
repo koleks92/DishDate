@@ -5,7 +5,6 @@ import { useContext, useEffect, useState } from "react";
 import { DDContext } from "../store/ContextStore";
 import DishSelector from "../components/gameMode/DishSelector";
 
-
 function GameScreen({ route }) {
     const dishes = route.params.dishes;
 
@@ -87,9 +86,14 @@ function GameScreen({ route }) {
         } else if (mode == 1) {
             setNewGame(false)
             setGameMode('playing')
-        } else {
+        } else if (mode == 2){
             setGameMode('finished')
         }
+    }
+
+    // Dishes result handler
+    const dishesResultHandler = (results) => {
+        console.log(results)
     }
 
     if (isLoading) {
@@ -113,7 +117,7 @@ function GameScreen({ route }) {
     if (gameMode === 'playing') {
         return (
             <View style={styles.container}>
-                <DishSelector dishes={dishes} />
+                <DishSelector dishes={dishes} dishesResultHandler={dishesResultHandler}/>
             </View>
         )
     }
