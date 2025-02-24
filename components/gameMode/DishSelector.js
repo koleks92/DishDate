@@ -25,11 +25,47 @@ function DishSelector({ dishes, dishesResult }) {
         }
     };
 
-    const handleYes = () => {};
+    const handleYes = () => {
+        setResults((prevResults) => {
+            const existingIndex = prevResults.findIndex(
+                (result) => result.dish === dishes[currentIndex]
+            );
+    
+            if (existingIndex !== -1) {
+                // If dish already exists, update its result value
+                const updatedResults = [...prevResults];
+                updatedResults[existingIndex] = { ...updatedResults[existingIndex], answer: true };
+                return updatedResults;
+            } else {
+                // Otherwise, add a new entry
+                return [...prevResults, { dish: dishes[currentIndex], answer: true }];
+            }
+        });
+        handleNext();
+    };
 
-    const handleNo = () => {};
+    const handleNo = () => {
+        setResults((prevResults) => {
+            const existingIndex = prevResults.findIndex(
+                (result) => result.dish === dishes[currentIndex]
+            );
+    
+            if (existingIndex !== -1) {
+                // If dish already exists, update its result value
+                const updatedResults = [...prevResults];
+                updatedResults[existingIndex] = { ...updatedResults[existingIndex], answer: false };
+                return updatedResults;
+            } else {
+                // Otherwise, add a new entry
+                return [...prevResults, { dish: dishes[currentIndex], answer: false }];
+            }
+        });
+        handleNext();
+    };
 
     const currentDish = dishes[currentIndex];
+
+    console.log(results);
 
     return (
         <View style={styles.root}>
