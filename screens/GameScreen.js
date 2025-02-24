@@ -79,6 +79,24 @@ function GameScreen({ route }) {
         setIsLoading(false);
     };
 
+    // Save result to the database
+    const saveResults = async (results) => {
+        if (gameRoom[0].player1_id === session["user"]["id"] && gameRoom[0].status === "open") {
+            const { data, error } = await supabase.from("GameRoom").update([
+                {
+                    player1_results: results,
+                },
+            ]).eq("game_id", gameId).select();
+        } else {
+            const { data, error } = await supabase.from("GameRoom").update([
+                {
+                    player2_results: results,
+                    status: "closed"
+                },
+            ]).eq("game_id", gameId).select();
+        }
+    };
+
     // Start game button handler
     const gameModeHandler = (mode) => {
         if (mode == 0) {
@@ -93,7 +111,10 @@ function GameScreen({ route }) {
 
     // Dishes result handler
     const dishesResultHandler = (results) => {
-        console.log(results)
+        // Save the results to the database
+        saveResults(results)
+        // Update the gameMode to finished
+        gameModeHandler(2)
     }
 
     if (isLoading) {
@@ -118,6 +139,14 @@ function GameScreen({ route }) {
         return (
             <View style={styles.container}>
                 <DishSelector dishes={dishes} dishesResultHandler={dishesResultHandler}/>
+            </View>
+        )
+    }
+
+    if (gameMode === 'finished') {
+        return (
+            <View style={styles.container}>
+                <Text>Game Over</Text>
             </View>
         )
     }
