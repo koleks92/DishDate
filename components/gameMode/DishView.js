@@ -1,10 +1,18 @@
+import { useContext } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
+import { DDContext } from "../../store/ContextStore";
+
 
 function DishView({ dish }) {
-        return (
+    
+    const { cuisinesList } = useContext(DDContext);
+
+    const cuisine = cuisinesList.find((cuisine) => cuisine.id === dish.cuisine_id);
+    
+    return (
         <View style={styles.root}>
             <Text>{dish.name}</Text>
-            <Text>{dish.cuisine_id}</Text>
+            <Text>{cuisine.name}</Text>
             <Text>{dish.description}</Text>
             <Image
                 source={{ uri: dish.image }}
