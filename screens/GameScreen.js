@@ -6,42 +6,46 @@ import { DDContext } from "../store/ContextStore";
 import DishSelector from "../components/gameMode/DishSelector";
 
 function GameScreen({ route }) {
-    const dishes = route.params.dishes;
 
-    const [gameRoom, setGameRoom] = useState(null)
-    const [gameId, setGameId] = useState(null);
+    const [dishes, setDishes] = useState(route.params.dishes || null);
+    const [gameRoom, setGameRoom] = useState(null);
+    const [gameId, setGameId] = useState(route.params.gameId || null);
     const [isLoading, setIsLoading] = useState(false);
     const [newGame, setNewGame] = useState(route.params.newGame);
-    const [gameMode, setGameMode] = useState('waiting');
+    const [gameMode, setGameMode] = useState("waiting");
 
-    const { session } = useContext(DDContext);
+    const { session, databaseCheckGameId } = useContext(DDContext);
 
     useEffect(() => {
         if (newGame) {
-            console.log("Creating new game")
+            console.log("Creating new game");
             createNewGame(dishes);
+        } else {
+            console.log("Joining existing game");
+            joinExistingGame(gameId);
         }
-    }, [])
+    }, []);
 
-    // Database check for gameID
-    const databaseCheckGameId = async (gameId) => {
+    // Join existing game
+    const joinExistingGame = async (gameId) => {
+        setIsLoading(true);
+
         const { data, error } = await supabase
             .from("GameRoom")
             .select("*")
             .eq("game_id", gameId)
             .eq("status", "open");
 
-        if (error) {
-            console.error("Error fetching data:", error.message);
-            return null;
-        }
+        setGameRoom(data);
+        setDishes(data[0].dishes);
 
-        return data && data.length > 0; // Return true if gameId exists, false otherwise
-    };
+        setIsLoading(false);
 
+    }
+ 
     // Create new game
     const createNewGame = async (dishes) => {
-        setIsLoading(true)
+        setIsLoading(true);
 
         let gameId;
         let gameIdExists = true; // Initialize to true to enter the loop at least once
@@ -58,14 +62,17 @@ function GameScreen({ route }) {
             }
         }
 
-        const { data, error } = await supabase.from("GameRoom").insert([
-            {
-                player1_id: session["user"]["id"],
-                status: "open",
-                dishes: dishes,
-                game_id: gameId
-            },
-        ]).select();
+        const { data, error } = await supabase
+            .from("GameRoom")
+            .insert([
+                {
+                    player1_id: session["user"]["id"],
+                    status: "open",
+                    dishes: dishes,
+                    game_id: gameId,
+                },
+            ])
+            .select();
 
         if (error) {
             console.error("Error insering data:", error.message);
@@ -81,74 +88,96 @@ function GameScreen({ route }) {
 
     // Save result to the database
     const saveResults = async (results) => {
-        if (gameRoom[0].player1_id === session["user"]["id"] && gameRoom[0].status === "open") {
-            const { data, error } = await supabase.from("GameRoom").update([
-                {
-                    player1_results: results,
-                },
-            ]).eq("game_id", gameId).select();
+        if (
+            gameRoom[0].player1_id === session["user"]["id"] &&
+            gameRoom[0].status === "open"
+        ) {
+            console.log("Saving results for player 1");
+            const { data, error } = await supabase
+                .from("GameRoom")
+                .update([
+                    {
+                        player1_results: results,
+                    },
+                ])
+                .eq("game_id", gameId)
+                .select();
         } else {
-            const { data, error } = await supabase.from("GameRoom").update([
-                {
-                    player2_results: results,
-                    status: "closed"
-                },
-            ]).eq("game_id", gameId).select();
+            console.log("Saving results for player 2", session["user"]["id"]);
+            const { data, error } = await supabase
+                .from("GameRoom")
+                .update([
+                    {   
+                        player2_id: session["user"]["id"],
+                        player2_results: results,
+                        status: "closed",
+                    },
+                ])
+                .eq("game_id", gameId)
+                .select();
         }
     };
 
     // Start game button handler
     const gameModeHandler = (mode) => {
         if (mode == 0) {
-            setGameMode('waiting')
+            setGameMode("waiting");
         } else if (mode == 1) {
-            setNewGame(false)
-            setGameMode('playing')
-        } else if (mode == 2){
-            setGameMode('finished')
+            setNewGame(false);
+            setGameMode("playing");
+        } else if (mode == 2) {
+            setGameMode("finished");
         }
-    }
+    };
 
     // Dishes result handler
     const dishesResultHandler = (results) => {
         // Save the results to the database
-        saveResults(results)
+        saveResults(results);
         // Update the gameMode to finished
-        gameModeHandler(2)
-    }
+        gameModeHandler(2);
+    };
 
     if (isLoading) {
         return (
             <View>
                 <Text>Loading...</Text>
             </View>
-        )
+        );
     }
 
-    if (gameMode === 'waiting') {
+    if (gameMode === "waiting") {
         return (
             <View style={styles.container}>
                 <Text>Game Screen</Text>
                 <Text>Game ID: {gameId}</Text>
-                <Button title="Start Game" onPress={() => {gameModeHandler(1)}}/>
+                <Button
+                    title="Start Game"
+                    onPress={() => {
+                        gameModeHandler(1);
+                    }}
+                />
             </View>
         );
     }
 
-    if (gameMode === 'playing') {
+    if (gameMode === "playing") {
         return (
             <View style={styles.container}>
-                <DishSelector dishes={dishes} dishesResultHandler={dishesResultHandler}/>
+                <DishSelector
+                    dishes={dishes}
+                    dishesResultHandler={dishesResultHandler}
+                />
             </View>
-        )
+        );
     }
 
-    if (gameMode === 'finished') {
+    if (gameMode === "finished") {
         return (
             <View style={styles.container}>
                 <Text>Game Over</Text>
             </View>
-        )
+        );
     }
 }
 
