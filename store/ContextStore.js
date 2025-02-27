@@ -89,6 +89,22 @@ export const DDProvider = ({ children }) => {
             return data
         };
 
+        // Database check for gameID
+    const databaseCheckGameId = async (gameId) => {
+        const { data, error } = await supabase
+            .from("GameRoom")
+            .select("*")
+            .eq("game_id", gameId)
+            .eq("status", "open");
+
+        if (error) {
+            console.error("Error fetching data:", error.message);
+            return null;
+        }
+
+        return data && data.length > 0; // Return true if gameId exists, false otherwise
+    };
+
     return (
         <DDContext.Provider
             value={{
@@ -101,7 +117,8 @@ export const DDProvider = ({ children }) => {
                 loadCuisinesHandler,
                 cuisinesList,
                 loadDishesByCuisines,
-                loadUserDishesByCuisines
+                loadUserDishesByCuisines,
+                databaseCheckGameId
             }}
         >
             {children}
