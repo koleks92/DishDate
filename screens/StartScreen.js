@@ -11,6 +11,7 @@ import {
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
+import Push from "../components/Push";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -166,6 +167,7 @@ function StartScreen({ navigation }) {
     } else {
         return (
             <View style={styles.root}>
+                <Push />
                 <Button
                     title="New Game"
                     onPress={() => {

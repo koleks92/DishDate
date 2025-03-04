@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-native",
+    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "extends": "expo/tsconfig.base"
+}

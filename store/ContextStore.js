@@ -28,7 +28,7 @@ export const DDProvider = ({ children }) => {
             return null;
         }
 
-        return data
+        return data;
     };
 
     // Get Dishes from the database
@@ -46,7 +46,9 @@ export const DDProvider = ({ children }) => {
 
     // Get Cuisines from the database
     const loadCuisinesHandler = async () => {
-        const { data, error } = await supabase.from("Cuisines").select("id, name");
+        const { data, error } = await supabase
+            .from("Cuisines")
+            .select("id, name");
 
         if (error) {
             console.log("Error fetching cuisines", error);
@@ -70,26 +72,25 @@ export const DDProvider = ({ children }) => {
         }
 
         return data;
-    }
+    };
 
-        // Get all dishes for the current user
-        const loadUserDishesByCuisines = async (cuisinesIds) => {
-            const { data, error } = await supabase
-                .from("UsersDishes")
-                .select("*")
-                .eq("user_id", session["user"]["id"])
-                .in("cuisine_id", cuisinesIds);
-    
-            if (error) {
-                console.error("Error fetching data:", error.message);
-                return null;
-            }
+    // Get all dishes for the current user
+    const loadUserDishesByCuisines = async (cuisinesIds) => {
+        const { data, error } = await supabase
+            .from("UsersDishes")
+            .select("*")
+            .eq("user_id", session["user"]["id"])
+            .in("cuisine_id", cuisinesIds);
 
-    
-            return data
-        };
+        if (error) {
+            console.error("Error fetching data:", error.message);
+            return null;
+        }
 
-        // Database check for gameID
+        return data;
+    };
+
+    // Database check for gameID
     const databaseCheckGameId = async (gameId) => {
         const { data, error } = await supabase
             .from("GameRoom")
@@ -118,7 +119,7 @@ export const DDProvider = ({ children }) => {
                 cuisinesList,
                 loadDishesByCuisines,
                 loadUserDishesByCuisines,
-                databaseCheckGameId
+                databaseCheckGameId,
             }}
         >
             {children}
