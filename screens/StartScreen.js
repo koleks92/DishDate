@@ -56,36 +56,46 @@ function StartScreen({ navigation }) {
             setSession(session);
         });
 
-        // Push Notifications
-        registerForPushNotificationsAsync()
-            .then((token) => setExpoPushToken(token ?? ""))
-            .catch((error) => setExpoPushToken(`${error}`));
-
-        notificationListener.current =
-            Notifications.addNotificationReceivedListener((notification) => {
-                setNotification(notification);
-            });
-
-        responseListener.current =
-            Notifications.addNotificationResponseReceivedListener(
-                (response) => {
-                    console.log(response);
-                }
-            );
-
-        return () => {
-            if (notificationListener.current) {
-                Notifications.removeNotificationSubscription(
-                    notificationListener.current
-                );
-            }
-            if (responseListener.current) {
-                Notifications.removeNotificationSubscription(
-                    responseListener.current
-                );
-            }
-        };
+        
     }, []);
+
+    useEffect(() => {
+        // Push Notifications
+        if (session && !session.user.is_anonymous) {
+            
+            registerForPushNotificationsAsync()
+                .then((token) => setExpoPushToken(token ?? ""))
+                .catch((error) => setExpoPushToken(`${error}`));
+
+            notificationListener.current =
+                Notifications.addNotificationReceivedListener(
+                    (notification) => {
+                        setNotification(notification);
+                    }
+                );
+
+            responseListener.current =
+                Notifications.addNotificationResponseReceivedListener(
+                    (response) => {
+                        console.log(response);
+                    }
+                );
+
+            return () => {
+                if (notificationListener.current) {
+                    Notifications.removeNotificationSubscription(
+                        notificationListener.current
+                    );
+                }
+                if (responseListener.current) {
+                    Notifications.removeNotificationSubscription(
+                        responseListener.current
+                    );
+                }
+            };
+        }
+    }
+    , [session]);
 
     // Handle Google Sign In
     const handleGoogleSignIn = async () => {
