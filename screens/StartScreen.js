@@ -110,8 +110,6 @@ function StartScreen({ navigation }) {
                 });
                 if (error) {
                     console.error("Supabase sign-in error:", error);
-                } else {
-                    console.log("Supabase login data:", data);
                 }
             } else {
                 throw new Error("No ID token present in Google response!");
