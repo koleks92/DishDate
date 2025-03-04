@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import {
     View,
     Text,
@@ -11,16 +11,28 @@ import {
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
-import Push from "../components/Push";
+import * as Notifications from "expo-notifications";
+import { registerForPushNotificationsAsync } from "../util/Push";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [loading, setLoading] = useState(false);
 
-    // Context StoreS
-    const { handleSignOut, loadDishesHandler, session, setSession, loadCuisinesHandler } =
-        useContext(DDContext);
+    const [expoPushToken, setExpoPushToken] = useState("");
+    const [notification, setNotification] = useState(undefined);
+
+    const notificationListener = useRef();
+    const responseListener = useRef();
+
+    // Context Stores
+    const {
+        handleSignOut,
+        loadDishesHandler,
+        session,
+        setSession,
+        loadCuisinesHandler,
+    } = useContext(DDContext);
 
     // Get dishes from database
     useEffect(() => {
@@ -34,10 +46,8 @@ function StartScreen({ navigation }) {
             iosClientId:
                 "602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg.apps.googleusercontent.com",
         });
-    }, []);
 
-    // Handle session
-    useEffect(() => {
+        // Handle session
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
         });
@@ -45,6 +55,36 @@ function StartScreen({ navigation }) {
         supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
         });
+
+        // Push Notifications
+        registerForPushNotificationsAsync()
+            .then((token) => setExpoPushToken(token ?? ""))
+            .catch((error) => setExpoPushToken(`${error}`));
+
+        notificationListener.current =
+            Notifications.addNotificationReceivedListener((notification) => {
+                setNotification(notification);
+            });
+
+        responseListener.current =
+            Notifications.addNotificationResponseReceivedListener(
+                (response) => {
+                    console.log(response);
+                }
+            );
+
+        return () => {
+            if (notificationListener.current) {
+                Notifications.removeNotificationSubscription(
+                    notificationListener.current
+                );
+            }
+            if (responseListener.current) {
+                Notifications.removeNotificationSubscription(
+                    responseListener.current
+                );
+            }
+        };
     }, []);
 
     // Handle Google Sign In
@@ -167,7 +207,6 @@ function StartScreen({ navigation }) {
     } else {
         return (
             <View style={styles.root}>
-                <Push />
                 <Button
                     title="New Game"
                     onPress={() => {

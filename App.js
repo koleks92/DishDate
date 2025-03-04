@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -11,10 +11,19 @@ import EditDishesScreen from "./screens/EditDishesScreen";
 import DishesListScreen from "./screens/DishesListScreen";
 import GameScreen from "./screens/GameScreen";
 import JoinGameScreen from "./screens/JoinGameScreen";
-
 import DDProvider from "./store/ContextStore";
+import * as Notifications from 'expo-notifications';
 
 const Stack = createStackNavigator();
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
+  
 
 function App() {
     return (
