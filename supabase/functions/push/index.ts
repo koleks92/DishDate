@@ -1,7 +1,3 @@
-import { createClient } from 'jsr:@supabase/supabase-js@2'
-
-console.log('Hello from Functions!')
-
 interface Notification {
   id: string
   player1_token: string
