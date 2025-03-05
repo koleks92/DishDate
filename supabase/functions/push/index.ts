@@ -4,8 +4,9 @@ console.log('Hello from Functions!')
 
 interface Notification {
   id: string
-  user_id: string
-  body: string
+  player1_token: string
+  player2_token: string
+  game_id: number
 }
 
 interface WebhookPayload {
@@ -16,31 +17,47 @@ interface WebhookPayload {
   old_record: null | Notification
 }
 
-const supabase = createClient(
-  Deno.env.get('SUPABASE_URL')!,
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-)
-
 Deno.serve(async (req) => {
   const payload: WebhookPayload = await req.json()
-  const { data } = await supabase
-    .from('ExpoPushTokens')
-    .select('expo_push_token')
-    .eq('id', payload.record.user_id)
-    .single()
+  const messages = [];
 
+if (payload.record.player1_token) {
+  messages.push({
+    to: payload.record.player1_token,
+    sound: 'default',
+    body: "Game finished! Click here to see the results.",
+    data: {
+      screen: "GameResults",
+      gameId: payload.record.game_id, // Pass game ID or any other data
+    },
+  });
+}
+
+if (payload.record.player2_token) {
+  messages.push({
+    to: payload.record.player2_token,
+    sound: 'default',
+    body: "Game finished! Click here to see the results.",
+    data: {
+      screen: "GameResults",
+      gameId: payload.record.game_id, // Pass game ID or any other data
+    },
+  });
+}
+
+// Only send the request if there are valid tokens
+if (messages.length > 0) {
   const res = await fetch('https://exp.host/--/api/v2/push/send', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${Deno.env.get('EXPO_ACCESS_TOKEN')}`,
     },
-    body: JSON.stringify({
-      to: data?.expo_push_token,
-      sound: 'default',
-      body: payload.record.body,
-    }),
-  }).then((res) => res.json())
+    body: JSON.stringify(messages),
+  }).then((res) => res.json());
+
+  console.log("Push notification response:", res);
+}
 
   return new Response(JSON.stringify(res), {
     headers: { 'Content-Type': 'application/json' },
