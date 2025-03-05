@@ -32,6 +32,7 @@ function StartScreen({ navigation }) {
         session,
         setSession,
         loadCuisinesHandler,
+        saveExpoPushToken,
     } = useContext(DDContext);
 
     // Get dishes from database
@@ -55,16 +56,16 @@ function StartScreen({ navigation }) {
         supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
         });
-
-        
     }, []);
 
     useEffect(() => {
         // Push Notifications
         if (session && !session.user.is_anonymous) {
-            
             registerForPushNotificationsAsync()
-                .then((token) => setExpoPushToken(token ?? ""))
+                .then((token) => {
+                    setExpoPushToken(token ?? "");
+                    saveExpoPushToken(session.user.id, token);
+                })
                 .catch((error) => setExpoPushToken(`${error}`));
 
             notificationListener.current =
@@ -94,8 +95,7 @@ function StartScreen({ navigation }) {
                 }
             };
         }
-    }
-    , [session]);
+    }, [session]);
 
     // Handle Google Sign In
     const handleGoogleSignIn = async () => {
