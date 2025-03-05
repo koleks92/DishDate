@@ -118,7 +118,6 @@ export const DDProvider = ({ children }) => {
             );
     
         if (error) {
-            console.log("Error inserting push token: ", error.message);
             return null;
         }
     
