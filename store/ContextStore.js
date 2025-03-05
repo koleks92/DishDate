@@ -108,6 +108,7 @@ export const DDProvider = ({ children }) => {
         return data && data.length > 0; // Return true if gameId exists, false otherwise
     };
 
+    // Save Expo Push Token to the database
     async function saveExpoPushToken(user_id, expo_push_token) {
         const { data, error } = await supabase
             .from("ExpoPushTokens") // Replace with your actual table name
@@ -117,7 +118,7 @@ export const DDProvider = ({ children }) => {
             );
     
         if (error) {
-            console.error("Error inserting push token:", error.message);
+            console.log("Error inserting push token: ", error.message);
             return null;
         }
     
