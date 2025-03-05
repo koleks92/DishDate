@@ -3,6 +3,8 @@ import { supabase } from "../util/supabase";
 
 export const DDContext = createContext();
 
+
+
 export const DDProvider = ({ children }) => {
     const [dishes, setDishes] = useState(null);
     const [session, setSession] = useState(null);
@@ -40,7 +42,7 @@ export const DDProvider = ({ children }) => {
         }
 
         if (data) {
-            setDishes(data)
+            setDishes(data);
         }
     };
 
@@ -106,6 +108,24 @@ export const DDProvider = ({ children }) => {
         return data && data.length > 0; // Return true if gameId exists, false otherwise
     };
 
+    async function saveExpoPushToken(user_id, expo_push_token) {
+        const { data, error } = await supabase
+            .from("ExpoPushTokens") // Replace with your actual table name
+            .upsert(
+                [{ user_id, expo_push_token }], 
+                { onConflict: ["user_id"] } // Ensure user_id is unique
+            );
+    
+        if (error) {
+            console.error("Error inserting push token:", error.message);
+            return null;
+        }
+    
+        console.log("Push token saved successfully:", data);
+        return data;
+    }
+    
+
     return (
         <DDContext.Provider
             value={{
@@ -120,6 +140,7 @@ export const DDProvider = ({ children }) => {
                 loadDishesByCuisines,
                 loadUserDishesByCuisines,
                 databaseCheckGameId,
+                saveExpoPushToken,
             }}
         >
             {children}
