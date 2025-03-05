@@ -16,6 +16,7 @@ interface WebhookPayload {
 Deno.serve(async (req) => {
   const payload: WebhookPayload = await req.json()
   const messages = [];
+  let res;
 
 if (payload.record.player1_token) {
   messages.push({
@@ -43,7 +44,7 @@ if (payload.record.player2_token) {
 
 // Only send the request if there are valid tokens
 if (messages.length > 0) {
-  const res = await fetch('https://exp.host/--/api/v2/push/send', {
+  res = await fetch('https://exp.host/--/api/v2/push/send', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
