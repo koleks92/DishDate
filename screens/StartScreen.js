@@ -19,9 +19,6 @@ function StartScreen({ navigation }) {
     const [password, setPassword] = useState();
     const [loading, setLoading] = useState(false);
 
-    const [expoPushToken, setExpoPushToken] = useState("");
-    const [notification, setNotification] = useState(undefined);
-
     const notificationListener = useRef();
     const responseListener = useRef();
 
@@ -63,22 +60,24 @@ function StartScreen({ navigation }) {
         if (session && !session.user.is_anonymous) {
             registerForPushNotificationsAsync()
                 .then((token) => {
-                    setExpoPushToken(token ?? "");
                     saveExpoPushToken(session.user.id, token);
                 })
-                .catch((error) => setExpoPushToken(`${error}`));
+                .catch((error) => console.error(error));
 
             notificationListener.current =
                 Notifications.addNotificationReceivedListener(
                     (notification) => {
-                        setNotification(notification);
+                        console.log(notification);
                     }
                 );
 
             responseListener.current =
                 Notifications.addNotificationResponseReceivedListener(
                     (response) => {
-                        console.log(response);
+                        const notificationData = response.notification.request.content.data;
+                        if (notificationData.gameId) {
+                            console.log("MOVING TO RESULTS SCREEN!")
+                        }
                     }
                 );
 
