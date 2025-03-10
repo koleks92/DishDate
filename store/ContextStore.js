@@ -3,8 +3,6 @@ import { supabase } from "../util/supabase";
 
 export const DDContext = createContext();
 
-
-
 export const DDProvider = ({ children }) => {
     const [dishes, setDishes] = useState(null);
     const [session, setSession] = useState(null);
@@ -113,18 +111,46 @@ export const DDProvider = ({ children }) => {
         const { data, error } = await supabase
             .from("ExpoPushTokens") // Replace with your actual table name
             .upsert(
-                [{ user_id, expo_push_token }], 
+                [{ user_id, expo_push_token }],
                 { onConflict: ["user_id"] } // Ensure user_id is unique
             );
-    
+
         if (error) {
             return null;
         }
-    
+
         console.log("Push token saved successfully:", data);
         return data;
     }
-    
+
+    // Fetch game results
+    const fetchGameResults = async (gameId, player) => {
+        if (player == 1) {
+            const { data, error } = await supabase
+                .from("GameRoom")
+                .select("player1_results")
+                .eq("game_id", gameId);
+
+            if (error) {
+                console.error("Error fetching data:", error.message);
+                return null;
+            }
+
+            return data;
+        } else if (player == 2) {
+            const { data, error } = await supabase
+                .from("GameRoom")
+                .select("player2_results")
+                .eq("game_id", gameId);
+
+            if (error) {
+                console.error("Error fetching data:", error.message);
+                return null;
+            }
+
+            return data;
+        }
+    };
 
     return (
         <DDContext.Provider
@@ -141,6 +167,7 @@ export const DDProvider = ({ children }) => {
                 loadUserDishesByCuisines,
                 databaseCheckGameId,
                 saveExpoPushToken,
+                fetchGameResults
             }}
         >
             {children}
