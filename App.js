@@ -12,18 +12,18 @@ import DishesListScreen from "./screens/DishesListScreen";
 import GameScreen from "./screens/GameScreen";
 import JoinGameScreen from "./screens/JoinGameScreen";
 import DDProvider from "./store/ContextStore";
-import * as Notifications from 'expo-notifications';
+import * as Notifications from "expo-notifications";
+import GameResultScreen from "./screens/GameResultsScreen";
 
 const Stack = createStackNavigator();
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: true,
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
     }),
-  });
-  
+});
 
 function App() {
     return (
@@ -65,6 +65,10 @@ function App() {
                         <Stack.Screen
                             name="GameScreen"
                             component={GameScreen}
+                        />
+                        <Stack.Screen
+                            name="GameResultsScreen"
+                            component={GameResultScreen}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>
