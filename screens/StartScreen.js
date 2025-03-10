@@ -60,6 +60,7 @@ function StartScreen({ navigation }) {
         if (session && !session.user.is_anonymous) {
             registerForPushNotificationsAsync()
                 .then((token) => {
+                    console.log("Push token:", token);
                     saveExpoPushToken(session.user.id, token);
                 })
                 .catch((error) => console.error(error));
