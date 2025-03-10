@@ -1,50 +1,53 @@
 {
-    "expo": {
-        "name": "DishDate",
-        "slug": "DishDate",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/icon.png",
-        "userInterfaceStyle": "light",
-        "splash": {
-            "image": "./assets/splash-icon.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
-        "plugins": [
-            [
-            "@react-native-google-signin/google-signin",
-            {
-                "iosUrlScheme": "com.googleusercontent.apps.602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg"
-            }
-            ],
-            "expo-image-picker"
-        ],
-        "ios": {
-            "supportsTablet": true,
-            "bundleIdentifier": "com.koleks92.DishDate",
-            "infoPlist": {
-                "NSPhotoLibraryUsageDescription": "The app accesses your photos to let you select photos.",
-                "NSCameraUsageDescription": "The app accesses your camera to let you take photos."
-            }
-        },
-        "android": {
-            "googleServicesFile": "./services/google-services.json",
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
-                "backgroundColor": "#ffffff"
-            },
-            "package": "com.koleks92.DishDate",
-            "permissions": [],
-            "useNextNotificationsApi": true
-        },
-        "web": {
-            "favicon": "./assets/favicon.png"
-        },
-        "extra": {
-            "eas": {
-                "projectId": "48da0c2c-3538-4f0e-848b-2b9f73087662"
-            }
+  "expo": {
+    "name": "DishDate",
+    "slug": "DishDate",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "plugins": [
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg"
         }
+      ],
+      "expo-image-picker"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.koleks92.DishDate",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "The app accesses your photos to let you select photos.",
+        "NSCameraUsageDescription": "The app accesses your camera to let you take photos.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "googleServicesFile": "./services/google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.koleks92.DishDate",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "useNextNotificationsApi": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "48da0c2c-3538-4f0e-848b-2b9f73087662"
+      }
     }
+  }
 }
