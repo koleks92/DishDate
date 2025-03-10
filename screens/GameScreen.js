@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { DDContext } from "../store/ContextStore";
 import DishSelector from "../components/gameMode/DishSelector";
 
-function GameScreen({ route }) {
+function GameScreen({ route, navigation }) {
 
     const [dishes, setDishes] = useState(route.params.dishes || null);
     const [gameRoom, setGameRoom] = useState(null);
@@ -14,7 +14,7 @@ function GameScreen({ route }) {
     const [newGame, setNewGame] = useState(route.params.newGame);
     const [gameMode, setGameMode] = useState("waiting");
 
-    const { session, databaseCheckGameId } = useContext(DDContext);
+    const { session, databaseCheckGameId, fetchGameResults, fetchGameRoom } = useContext(DDContext);
 
     useEffect(() => {
         if (newGame) {
@@ -88,34 +88,60 @@ function GameScreen({ route }) {
 
     // Save result to the database
     const saveResults = async (results) => {
+        let status = "open";
         if (
             gameRoom[0].player1_id === session["user"]["id"] &&
             gameRoom[0].status === "open"
         ) {
             console.log("Saving results for player 1");
+
+            const player2_results = await fetchGameResults(gameId, 2);
+            if (player2_results) {
+                status = "closed";
+            }
+
             const { data, error } = await supabase
                 .from("GameRoom")
                 .update([
                     {
                         player1_results: results,
+                        status: status
                     },
                 ])
                 .eq("game_id", gameId)
                 .select();
-        } else {
+        } else if (gameRoom[0].status == "open" && gameRoom[0].player2_id === null) {
             console.log("Saving results for player 2", session["user"]["id"]);
+
+            const player1_results = await fetchGameResults(gameId, 1);
+            if (player1_results) {
+                status = "closed";
+            }
+
             const { data, error } = await supabase
                 .from("GameRoom")
                 .update([
                     {   
                         player2_id: session["user"]["id"],
                         player2_results: results,
-                        status: "closed",
+                        status: status,
                     },
                 ])
                 .eq("game_id", gameId)
                 .select();
         }
+    };
+
+    // Check game status
+    const gameStatusCheck = () => {
+        fetchGameRoom(gameId).then((data) => {
+            if (data[0].status === "closed") {
+                console.log("Game is closed");
+                console.log("Moving to GameResultsScreen");
+            } else if ( data[0].status === "open") {
+                gameModeHandler(2);
+            }
+        });
     };
 
     // Start game button handler
@@ -134,8 +160,8 @@ function GameScreen({ route }) {
     const dishesResultHandler = (results) => {
         // Save the results to the database
         saveResults(results);
-        // Update the gameMode to finished
-        gameModeHandler(2);
+        // Check the game status
+        gameStatusCheck();
     };
 
     if (isLoading) {
@@ -176,6 +202,14 @@ function GameScreen({ route }) {
         return (
             <View style={styles.container}>
                 <Text>Game Over</Text>
+                <Text>Game ID: {gameId}</Text>
+                <Text>Waiting for another player to finish</Text>
+                <Button
+                    title="Back to Start"
+                    onPress={() => {
+                        navigation.navigate("StartScreen");
+                    }} 
+                    />
             </View>
         );
     }
