@@ -14,7 +14,7 @@ function GameScreen({ route, navigation }) {
     const [newGame, setNewGame] = useState(route.params.newGame);
     const [gameMode, setGameMode] = useState("waiting");
 
-    const { session, databaseCheckGameId, fetchGameResults, fetchGameRoom } = useContext(DDContext);
+    const { session, databaseCheckGameId, fetchGameResults } = useContext(DDContext);
 
     useEffect(() => {
         if (newGame) {
@@ -96,7 +96,7 @@ function GameScreen({ route, navigation }) {
             console.log("Saving results for player 1");
 
             const player2_results = await fetchGameResults(gameId, 2);
-            if (player2_results) {
+            if (player2_results.player2_results) {
                 status = "closed";
             }
 
@@ -110,11 +110,13 @@ function GameScreen({ route, navigation }) {
                 ])
                 .eq("game_id", gameId)
                 .select();
+
         } else if (gameRoom[0].status == "open" && gameRoom[0].player2_id === null) {
             console.log("Saving results for player 2", session["user"]["id"]);
 
             const player1_results = await fetchGameResults(gameId, 1);
-            if (player1_results) {
+            if (player1_results.player1_results) {
+                console.log("Player 1 results already exist");
                 status = "closed";
             }
 
@@ -129,20 +131,9 @@ function GameScreen({ route, navigation }) {
                 ])
                 .eq("game_id", gameId)
                 .select();
-        }
+            }
     };
 
-    // Check game status
-    const gameStatusCheck = () => {
-        fetchGameRoom(gameId).then((data) => {
-            if (data[0].status === "closed") {
-                console.log("Game is closed");
-                console.log("Moving to GameResultsScreen");
-            } else if ( data[0].status === "open") {
-                gameModeHandler(2);
-            }
-        });
-    };
 
     // Start game button handler
     const gameModeHandler = (mode) => {
@@ -151,8 +142,6 @@ function GameScreen({ route, navigation }) {
         } else if (mode == 1) {
             setNewGame(false);
             setGameMode("playing");
-        } else if (mode == 2) {
-            setGameMode("finished");
         }
     };
 
@@ -161,7 +150,7 @@ function GameScreen({ route, navigation }) {
         // Save the results to the database
         saveResults(results);
         // Check the game status
-        gameStatusCheck();
+        navigation.replace("GameResultsScreen", { gameId: gameId });
     };
 
     if (isLoading) {
@@ -194,22 +183,6 @@ function GameScreen({ route, navigation }) {
                     dishes={dishes}
                     dishesResultHandler={dishesResultHandler}
                 />
-            </View>
-        );
-    }
-
-    if (gameMode === "finished") {
-        return (
-            <View style={styles.container}>
-                <Text>Game Over</Text>
-                <Text>Game ID: {gameId}</Text>
-                <Text>Waiting for another player to finish</Text>
-                <Button
-                    title="Back to Start"
-                    onPress={() => {
-                        navigation.navigate("StartScreen");
-                    }} 
-                    />
             </View>
         );
     }
