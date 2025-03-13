@@ -60,7 +60,6 @@ function StartScreen({ navigation }) {
         if (session && !session.user.is_anonymous) {
             registerForPushNotificationsAsync()
                 .then((token) => {
-                    console.log("Push token:", token);
                     saveExpoPushToken(session.user.id, token);
                 })
                 .catch((error) => console.error(error));
@@ -77,7 +76,9 @@ function StartScreen({ navigation }) {
                     (response) => {
                         const notificationData = response.notification.request.content.data;
                         if (notificationData.gameId) {
-                            console.log("MOVING TO RESULTS SCREEN!")
+                            navigation.replace("GameResultsScreen", {
+                                gameId: notificationData.gameId,
+                            });
                         }
                     }
                 );
