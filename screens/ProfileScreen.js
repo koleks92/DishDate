@@ -95,6 +95,12 @@ function ProfileScreen({ navigation }) {
                     navigation.navigate("DishesListScreen", { edit: true });
                 }}
             />
+            <Button
+                title="My Games"
+                onPress={() => {
+                    navigation.navigate("GamesListScreen");
+                }}
+            />
         </View>
     );
 }
