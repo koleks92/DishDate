@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { supabase } from "../util/supabase";
 
-function ProfileScreen() {
+function ProfileScreen({ navigation }) {
     const [userName, setUserName] = useState("No name");
     const [userEmail, setUserEmail] = useState("No email");
     const [userAvatar, setUserAvatar] = useState(null);
@@ -87,6 +87,13 @@ function ProfileScreen() {
                 title={updateLoading ? "Updating..." : "Save"}
                 onPress={handleUpdateName}
                 disabled={updateLoading}
+            />
+            <Text>-----------------------</Text>
+            <Button
+                title="My Dishes"
+                onPress={() => {
+                    navigation.navigate("DishesListScreen", { edit: true });
+                }}
             />
         </View>
     );
