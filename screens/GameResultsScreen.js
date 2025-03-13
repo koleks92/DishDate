@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import { Text, View, Button, StyleSheet } from "react-native";
 import { supabase } from "../util/supabase";
+import DishesList from "../components/DishesList";
 
 function GameResultScreen({ route, navigation }) {
     const [gameId, setGameId] = useState(route.params.gameId);
     const [waiting, setWaiting] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [gameRoom, setGameRoom] = useState(null);
+    const [matchingResults, setMatchingResults] = useState(null);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchGameRoomHandler(gameId);
             setIsLoading(false);
         }, 1000); // Wait 1 second
-    
+
         return () => clearTimeout(timer); // Cleanup on unmount
     }, []);
 
@@ -24,6 +26,7 @@ function GameResultScreen({ route, navigation }) {
     }, [gameRoom]);
 
     const fetchGameRoomHandler = async (gameId) => {
+        console.log("Fetching game room");
         const { data, error } = await supabase
             .from("GameRoom")
             .select("*")
@@ -33,10 +36,22 @@ function GameResultScreen({ route, navigation }) {
             console.error("Error fetching data:", error.message);
             return null;
         }
-
-        console.log("Game Room data:", data[0].status);
-
+        createResultsArray(data[0]);
         setGameRoom(data[0]);
+    };
+
+    // Create results array
+    const createResultsArray = (results) => {
+        const resultsArray = results.player1_results
+            .filter(
+                (p1) =>
+                    p1.answer === true &&
+                    results.player2_results.some(
+                        (p2) => p2.answer === true && p2.dish.id === p1.dish.id
+                    )
+            )
+            .map((p1) => p1.dish);
+        setMatchingResults(resultsArray);
     };
 
     // Check game status
@@ -77,8 +92,6 @@ function GameResultScreen({ route, navigation }) {
             .eq("player1_token", player1_token)
             .eq("player2_token", player2_token);
 
-        console.log("Notification data:", data);
-
         if (data.length === 0) {
             await supabase.from("Notifications").insert([
                 {
@@ -117,6 +130,7 @@ function GameResultScreen({ route, navigation }) {
             <View style={styles.container}>
                 <Text>Game Result Screen</Text>
                 <Text>Game ID: {gameId}</Text>
+                <DishesList dishes={matchingResults} />
                 <Button
                     title="Back to Start"
                     onPress={() => {
@@ -136,5 +150,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        marginVertical: "10%"
     },
 });
