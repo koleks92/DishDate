@@ -136,7 +136,7 @@ export const DDProvider = ({ children }) => {
                 return null;
             }
 
-            return data;
+            return data[0];
         } else if (player == 2) {
             const { data, error } = await supabase
                 .from("GameRoom")
@@ -148,24 +148,11 @@ export const DDProvider = ({ children }) => {
                 return null;
             }
 
-            return data;
+            return data[0];
         }
     };
 
-    // Fetch game room
-    const fetchGameRoom = async (gameId) => {
-        const { data, error } = await supabase
-            .from("GameRoom")
-            .select("*")
-            .eq("game_id", gameId);
-
-        if (error) {
-            console.error("Error fetching data:", error.message);
-            return null;
-        }
-
-        return data;
-    }   
+ 
 
     return (
         <DDContext.Provider
@@ -182,8 +169,7 @@ export const DDProvider = ({ children }) => {
                 loadUserDishesByCuisines,
                 databaseCheckGameId,
                 saveExpoPushToken,
-                fetchGameResults,
-                fetchGameRoom
+                fetchGameResults
             }}
         >
             {children}
