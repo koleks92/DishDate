@@ -11,9 +11,11 @@ import EditDishesScreen from "./screens/EditDishesScreen";
 import DishesListScreen from "./screens/DishesListScreen";
 import GameScreen from "./screens/GameScreen";
 import JoinGameScreen from "./screens/JoinGameScreen";
+import GameResultScreen from "./screens/GameResultsScreen";
+import GamesListScreen from "./screens/GamesListScreen";
+
 import DDProvider from "./store/ContextStore";
 import * as Notifications from "expo-notifications";
-import GameResultScreen from "./screens/GameResultsScreen";
 
 const Stack = createStackNavigator();
 
@@ -69,6 +71,10 @@ function App() {
                         <Stack.Screen
                             name="GameResultsScreen"
                             component={GameResultScreen}
+                        />
+                        <Stack.Screen
+                            name="GamesListScreen"
+                            component={GamesListScreen}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>
