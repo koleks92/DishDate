@@ -9,6 +9,7 @@ import {
     Platform,
 } from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import * as AppleAuthentication from "expo-apple-authentication";
 import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
 import * as Notifications from "expo-notifications";
@@ -74,7 +75,8 @@ function StartScreen({ navigation }) {
             responseListener.current =
                 Notifications.addNotificationResponseReceivedListener(
                     (response) => {
-                        const notificationData = response.notification.request.content.data;
+                        const notificationData =
+                            response.notification.request.content.data;
                         if (notificationData.gameId) {
                             navigation.replace("GameResultsScreen", {
                                 gameId: notificationData.gameId,
@@ -117,6 +119,33 @@ function StartScreen({ navigation }) {
             }
         } catch (error) {
             console.error("Google Sign-In error:", error);
+        }
+    };
+
+    // Handle Apple Sign in
+    const handleAppleSignIn = async () => {
+        try {
+            const credential = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+            });
+            if (credential.identityToken) {
+                const { data, error } = await supabase.auth.signInWithIdToken({
+                    provider: "apple",
+                    token: credential.identityToken,
+                });
+                if (error) {
+                    console.error("Supabase sign-in error:", error);
+                }
+            }
+        } catch (e) {
+            if (e.code === "ERR_REQUEST_CANCELED") {
+                // handle that the user canceled the sign-in flow
+            } else {
+                // handle other errors
+            }
         }
     };
 
@@ -210,6 +239,25 @@ function StartScreen({ navigation }) {
                         title="Anonymous SignIn"
                     />
                     <Button onPress={handleGoogleSignIn} title="Google" />
+                    {Platform.OS === "ios" && (
+                        <View>
+                            <AppleAuthentication.AppleAuthenticationButton
+                                buttonType={
+                                    AppleAuthentication
+                                        .AppleAuthenticationButtonType.SIGN_IN
+                                }
+                                buttonStyle={
+                                    AppleAuthentication
+                                        .AppleAuthenticationButtonStyle.BLACK
+                                }
+                                cornerRadius={5}
+                                style={styles.button}
+                                onPress={() => {
+                                    handleAppleSignIn();
+                                }}
+                            />
+                        </View>
+                    )}
                 </View>
             </View>
         );
@@ -258,5 +306,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    button: {
+        width: 200,
+        height: 44,
     },
 });

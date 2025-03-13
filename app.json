@@ -18,7 +18,8 @@
           "iosUrlScheme": "com.googleusercontent.apps.602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg"
         }
       ],
-      "expo-image-picker"
+      "expo-image-picker",
+      ["expo-apple-authentication"]
     ],
     "ios": {
       "supportsTablet": true,
@@ -27,7 +28,8 @@
         "NSPhotoLibraryUsageDescription": "The app accesses your photos to let you select photos.",
         "NSCameraUsageDescription": "The app accesses your camera to let you take photos.",
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "usesAppleSignIn": true
     },
     "android": {
       "googleServicesFile": "./services/google-services.json",
