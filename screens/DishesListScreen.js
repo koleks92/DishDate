@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Alert } from "react-native";
+import { Text, View, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import DishesList from "../components/DishesList";
 import { useCallback, useContext, useState, useEffect } from "react";
 import { DDContext } from "../store/ContextStore";
@@ -42,7 +42,7 @@ function DishesListScreen({ route, navigation }) {
     if (isLoading) {
         return (
             <View style={styles.root}>
-                <Text>Loading...</Text>
+                <ActivityIndicator size="large" color="#0000ff" />
             </View>
         );
     }

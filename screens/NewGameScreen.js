@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { Text, View, StyleSheet, Button, Alert } from "react-native";
+import { Text, View, StyleSheet, Button, Alert, ActivityIndicator } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { DDContext } from "../store/ContextStore";
 import CuisinesList from "../components/CuisinesList";
@@ -188,7 +188,7 @@ function NewGameScreen({ navigation }) {
     if (isLoading) {
         return (
             <View style={styles.root}>
-                <Text>Loading...</Text>
+                <ActivityIndicator size="large" color="#0000ff" />
             </View>
         );
     }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text, View, Button, StyleSheet } from "react-native";
+import { Text, View, Button, StyleSheet, ActivityIndicator } from "react-native";
 import { supabase } from "../util/supabase";
 import DishesList from "../components/DishesList";
 
@@ -106,15 +106,15 @@ function GameResultScreen({ route, navigation }) {
 
     if (isLoading) {
         return (
-            <View>
-                <Text>Loading...</Text>
+            <View style={styles.root}>
+                <ActivityIndicator size="large" color="#0000ff" />
             </View>
         );
     }
 
     if (waiting) {
         return (
-            <View style={styles.container}>
+            <View style={styles.root}>
                 <Text>Waiting for the other player to finish</Text>
                 <Text>Game ID: {gameId}</Text>
                 <Button
@@ -127,7 +127,7 @@ function GameResultScreen({ route, navigation }) {
         );
     } else {
         return (
-            <View style={styles.container}>
+            <View style={styles.root}>
                 <Text>Game Result Screen</Text>
                 <Text>Game ID: {gameId}</Text>
                 <DishesList dishes={matchingResults} />
@@ -145,7 +145,7 @@ function GameResultScreen({ route, navigation }) {
 export default GameResultScreen;
 
 const styles = StyleSheet.create({
-    container: {
+    root: {
         display: "flex",
         flex: 1,
         justifyContent: "center",

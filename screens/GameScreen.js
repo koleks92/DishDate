@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, Button } from "react-native";
+import { View, StyleSheet, Text, Button, ActivityIndicator } from "react-native";
 import { supabase } from "../util/supabase";
 import { generate6DigitNumber } from "../util/extras";
 import { useContext, useEffect, useState } from "react";
@@ -155,15 +155,15 @@ function GameScreen({ route, navigation }) {
 
     if (isLoading) {
         return (
-            <View>
-                <Text>Loading...</Text>
+            <View style={styles.root}>
+                <ActivityIndicator size="large" color="#0000ff" />
             </View>
         );
     }
 
     if (gameMode === "waiting") {
         return (
-            <View style={styles.container}>
+            <View style={styles.root}>
                 <Text>Game Screen</Text>
                 <Text>Game ID: {gameId}</Text>
                 <Button
@@ -178,7 +178,7 @@ function GameScreen({ route, navigation }) {
 
     if (gameMode === "playing") {
         return (
-            <View style={styles.container}>
+            <View style={styles.root}>
                 <DishSelector
                     dishes={dishes}
                     dishesResultHandler={dishesResultHandler}
@@ -191,7 +191,7 @@ function GameScreen({ route, navigation }) {
 export default GameScreen;
 
 const styles = StyleSheet.create({
-    container: {
+    root: {
         display: "flex",
         flex: 1,
         justifyContent: "center",
