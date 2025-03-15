@@ -49,10 +49,16 @@ function StartScreen({ navigation }) {
         // Handle session
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
+            if (session?.user) {
+                upsertUser(session.user);
+            }
         });
 
         supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
+            if (session?.user) {
+                upsertUser(session.user);
+            }
         });
     }, []);
 
@@ -99,6 +105,26 @@ function StartScreen({ navigation }) {
             };
         }
     }, [session]);
+
+    // Function to upsert user info into Users table
+    const upsertUser = async (user) => {
+        const { id, email, user_metadata } = user;
+        const name = user_metadata?.name || "";
+        const avatar_url = user_metadata?.avatar_url || "";
+
+        const { error } = await supabase.from("users").upsert([
+            {
+                id,
+                email,
+                name,
+                avatar_url,
+            },
+        ]);
+
+        if (error) {
+            console.error("Error inserting user:", error);
+        }
+    };
 
     // Handle Google Sign In
     const handleGoogleSignIn = async () => {

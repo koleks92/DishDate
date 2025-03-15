@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
-
+import GamesList from "../components/GamesList";
 
 function GamesListScreen() {
     const { session } = useContext(DDContext);
@@ -16,7 +16,9 @@ function GamesListScreen() {
             const { data, error } = await supabase
                 .from("GameRoom")
                 .select("*")
-                .eq("player1_id", session["user"]["id"]);
+                .or(
+                    `player1_id.eq.${session.user.id},player2_id.eq.${session.user.id}`
+                );
 
             setGamesList(data);
 
@@ -24,7 +26,7 @@ function GamesListScreen() {
                 console.error("Error fetching data:", error.message);
                 return null;
             }
-                
+
             setIsLoading(false);
         };
 
@@ -43,7 +45,7 @@ function GamesListScreen() {
 
     return (
         <View style={styles.root}>
-            <Text>Games List</Text>
+            <GamesList gamesList={gamesList} />
         </View>
     );
 }
