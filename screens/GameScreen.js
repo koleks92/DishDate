@@ -36,7 +36,7 @@ function GameScreen({ route, navigation }) {
             .eq("game_id", gameId)
             .eq("status", "open");
 
-        setGameRoom(data);
+        setGameRoom(data[0]);
         setDishes(data[0].dishes);
 
         setIsLoading(false);
@@ -81,7 +81,7 @@ function GameScreen({ route, navigation }) {
 
         if (data) {
             setGameId(gameId);
-            setGameRoom(data);
+            setGameRoom(data[0]);
         }
         setIsLoading(false);
     };
@@ -90,12 +90,12 @@ function GameScreen({ route, navigation }) {
     const saveResults = async (results) => {
         let status = "open";
         if (
-            gameRoom[0].player1_id === session["user"]["id"] &&
-            gameRoom[0].status === "open"
+            gameRoom.player1_id === session["user"]["id"] &&
+            gameRoom.status === "open"
         ) {
             console.log("Saving results for player 1");
 
-            const player2_results = await fetchGameResults(gameId, 2);
+            const player2_results = await fetchGameResults(gameRoom.id, 2);
             if (player2_results.player2_results) {
                 status = "closed";
             }
@@ -108,13 +108,13 @@ function GameScreen({ route, navigation }) {
                         status: status
                     },
                 ])
-                .eq("game_id", gameId)
+                .eq("id", gameRoom.id)
                 .select();
 
-        } else if (gameRoom[0].status == "open" && gameRoom[0].player2_id === null) {
+        } else if (gameRoom.status == "open" && gameRoom.player2_id === null) {
             console.log("Saving results for player 2", session["user"]["id"]);
 
-            const player1_results = await fetchGameResults(gameId, 1);
+            const player1_results = await fetchGameResults(gameRoom.id, 1);
             if (player1_results.player1_results) {
                 console.log("Player 1 results already exist");
                 status = "closed";
@@ -129,7 +129,7 @@ function GameScreen({ route, navigation }) {
                         status: status,
                     },
                 ])
-                .eq("game_id", gameId)
+                .eq("id", gameRoom.id)
                 .select();
             }
     };
@@ -150,7 +150,7 @@ function GameScreen({ route, navigation }) {
         // Save the results to the database
         saveResults(results);
         // Check the game status
-        navigation.replace("GameResultsScreen", { gameId: gameId });
+        navigation.replace("GameResultsScreen", { id: gameRoom.id });
     };
 
     if (isLoading) {

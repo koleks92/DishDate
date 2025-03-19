@@ -2,7 +2,7 @@ interface Notification {
   id: string
   player1_token: string
   player2_token: string
-  game_id: number
+  gameroom_id: number
 }
 
 interface WebhookPayload {
@@ -25,7 +25,7 @@ if (payload.record.player1_token) {
     body: "Game finished! Click here to see the results.",
     data: {
       screen: "GameResults",
-      gameId: payload.record.game_id, // Pass game ID or any other data
+      gameroomId: payload.record.gameroom_id, // Pass game ID or any other data
     },
   });
 }
@@ -37,7 +37,7 @@ if (payload.record.player2_token) {
     body: "Game finished! Click here to see the results.",
     data: {
       screen: "GameResults",
-      gameId: payload.record.game_id, // Pass game ID or any other data
+      gameroomId: payload.record.gameroom_id, // Pass game ID or any other data
     },
   });
 }

@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
-import { Text, View, Button, StyleSheet, ActivityIndicator } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import {
+    Text,
+    View,
+    Button,
+    StyleSheet,
+    ActivityIndicator,
+} from "react-native";
 import { supabase } from "../util/supabase";
 import DishesList from "../components/DishesList";
 
 function GameResultScreen({ route, navigation }) {
-    const [gameId, setGameId] = useState(route.params.gameId);
+    const [id, setId] = useState(route.params.id);
     const [waiting, setWaiting] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [gameRoom, setGameRoom] = useState(null);
@@ -12,12 +18,12 @@ function GameResultScreen({ route, navigation }) {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            fetchGameRoomHandler(gameId);
+            fetchGameRoomHandler(id);
             setIsLoading(false);
         }, 1000); // Wait 1 second
 
         return () => clearTimeout(timer); // Cleanup on unmount
-    }, []);
+    }, [id]);
 
     useEffect(() => {
         if (gameRoom) {
@@ -25,12 +31,12 @@ function GameResultScreen({ route, navigation }) {
         }
     }, [gameRoom]);
 
-    const fetchGameRoomHandler = async (gameId) => {
+    const fetchGameRoomHandler = async (id) => {
         console.log("Fetching game room");
         const { data, error } = await supabase
             .from("GameRoom")
             .select("*")
-            .eq("game_id", gameId);
+            .eq("id", id);
 
         if (error) {
             console.error("Error fetching data:", error.message);
@@ -85,10 +91,12 @@ function GameResultScreen({ route, navigation }) {
         const player1_token = await getExpoToken(gameRoom.player1_id);
         const player2_token = await getExpoToken(gameRoom.player2_id);
 
+        console.log("Sending!");
+
         const { data, error } = await supabase
             .from("Notifications")
-            .select("player1_token, player2_token, game_id")
-            .eq("game_id", gameRoom.game_id)
+            .select("player1_token, player2_token, gameroom_id")
+            .eq("gameroom_id", gameRoom.id)
             .eq("player1_token", player1_token)
             .eq("player2_token", player2_token);
 
@@ -97,7 +105,7 @@ function GameResultScreen({ route, navigation }) {
                 {
                     player1_token: player1_token,
                     player2_token: player2_token,
-                    game_id: gameId,
+                    gameroom_id: gameRoom.id,
                 },
             ]);
         } else {
@@ -116,7 +124,6 @@ function GameResultScreen({ route, navigation }) {
         return (
             <View style={styles.root}>
                 <Text>Waiting for the other player to finish</Text>
-                <Text>Game ID: {gameId}</Text>
                 <Button
                     title="Back to Start"
                     onPress={() => {
@@ -129,12 +136,14 @@ function GameResultScreen({ route, navigation }) {
         return (
             <View style={styles.root}>
                 <Text>Game Result Screen</Text>
-                <Text>Game ID: {gameId}</Text>
                 <DishesList dishes={matchingResults} />
                 <Button
                     title="Back to Start"
                     onPress={() => {
-                        navigation.navigate("StartScreen");
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: "StartScreen" }],
+                        });
                     }}
                 />
             </View>
@@ -150,6 +159,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginVertical: "10%"
+        marginVertical: "10%",
     },
 });

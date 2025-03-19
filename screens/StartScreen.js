@@ -63,47 +63,48 @@ function StartScreen({ navigation }) {
     }, []);
 
     useEffect(() => {
-        // Push Notifications
-        if (session && !session.user.is_anonymous) {
-            registerForPushNotificationsAsync()
-                .then((token) => {
-                    saveExpoPushToken(session.user.id, token);
-                })
-                .catch((error) => console.error(error));
-
-            notificationListener.current =
-                Notifications.addNotificationReceivedListener(
-                    (notification) => {
-                        console.log(notification);
-                    }
-                );
-
-            responseListener.current =
-                Notifications.addNotificationResponseReceivedListener(
-                    (response) => {
-                        const notificationData =
-                            response.notification.request.content.data;
-                        if (notificationData.gameId) {
-                            navigation.replace("GameResultsScreen", {
-                                gameId: notificationData.gameId,
-                            });
-                        }
-                    }
-                );
-
-            return () => {
-                if (notificationListener.current) {
-                    Notifications.removeNotificationSubscription(
-                        notificationListener.current
-                    );
-                }
-                if (responseListener.current) {
-                    Notifications.removeNotificationSubscription(
-                        responseListener.current
-                    );
-                }
-            };
+        if (!session || !session.user) {
+            console.log("Session not available yet, skipping push token registration.");
+            return; // Exit early if session is not ready
         }
+
+        console.log("Running now...")
+
+        if (notificationListener.current) {
+            Notifications.removeNotificationSubscription(
+                notificationListener.current
+            );
+        }
+        if (responseListener.current) {
+            Notifications.removeNotificationSubscription(
+                responseListener.current
+            );
+        }
+        
+        registerForPushNotificationsAsync()
+        .then((token) => {
+            saveExpoPushToken(session.user.id, token);
+        })
+        .catch((error) => console.error(error));
+        
+        notificationListener.current =
+            Notifications.addNotificationReceivedListener((notification) => {
+                console.log(notification);
+            });
+
+        responseListener.current =
+            Notifications.addNotificationResponseReceivedListener(
+                (response) => {
+                    const notificationData =
+                        response.notification.request.content.data;
+                    if (notificationData.gameroomId) {
+                        navigation.navigate("GameResultsScreen", {
+                            id: notificationData.gameroomId,
+                        });
+                    }
+                }
+            );
+
     }, [session]);
 
     // Function to upsert user info into Users table

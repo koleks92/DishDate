@@ -124,12 +124,12 @@ export const DDProvider = ({ children }) => {
     }
 
     // Fetch game results
-    const fetchGameResults = async (gameId, player) => {
+    const fetchGameResults = async (gameroom_id, player) => {
         if (player == 1) {
             const { data, error } = await supabase
                 .from("GameRoom")
                 .select("player1_results")
-                .eq("game_id", gameId);
+                .eq("id", gameroom_id);
 
             if (error) {
                 console.error("Error fetching data:", error.message);
@@ -141,7 +141,7 @@ export const DDProvider = ({ children }) => {
             const { data, error } = await supabase
                 .from("GameRoom")
                 .select("player2_results")
-                .eq("game_id", gameId);
+                .eq("id", gameroom_id);
 
             if (error) {
                 console.error("Error fetching data:", error.message);
