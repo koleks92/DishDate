@@ -1,5 +1,17 @@
 # DishDate App Concept
 
+## COLORS
+    Main background: #f2de77
+    Logo Left / Logo text color 1 : #f2bc1b
+    Logo text color 2 : #D98E04
+    Logo text outline : #6d4600
+    Black / Dark / Outline : #0a0a0a
+    Green : #558C03
+    Red: #F24822
+    
+    
+    
+
 ## App Concept
 
 **DishDate** is a fun, interactive app where two users (or more in the future) go through a set of dish cards, swiping left or right based on their preferences. The app then shows how many dishes they both liked, helping people bond over shared tastes in food.
