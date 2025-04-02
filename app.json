@@ -29,12 +29,18 @@
         "NSCameraUsageDescription": "The app accesses your camera to let you take photos.",
         "ITSAppUsesNonExemptEncryption": false
       },
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "icon": {
+        "dark": "./assets/icons/Dark.png",
+        "light": "./assets/icons/Light.png",
+        "tinted": "./assets/icons/Tinted.png"
+      }
     },
     "android": {
       "googleServicesFile": "./services/google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icons/adaptive-icon.png",
+        "monochromeImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.koleks92.DishDate",
