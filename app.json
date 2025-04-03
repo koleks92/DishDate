@@ -19,7 +19,15 @@
         }
       ],
       "expo-image-picker",
-      ["expo-apple-authentication"]
+      [
+        "expo-apple-authentication"
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts/Tektur.ttf"]
+        }
+      ]
     ],
     "ios": {
       "supportsTablet": true,
