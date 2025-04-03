@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "602018707783",
+    "firebase_url": "https://dishdateapp-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "dishdateapp",
+    "storage_bucket": "dishdateapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:602018707783:android:dd2930a194ff06bf457462",
+        "android_client_info": {
+          "package_name": "com.koleks92.DishDate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "602018707783-53j64saeajpmr1k8e383oidbdmr0bqnv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.koleks92.DishDate",
+            "certificate_hash": "164db5b7ff15a0f5bcc2000185762f355f4f24be"
+          }
+        },
+        {
+          "client_id": "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIre-NJ1UXcWz0elfJs-4nOrA8ZqVv1JA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.koleks92.DishDate"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
