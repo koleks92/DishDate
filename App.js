@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -17,6 +17,9 @@ import GamesListScreen from "./screens/GamesListScreen";
 import DDProvider from "./store/ContextStore";
 import * as Notifications from "expo-notifications";
 
+import { StatusBar } from "react-native";
+import Colors from "./constants/Colors";
+
 const Stack = createStackNavigator();
 
 Notifications.setNotificationHandler({
@@ -28,6 +31,11 @@ Notifications.setNotificationHandler({
 });
 
 function App() {
+    useEffect(() => {
+        StatusBar.setBarStyle('dark-content'); // Dark icons on status bar
+        StatusBar.setBackgroundColor(Colors.background); // Makes status bar background transparent
+      }, []);
+
     return (
         <SafeAreaProvider>
             <DDProvider>
