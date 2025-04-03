@@ -14,6 +14,7 @@ import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "../util/Push";
+import Background from "../components/UI/Background";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -64,11 +65,13 @@ function StartScreen({ navigation }) {
 
     useEffect(() => {
         if (!session || !session.user) {
-            console.log("Session not available yet, skipping push token registration.");
+            console.log(
+                "Session not available yet, skipping push token registration."
+            );
             return; // Exit early if session is not ready
         }
 
-        console.log("Running now...")
+        console.log("Running now...");
 
         if (notificationListener.current) {
             Notifications.removeNotificationSubscription(
@@ -80,13 +83,13 @@ function StartScreen({ navigation }) {
                 responseListener.current
             );
         }
-        
+
         registerForPushNotificationsAsync()
-        .then((token) => {
-            saveExpoPushToken(session.user.id, token);
-        })
-        .catch((error) => console.error(error));
-        
+            .then((token) => {
+                saveExpoPushToken(session.user.id, token);
+            })
+            .catch((error) => console.error(error));
+
         notificationListener.current =
             Notifications.addNotificationReceivedListener((notification) => {
                 console.log(notification);
@@ -104,7 +107,6 @@ function StartScreen({ navigation }) {
                     }
                 }
             );
-
     }, [session]);
 
     // Function to upsert user info into Users table
@@ -226,104 +228,67 @@ function StartScreen({ navigation }) {
         }
     };
 
-    if (!session) {
-        return (
-            <View style={styles.root}>
-                <View style={styles.emailContainer}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Email"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        value={email}
-                        onChangeText={setEmail}
-                    />
-
-                    {/* Password Input */}
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Password"
-                        secureTextEntry
-                        value={password}
-                        onChangeText={setPassword}
-                    />
-
-                    <Button
-                        onPress={handleSignUp}
-                        title="Sign Up"
-                        disabled={loading}
-                    />
-                    <Button
-                        onPress={handleSignIn}
-                        title="Sign In"
-                        disabled={loading}
-                    />
-                </View>
-                <View style={styles.socialContainer}>
-                    <Button
-                        onPress={handleAnonymousSignIn}
-                        disabled={loading}
-                        title="Anonymous SignIn"
-                    />
-                    <Button onPress={handleGoogleSignIn} title="Google" />
-                    {Platform.OS === "ios" && (
-                        <View>
-                            <AppleAuthentication.AppleAuthenticationButton
-                                buttonType={
-                                    AppleAuthentication
-                                        .AppleAuthenticationButtonType.SIGN_IN
-                                }
-                                buttonStyle={
-                                    AppleAuthentication
-                                        .AppleAuthenticationButtonStyle.BLACK
-                                }
-                                cornerRadius={5}
-                                style={styles.button}
-                                onPress={() => {
-                                    handleAppleSignIn();
-                                }}
-                            />
-                        </View>
+    return (
+        <View style={styles.root}>
+            <Background />
+            {!session ? ( 
+                <View>  
+                    <View style={styles.emailContainer}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Email"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            value={email}
+                            onChangeText={setEmail}
+                        />
+    
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Password"
+                            secureTextEntry
+                            value={password}
+                            onChangeText={setPassword}
+                        />
+    
+                        <Button onPress={handleSignUp} title="Sign Up" disabled={loading} />
+                        <Button onPress={handleSignIn} title="Sign In" disabled={loading} />
+                    </View>
+    
+                    <View style={styles.socialContainer}>
+                        <Button onPress={handleAnonymousSignIn} disabled={loading} title="Anonymous SignIn" />
+                        <Button onPress={handleGoogleSignIn} title="Google" />
+                        {Platform.OS === "ios" && (
+                            <View>
+                                <AppleAuthentication.AppleAuthenticationButton
+                                    buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                                    buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                                    cornerRadius={5}
+                                    style={styles.button}
+                                    onPress={handleAppleSignIn}
+                                />
+                            </View>
+                        )}
+                    </View>
+                </View>  
+            ) : (
+                <View>  
+                    <Button title="New Game" onPress={() => navigation.navigate("NewGameScreen")} />
+                    <Button title="Join Game" onPress={() => navigation.navigate("JoinGameScreen")} />
+                    <Button title="SignOut" onPress={handleSignOut} />
+    
+                    {!session.user.is_anonymous && (
+                        <>
+                            <Button title="Profile" onPress={() => navigation.navigate("ProfileScreen")} />
+                            <Button title="Dishes" onPress={() => navigation.navigate("DishesScreen")} />
+                        </>
                     )}
-                </View>
-            </View>
-        );
-    } else {
-        return (
-            <View style={styles.root}>
-                <Button
-                    title="New Game"
-                    onPress={() => {
-                        navigation.navigate("NewGameScreen");
-                    }}
-                />
-                <Button
-                    title="Join Game"
-                    onPress={() => {
-                        navigation.navigate("JoinGameScreen");
-                    }}
-                />
-                <Button title="SignOut" onPress={handleSignOut} />
-                {!session.user.is_anonymous && (
-                    <>
-                        <Button
-                            title="Profile"
-                            onPress={() => {
-                                navigation.navigate("ProfileScreen");
-                            }}
-                        />
-                        <Button
-                            title="Dishes"
-                            onPress={() => {
-                                navigation.navigate("DishesScreen");
-                            }}
-                        />
-                    </>
-                )}
-            </View>
-        );
-    }
-}
+                </View> 
+            )}
+        </View>
+    );
+    
+};
 
 export default StartScreen;
 
