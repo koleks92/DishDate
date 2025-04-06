@@ -7,7 +7,7 @@ function ButtonMain({ text, onPress }) {
     const [buttonPressed, setButtonPressed] = useState(false);
 
     return (
-        <View style={[styles.root, buttonPressed && styles.buttonPressed ]}>
+        <View style={[styles.root, buttonPressed && styles.buttonPressed]}>
             <Pressable
                 style={styles.button}
                 onTouchStart={() => {
@@ -19,9 +19,11 @@ function ButtonMain({ text, onPress }) {
                 onTouchCancel={() => {
                     setButtonPressed(false);
                 }}
-                onPress={() => console.log("Button Pressed")}
+                onPress={onPress}
             >
-                <Text style={styles.buttonText}>{text}</Text>
+                <View style={styles.textContainer}>
+                    <Text style={styles.buttonText}>{text}</Text>
+                </View>
             </Pressable>
         </View>
     );
@@ -31,6 +33,7 @@ export default ButtonMain;
 
 const styles = StyleSheet.create({
     root: {
+        flex: 1,
         padding: 1,
         backgroundColor: Colors.black,
         transform: [
@@ -39,6 +42,7 @@ const styles = StyleSheet.create({
         ],
     },
     button: {
+        flex: 1,
         backgroundColor: Colors.backgroundButton,
         borderColor: Colors.black,
         borderWidth: 3,
@@ -48,15 +52,22 @@ const styles = StyleSheet.create({
             { translateY: -6 }, // Move vertically
         ],
     },
-    buttonText: {
-        color: Colors.black,
-        fontSize: 16,
-        textAlign: "center",
+    textContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
+    buttonText: {
+        fontFamily: "Tektur-Regular_Bold",
+        color: Colors.black,
+        fontSize: Sizes.buttonTextSize,
+        textAlign: "center"},
     buttonPressed: {
-        transform: [{ scale: 0.95 },{ translateX: 6 }, // Move horizontally
+        transform: [
+            { scale: 0.95 },
+            { translateX: 6 }, // Move horizontally
             { translateY: 6 }, // Move vertically], // This will scale the component to 50% of its original size
-    ],
-opacity: 0.9,
-    }
+        ],
+        opacity: 0.9,
+    },
 });
