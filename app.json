@@ -25,7 +25,7 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/Tektur.ttf"]
+          "fonts": ["./assets/fonts/Tektur-Regular.ttf", "./assets/fonts/Tektur-Bold.ttf"]
         }
       ]
     ],
