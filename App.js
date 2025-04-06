@@ -19,6 +19,8 @@ import * as Notifications from "expo-notifications";
 
 import { StatusBar } from "react-native";
 import Colors from "./constants/Colors";
+import { useFonts, getLoadedFonts } from 'expo-font';
+
 
 const Stack = createStackNavigator();
 
@@ -31,10 +33,16 @@ Notifications.setNotificationHandler({
 });
 
 function App() {
+
+    const [loaded, error] = useFonts({
+        'Tektur-Regular': require('./assets/fonts/Tektur-Regular.ttf'),
+        'Tektur-Bold': require('./assets/fonts/Tektur-Bold.ttf')
+      });
+
     useEffect(() => {
         StatusBar.setBarStyle('dark-content'); // Dark icons on status bar
         StatusBar.setBackgroundColor(Colors.background); // Makes status bar background transparent
-      }, []);
+    }, []);
 
     return (
         <SafeAreaProvider>
