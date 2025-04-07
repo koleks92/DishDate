@@ -1,9 +1,7 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import {
     View,
-    Text,
     StyleSheet,
-    TextInput,
     Button,
     Alert,
     Platform,
@@ -18,7 +16,6 @@ import Background from "../components/UI/Background";
 import ButtonMain from "../components/UI/ButtonMain";
 import Sizes from "../constants/Sizes";
 import InputField from "../components/UI/InputField";
-import Seperator from "../components/UI/Seperator";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -237,31 +234,29 @@ function StartScreen({ navigation }) {
             <Background />
             {!session ? (
                 <View>
-                        <InputField
-                            placeholder={"Email"}
-                            value={email}
-                            onChangeText={setEmail}
-                        />
-                        <InputField
-                            placeholder={"Password"}
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry={true}
-                        />
-                        <ButtonMain text="Sign Up" onPress={handleSignUp} />
-                        <ButtonMain text="Sign In" onPress={handleSignIn} />
-                    <View style={styles.seperatorContainer}>
-                        <Seperator />
-                    </View>
-                        <ButtonMain
-                            text="Google Sign In"
-                            onPress={handleGoogleSignIn}
-                        />
+                    <InputField
+                        placeholder={"Email"}
+                        value={email}
+                        onChangeText={setEmail}
+                    />
+                    <InputField
+                        placeholder={"Password"}
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={true}
+                    />
+                    <ButtonMain text="Sign Up" onPress={handleSignUp} />
+                    <ButtonMain text="Sign In" onPress={handleSignIn} />
+                    <View style={styles.seperator}/>
+                    <ButtonMain
+                        text="Google Sign In"
+                        onPress={handleGoogleSignIn}
+                    />
                     {Platform.OS === "ios" && (
-                            <ButtonMain
-                                text="Apple Sign In"
-                                onPress={handleAppleSignIn}
-                            />
+                        <ButtonMain
+                            text="Apple Sign In"
+                            onPress={handleAppleSignIn}
+                        />
                     )}
                 </View>
             ) : (
@@ -311,9 +306,7 @@ const styles = StyleSheet.create({
         width: 200,
         height: 44,
     },
-    seperatorContainer: {
-        width: Sizes.buttonWidth,
-        height: 6,
-        marginBottom: Sizes.buttonMarginBottom
-    }
+    seperator: {
+        height: Sizes.buttonHeight,
+    },
 });
