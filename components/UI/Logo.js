@@ -48,7 +48,7 @@ function Logo() {
     return (
         <Pressable onPress={() => {logoBounceAnimation()}}>
             <Animated.Image
-                source={require("../../assets/Images/Logo_text_transparent.png")} // for local images
+                source={require("../../assets/Images/LogoTextTransparent.png")} // for local images
                 style={[styles.image, { transform: [{ scale: scaleAnim }] }]}
                 />
         </Pressable>
