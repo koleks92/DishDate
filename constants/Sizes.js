@@ -8,6 +8,7 @@ export default Sizes = {
     scrW: scrW,
     buttonInsidePadding: scrH * 0.015,
     buttonTextSize: scrH * 0.025,
+    inputTextSize: scrH * 0.02,
     buttonWidth: scrW * 0.6,
     buttonHeight: scrW * 0.16,
     buttonMarginBottom: scrH * 0.015,
