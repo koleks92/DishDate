@@ -1,11 +1,5 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import {
-    View,
-    StyleSheet,
-    Button,
-    Alert,
-    Platform,
-} from "react-native";
+import { View, StyleSheet, Button, Alert, Platform } from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { DDContext } from "../store/ContextStore";
@@ -14,8 +8,11 @@ import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "../util/Push";
 import Background from "../components/UI/Background";
 import ButtonMain from "../components/UI/ButtonMain";
+import ButtonLogo from "../components/UI/ButtonLogo";
 import Sizes from "../constants/Sizes";
 import InputField from "../components/UI/InputField";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Logo from "../components/UI/Logo";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -232,6 +229,10 @@ function StartScreen({ navigation }) {
     return (
         <View style={styles.root}>
             <Background />
+            <View styles={styles.logoContainer}>
+                <Logo />
+            </View>
+
             {!session ? (
                 <View>
                     <InputField
@@ -245,19 +246,30 @@ function StartScreen({ navigation }) {
                         onChangeText={setPassword}
                         secureTextEntry={true}
                     />
-                    <ButtonMain text="Sign Up" onPress={handleSignUp} />
                     <ButtonMain text="Sign In" onPress={handleSignIn} />
-                    <View style={styles.seperator}/>
-                    <ButtonMain
-                        text="Google Sign In"
-                        onPress={handleGoogleSignIn}
-                    />
-                    {Platform.OS === "ios" && (
-                        <ButtonMain
-                            text="Apple Sign In"
-                            onPress={handleAppleSignIn}
+                    <ButtonMain text="Sign Up" onPress={handleSignUp} />
+                    <View style={styles.socialContainer}>
+                        <ButtonLogo
+                            text={
+                                <Ionicons
+                                    name="logo-google"
+                                    size={Sizes.buttonLogoSize}
+                                />
+                            }
+                            onPress={handleGoogleSignIn}
                         />
-                    )}
+                        {Platform.OS === "ios" && (
+                            <ButtonLogo
+                                text={
+                                    <Ionicons
+                                        name="logo-apple"
+                                        size={Sizes.buttonLogoSize}
+                                    />
+                                }
+                                onPress={handleAppleSignIn}
+                            />
+                        )}
+                    </View>
                 </View>
             ) : (
                 <View>
@@ -308,5 +320,15 @@ const styles = StyleSheet.create({
     },
     seperator: {
         height: Sizes.buttonHeight,
+    },
+    socialContainer: {
+        width: Sizes.buttonWidth,
+        alignContent: "center",
+        justifyContent: "space-evenly",
+        flexDirection: "row",
+    },
+    logoContainer: {
+        height: Sizes.logoContainerSize,
+        width: Sizes.logoContainerSize,
     },
 });
