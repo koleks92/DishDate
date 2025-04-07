@@ -18,6 +18,7 @@ import Background from "../components/UI/Background";
 import ButtonMain from "../components/UI/ButtonMain";
 import Sizes from "../constants/Sizes";
 import InputField from "../components/UI/InputField";
+import Seperator from "../components/UI/Seperator";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -236,40 +237,31 @@ function StartScreen({ navigation }) {
             <Background />
             {!session ? (
                 <View>
-                    <View style={styles.buttonContainer}>
                         <InputField
                             placeholder={"Email"}
                             value={email}
                             onChangeText={setEmail}
                         />
-                    </View>
-                    <View style={styles.buttonContainer}>
                         <InputField
                             placeholder={"Password"}
                             value={password}
                             onChangeText={setPassword}
                             secureTextEntry={true}
                         />
-                    </View>
-                    <View style={styles.buttonContainer}>
                         <ButtonMain text="Sign Up" onPress={handleSignUp} />
-                    </View>
-                    <View style={styles.buttonContainer}>
                         <ButtonMain text="Sign In" onPress={handleSignIn} />
+                    <View style={styles.seperatorContainer}>
+                        <Seperator />
                     </View>
-                    <View style={styles.buttonContainer}>
                         <ButtonMain
                             text="Google Sign In"
                             onPress={handleGoogleSignIn}
                         />
-                    </View>
                     {Platform.OS === "ios" && (
-                        <View style={styles.buttonContainer}>
                             <ButtonMain
                                 text="Apple Sign In"
                                 onPress={handleAppleSignIn}
                             />
-                        </View>
                     )}
                 </View>
             ) : (
@@ -319,9 +311,9 @@ const styles = StyleSheet.create({
         width: 200,
         height: 44,
     },
-    buttonContainer: {
+    seperatorContainer: {
         width: Sizes.buttonWidth,
-        height: Sizes.buttonHeight,
-        marginBottom: Sizes.buttonMarginBottom,
-    },
+        height: 6,
+        marginBottom: Sizes.buttonMarginBottom
+    }
 });

@@ -7,24 +7,28 @@ function ButtonMain({ text, onPress }) {
     const [buttonPressed, setButtonPressed] = useState(false);
 
     return (
-        <View style={[styles.root, buttonPressed && styles.buttonPressed]}>
-            <Pressable
-                style={styles.button}
-                onTouchStart={() => {
-                    setButtonPressed(true);
-                }}
-                onTouchEnd={() => {
-                    setButtonPressed(false);
-                }}
-                onTouchCancel={() => {
-                    setButtonPressed(false);
-                }}
-                onPress={onPress}
+        <View style={styles.root}>
+            <View
+                style={[styles.shadow, buttonPressed && styles.buttonPressed]}
             >
-                <View style={styles.textContainer}>
-                    <Text style={styles.buttonText}>{text}</Text>
-                </View>
-            </Pressable>
+                <Pressable
+                    style={styles.button}
+                    onTouchStart={() => {
+                        setButtonPressed(true);
+                    }}
+                    onTouchEnd={() => {
+                        setButtonPressed(false);
+                    }}
+                    onTouchCancel={() => {
+                        setButtonPressed(false);
+                    }}
+                    onPress={onPress}
+                >
+                    <View style={styles.textContainer}>
+                        <Text style={styles.buttonText}>{text}</Text>
+                    </View>
+                </Pressable>
+            </View>
         </View>
     );
 }
@@ -33,6 +37,11 @@ export default ButtonMain;
 
 const styles = StyleSheet.create({
     root: {
+        width: Sizes.buttonWidth,
+        height: Sizes.buttonHeight,
+        marginBottom: Sizes.buttonMarginBottom,
+    },
+    shadow: {
         flex: 1,
         padding: 1,
         backgroundColor: Colors.black,

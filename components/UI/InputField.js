@@ -5,14 +5,16 @@ import Sizes from "../../constants/Sizes";
 function InputField({ placeholder, value, onChangeText, secureTextEntry }) {
     return (
         <View style={styles.root}>
-            <TextInput
-                placeholder={placeholder}
-                value={value}
-                onChangeText={onChangeText}
-                secureTextEntry={secureTextEntry}
-                style={styles.textInput}
-                autoCapitalize="none"
-            />
+            <View style={styles.shadow}>
+                <TextInput
+                    placeholder={placeholder}
+                    value={value}
+                    onChangeText={onChangeText}
+                    secureTextEntry={secureTextEntry}
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                />
+            </View>
         </View>
     );
 }
@@ -21,6 +23,11 @@ export default InputField;
 
 const styles = StyleSheet.create({
     root: {
+        width: Sizes.buttonWidth,
+        height: Sizes.buttonHeight,
+        marginBottom: Sizes.buttonMarginBottom,
+    },
+    shadow: {
         flex: 1,
         padding: 1,
         backgroundColor: Colors.black,
