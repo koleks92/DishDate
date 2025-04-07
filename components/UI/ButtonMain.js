@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.backgroundButton,
         borderColor: Colors.black,
         borderWidth: 3,
-        padding: Sizes.buttonInsidePadding,
         transform: [
             { translateX: -6 }, // Move horizontally
             { translateY: -6 }, // Move vertically
