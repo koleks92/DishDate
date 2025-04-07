@@ -15,6 +15,9 @@ import { supabase } from "../util/supabase";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "../util/Push";
 import Background from "../components/UI/Background";
+import ButtonMain from "../components/UI/ButtonMain";
+import Sizes from "../constants/Sizes";
+import InputField from "../components/UI/InputField";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -231,64 +234,77 @@ function StartScreen({ navigation }) {
     return (
         <View style={styles.root}>
             <Background />
-            {!session ? ( 
-                <View>  
-                    <View style={styles.emailContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Email"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
+            {!session ? (
+                <View>
+                    <View style={styles.buttonContainer}>
+                        <InputField
+                            placeholder={"Email"}
                             value={email}
                             onChangeText={setEmail}
                         />
-    
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Password"
-                            secureTextEntry
+                    </View>
+                    <View style={styles.buttonContainer}>
+                        <InputField
+                            placeholder={"Password"}
                             value={password}
                             onChangeText={setPassword}
+                            secureTextEntry={true}
                         />
-    
-                        <Button onPress={handleSignUp} title="Sign Up" disabled={loading} />
-                        <Button onPress={handleSignIn} title="Sign In" disabled={loading} />
                     </View>
-    
-                    <View style={styles.socialContainer}>
-                        <Button onPress={handleAnonymousSignIn} disabled={loading} title="Anonymous SignIn" />
-                        <Button onPress={handleGoogleSignIn} title="Google" />
-                        {Platform.OS === "ios" && (
-                            <View>
-                                <AppleAuthentication.AppleAuthenticationButton
-                                    buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-                                    buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-                                    cornerRadius={5}
-                                    style={styles.button}
-                                    onPress={handleAppleSignIn}
-                                />
-                            </View>
-                        )}
+                    <View style={styles.buttonContainer}>
+                        <ButtonMain text="Sign Up" onPress={handleSignUp} />
                     </View>
-                </View>  
+                    <View style={styles.buttonContainer}>
+                        <ButtonMain text="Sign In" onPress={handleSignIn} />
+                    </View>
+                    <View style={styles.buttonContainer}>
+                        <ButtonMain
+                            text="Google Sign In"
+                            onPress={handleGoogleSignIn}
+                        />
+                    </View>
+                    {Platform.OS === "ios" && (
+                        <View style={styles.buttonContainer}>
+                            <ButtonMain
+                                text="Apple Sign In"
+                                onPress={handleAppleSignIn}
+                            />
+                        </View>
+                    )}
+                </View>
             ) : (
-                <View>  
-                    <Button title="New Game" onPress={() => navigation.navigate("NewGameScreen")} />
-                    <Button title="Join Game" onPress={() => navigation.navigate("JoinGameScreen")} />
+                <View>
+                    <Button
+                        title="New Game"
+                        onPress={() => navigation.navigate("NewGameScreen")}
+                    />
+                    <Button
+                        title="Join Game"
+                        onPress={() => navigation.navigate("JoinGameScreen")}
+                    />
                     <Button title="SignOut" onPress={handleSignOut} />
-    
+
                     {!session.user.is_anonymous && (
                         <>
-                            <Button title="Profile" onPress={() => navigation.navigate("ProfileScreen")} />
-                            <Button title="Dishes" onPress={() => navigation.navigate("DishesScreen")} />
+                            <Button
+                                title="Profile"
+                                onPress={() =>
+                                    navigation.navigate("ProfileScreen")
+                                }
+                            />
+                            <Button
+                                title="Dishes"
+                                onPress={() =>
+                                    navigation.navigate("DishesScreen")
+                                }
+                            />
                         </>
                     )}
-                </View> 
+                </View>
             )}
         </View>
     );
-    
-};
+}
 
 export default StartScreen;
 
@@ -302,5 +318,10 @@ const styles = StyleSheet.create({
     button: {
         width: 200,
         height: 44,
+    },
+    buttonContainer: {
+        width: Sizes.buttonWidth,
+        height: Sizes.buttonHeight,
+        marginBottom: Sizes.buttonMarginBottom,
     },
 });
