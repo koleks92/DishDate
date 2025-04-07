@@ -273,32 +273,23 @@ function StartScreen({ navigation }) {
                 </View>
             ) : (
                 <View>
-                    <Button
-                        title="New Game"
+                    <ButtonMain
+                        text="New Game"
                         onPress={() => navigation.navigate("NewGameScreen")}
                     />
-                    <Button
-                        title="Join Game"
+                    <ButtonMain
+                        text="Join Game"
                         onPress={() => navigation.navigate("JoinGameScreen")}
                     />
-                    <Button title="SignOut" onPress={handleSignOut} />
-
-                    {!session.user.is_anonymous && (
-                        <>
-                            <Button
-                                title="Profile"
-                                onPress={() =>
-                                    navigation.navigate("ProfileScreen")
-                                }
-                            />
-                            <Button
-                                title="Dishes"
-                                onPress={() =>
-                                    navigation.navigate("DishesScreen")
-                                }
-                            />
-                        </>
-                    )}
+                    <ButtonMain
+                        text="Profile"
+                        onPress={() => navigation.navigate("ProfileScreen")}
+                    />
+                    <ButtonMain
+                        text="My Dishes"
+                        onPress={() => navigation.navigate("DishesScreen")}
+                    />
+                    <ButtonMain text="Sign Out" onPress={handleSignOut} />
                 </View>
             )}
         </View>
