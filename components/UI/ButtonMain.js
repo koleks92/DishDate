@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Colors from "../../constants/Colors";
-import { Sizes } from "../../constants/Sizes";
+import Sizes from "../../constants/Sizes";
 
 const { Pressable, Text, StyleSheet, View } = require("react-native");
 function ButtonMain({ text, onPress }) {
@@ -58,10 +58,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     buttonText: {
-        fontFamily: "Tektur-Regular_Bold",
+        fontFamily: "Tektur-Bold",
         color: Colors.black,
         fontSize: Sizes.buttonTextSize,
-        textAlign: "center"},
+        textAlign: "center",
+    },
     buttonPressed: {
         transform: [
             { scale: 0.95 },
