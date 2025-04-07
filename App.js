@@ -17,7 +17,7 @@ import GamesListScreen from "./screens/GamesListScreen";
 import DDProvider from "./store/ContextStore";
 import * as Notifications from "expo-notifications";
 
-import { StatusBar } from "react-native";
+import { SafeAreaView, StatusBar } from "react-native";
 import Colors from "./constants/Colors";
 import { useFonts, getLoadedFonts } from 'expo-font';
 
@@ -46,6 +46,7 @@ function App() {
 
     return (
         <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
             <DDProvider>
                 <NavigationContainer>
                     <Stack.Navigator
@@ -95,6 +96,7 @@ function App() {
                     </Stack.Navigator>
                 </NavigationContainer>
             </DDProvider>
+            </SafeAreaView>
         </SafeAreaProvider>
     );
 }
