@@ -1,21 +1,24 @@
 import { Text, View, StyleSheet, Button } from "react-native";
+import Background from "../components/UI/Background";
+import ButtonMain from "../components/UI/ButtonMain";
 
 function DishesScreen({ navigation }) {
     return (
         <View style={styles.root}>
-            <Text>DishesScreen</Text>
-            <Button
-                title="New Dish"
+            <Background />
+            <ButtonMain
+                text="New Dish"
                 onPress={() => {
                     navigation.navigate("EditDishesScreen", { edit: false });
                 }}
             />
-            <Button
-                title="Edit Dish"
+            <ButtonMain
+                text="Edit Dish"
                 onPress={() => {
                     navigation.navigate("DishesListScreen", { edit: true });
                 }}
             />
+            
         </View>
     );
 }
