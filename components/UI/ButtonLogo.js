@@ -24,8 +24,8 @@ function ButtonLogo({ text, onPress }) {
                     }}
                     onPress={onPress}
                 >
-                    <View style={styles.textContainer}>
-                        <Text style={styles.buttonText}>{text}</Text>
+                    <View style={styles.iconContainer}>
+                        {text}
                     </View>
                 </Pressable>
             </View>
@@ -60,16 +60,19 @@ const styles = StyleSheet.create({
             { translateY: -6 }, // Move vertically
         ],
     },
-    textContainer: {
+    iconContainer: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        alignContent: "center",
     },
     buttonText: {
         fontFamily: "Tektur-Bold",
         color: Colors.black,
         fontSize: Sizes.buttonTextSize,
         textAlign: "center",
+        justifyContent: "center",
+        alignItems: "center",
     },
     buttonPressed: {
         transform: [
