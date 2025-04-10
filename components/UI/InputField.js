@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
         width: Sizes.buttonWidth,
         height: Sizes.buttonHeight,
         marginBottom: Sizes.buttonMarginBottom,
+        backgroundColor: Colors.white,
     },
     shadow: {
         flex: 1,
