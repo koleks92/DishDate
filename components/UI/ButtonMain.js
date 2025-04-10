@@ -3,7 +3,7 @@ import Colors from "../../constants/Colors";
 import Sizes from "../../constants/Sizes";
 
 const { Pressable, Text, StyleSheet, View } = require("react-native");
-function ButtonMain({ text, onPress }) {
+function ButtonMain({ text, onPress, disabled }) {
     const [buttonPressed, setButtonPressed] = useState(false);
 
     return (
@@ -13,6 +13,7 @@ function ButtonMain({ text, onPress }) {
             >
                 <Pressable
                     style={styles.button}
+                    disabled={disabled}
                     onTouchStart={() => {
                         setButtonPressed(true);
                     }}
