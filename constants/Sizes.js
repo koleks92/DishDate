@@ -13,5 +13,6 @@ export default Sizes = {
     buttonHeight: scrW * 0.16,
     buttonMarginBottom: scrH * 0.015,
     logoSize: scrH * 0.4,
-    logoContainerSize: scrH * 0.5
+    logoContainerSize: scrH * 0.5,
+    profileContainerHeight: scrH * 0.05
 }
