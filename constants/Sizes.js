@@ -25,7 +25,12 @@ export default Sizes = {
     logoContainerSize: scrH * 0.5,
 
     // StartScreen sizes
-    profileContainerHeight: scrH * 0.05
+    profileContainerHeight: scrH * 0.05,
 
-    
+    // ProfileScreen sizes
+    profileTextSize: scrH * 0.025,
+    profileScreenMargin: scrH * 0.02,
+    imageSize: scrH * 0.2,
+
+
 }
