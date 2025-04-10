@@ -1,5 +1,12 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import { View, StyleSheet, Button, Alert, Platform } from "react-native";
+import {
+    View,
+    StyleSheet,
+    Button,
+    Alert,
+    Platform,
+    Pressable,
+} from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { DDContext } from "../store/ContextStore";
@@ -13,6 +20,7 @@ import Sizes from "../constants/Sizes";
 import InputField from "../components/UI/InputField";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../components/UI/Logo";
+import Colors from "../constants/Colors";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -229,69 +237,88 @@ function StartScreen({ navigation }) {
     return (
         <View style={styles.root}>
             <Background />
-            <View styles={styles.logoContainer}>
-                <Logo />
-            </View>
-
-            {!session ? (
-                <View>
-                    <InputField
-                        placeholder={"Email"}
-                        value={email}
-                        onChangeText={setEmail}
-                    />
-                    <InputField
-                        placeholder={"Password"}
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry={true}
-                    />
-                    <ButtonMain text="Sign In" onPress={handleSignIn} />
-                    <ButtonMain text="Sign Up" onPress={handleSignUp} />
-                    <View style={styles.socialContainer}>
-                        <ButtonLogo
-                            text={
-                                <Ionicons
-                                    name="logo-google"
-                                    size={Sizes.buttonLogoSize}
-                                />
-                            }
-                            onPress={handleGoogleSignIn}
+            {session && (
+                <View style={styles.profileContainer}>
+                    <Pressable onPress={handleSignOut}>
+                        <Ionicons
+                            name="log-out-outline"
+                            color={Colors.black}
+                            size={Sizes.profileContainerHeight}
                         />
-                        {Platform.OS === "ios" && (
+                    </Pressable>
+                    <Pressable
+                        onPress={() => navigation.navigate("ProfileScreen")}
+                    >
+                        <Ionicons
+                            name="person-outline"
+                            color={Colors.black}
+                            size={Sizes.profileContainerHeight * 0.9}
+                        />
+                    </Pressable>
+                </View>
+            )}
+            <View style={styles.mainContainer}>
+                <View styles={styles.logoContainer}>
+                    <Logo />
+                </View>
+
+                {!session ? (
+                    <View>
+                        <InputField
+                            placeholder={"Email"}
+                            value={email}
+                            onChangeText={setEmail}
+                        />
+                        <InputField
+                            placeholder={"Password"}
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={true}
+                        />
+                        <ButtonMain text="Sign In" onPress={handleSignIn} />
+                        <ButtonMain text="Sign Up" onPress={handleSignUp} />
+                        <View style={styles.socialContainer}>
                             <ButtonLogo
                                 text={
                                     <Ionicons
-                                        name="logo-apple"
+                                        name="logo-google"
                                         size={Sizes.buttonLogoSize}
                                     />
                                 }
-                                onPress={handleAppleSignIn}
+                                onPress={handleGoogleSignIn}
                             />
-                        )}
+                            {Platform.OS === "ios" && (
+                                <ButtonLogo
+                                    text={
+                                        <Ionicons
+                                            name="logo-apple"
+                                            size={Sizes.buttonLogoSize}
+                                        />
+                                    }
+                                    onPress={handleAppleSignIn}
+                                />
+                            )}
+                        </View>
                     </View>
-                </View>
-            ) : (
-                <View>
-                    <ButtonMain
-                        text="New Game"
-                        onPress={() => navigation.navigate("NewGameScreen")}
-                    />
-                    <ButtonMain
-                        text="Join Game"
-                        onPress={() => navigation.navigate("JoinGameScreen")}
-                    />
-                    <ButtonMain
-                        text="Profile"
-                        onPress={() => navigation.navigate("ProfileScreen")}
-                    />
-                    <ButtonMain
-                        text="My Dishes"
-                        onPress={() => navigation.navigate("DishesScreen")}
-                    />
-                    <ButtonMain text="Sign Out" onPress={handleSignOut} />
-                </View>
-            )}
+                ) : (
+                    <View>
+                        <ButtonMain
+                            text="New Game"
+                            onPress={() => navigation.navigate("NewGameScreen")}
+                        />
+                        <ButtonMain
+                            text="Join Game"
+                            onPress={() =>
+                                navigation.navigate("JoinGameScreen")
+                            }
+                        />
+                        <ButtonMain
+                            text="My Dishes"
+                            onPress={() => navigation.navigate("DishesScreen")}
+                        />
+                    </View>
+                )}
+            </View>
         </View>
     );
 }
@@ -300,10 +327,10 @@ export default StartScreen;
 
 const styles = StyleSheet.create({
     root: {
-        display: "flex",
         flex: 1,
-        justifyContent: "center",
+        display: "flex",
         alignItems: "center",
+        justifyContent: "space-evenly",
     },
     button: {
         width: 200,
@@ -311,6 +338,18 @@ const styles = StyleSheet.create({
     },
     seperator: {
         height: Sizes.buttonHeight,
+    },
+    profileContainer: {
+        width: Sizes.scrW * 0.9,
+        height: Sizes.profileContainerHeight,
+        alignContent: "center",
+        justifyContent: "space-between",
+        flexDirection: "row",
+    },
+    mainContainer: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "space-evenly",
     },
     socialContainer: {
         width: Sizes.buttonWidth,
