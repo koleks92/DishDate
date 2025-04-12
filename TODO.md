@@ -1,14 +1,11 @@
+
 ## General
 
-- Create Button component
-- Create ReactContex for storing logged in info !
-
-## Main TODO
-
-- Fix GameResultsScreen, it should direct to gameRoom id not game_id (since there is possibility of multiple games wit hteh same game_id!)
-
-- Create profile
+- Finish first version
 
 - Test !
 
-- UI/UX
+- Picture compressing on upload (they take too much space, makbe right away make them smaller)
+## Extra
+
+- Users can add/change their profile picture
