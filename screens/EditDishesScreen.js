@@ -28,6 +28,7 @@ function EditDishesScreen({ route, navigation }) {
     const [description, setDescription] = useState("");
     const [image, setImage] = useState("");
     const [cuisine, setCuisine] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const { session, cuisinesList } = useContext(DDContext);
 
@@ -141,8 +142,10 @@ function EditDishesScreen({ route, navigation }) {
 
     // Save dish
     const saveDish = async () => {
-        if (!name || !description || !cuisine) {
+        setIsLoading(true);
+        if (!name || !description || !cuisine || !image) {
             Alert.alert("Error", "Missing name, description or image");
+            setIsLoading(false);
             return;
         }
 
@@ -151,6 +154,7 @@ function EditDishesScreen({ route, navigation }) {
 
         if (inDatabase) {
             Alert.alert("Error", `Dish named ${name} is already in database`);
+            setIsLoading(false);
             return;
         }
 
@@ -161,6 +165,8 @@ function EditDishesScreen({ route, navigation }) {
         await saveDishToDatabase(imageURL);
 
         Alert.alert("Saved!", `Dish named ${name} was sucessfully saved`);
+
+        setIsLoading(false);
 
         navigation.goBack();
     };
@@ -367,8 +373,8 @@ function EditDishesScreen({ route, navigation }) {
                 ) : (
                     <ImageCustom empty={true} />
                 )}
-                <ButtonMain text="Pick an image" onPress={pickImageHandler} />
-                <ButtonMain text="Take a picture" onPress={openCameraHandler} />
+                <ButtonMain text="Pick an image" onPress={pickImageHandler} disabled={isLoading} />
+                <ButtonMain text="Take a picture" onPress={openCameraHandler} disabled={isLoading}/>
                 {edit ? (
                     <View style={{ flexDirection: "row" }}>
                         <ButtonMain
@@ -381,7 +387,7 @@ function EditDishesScreen({ route, navigation }) {
                     </View>
                 ) : (
                     <ButtonMain
-                        text="Save"
+                        text={isLoading ? "Saving..." : "Save"}
                         onPress={() => {
                             saveDish();
                         }}
