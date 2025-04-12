@@ -8,7 +8,7 @@ export default Sizes = {
     scrH: scrH,
     scrW: scrW,
 
-    // ButtonMain/ButtonLogo/InputField sizes
+    // ButtonMain/ButtonLogo/InputField/Image sizes
     buttonTextSize: scrH * 0.025,
     buttonWidth: scrW * 0.6,
     buttonHeight: scrW * 0.16,
@@ -30,7 +30,11 @@ export default Sizes = {
     // ProfileScreen sizes
     profileTextSize: scrH * 0.025,
     profileScreenMargin: scrH * 0.02,
-    imageSize: scrH * 0.2,
+    imageSize: scrW * 0.6,
+
+    // ImageCustom sizes
+    editImageTextSize: scrH * 0.03,
+
 
 
 }
