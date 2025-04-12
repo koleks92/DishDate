@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
     },
     shadow: {
         flex: 1,
-        padding: 1,
         backgroundColor: Colors.black,
         transform: [
             { translateX: 6 }, // Move horizontally
