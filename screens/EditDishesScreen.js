@@ -7,12 +7,21 @@ import {
     Image,
     Platform,
     Alert,
+    TouchableWithoutFeedback,
+    Keyboard,
+    ScrollView,
+    KeyboardAvoidingView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState, useContext } from "react";
 import { supabase } from "../util/supabase";
 import { DDContext } from "../store/ContextStore";
 import CuisinesList from "../components/CuisinesList";
+import InputField from "../components/UI/InputField";
+import Background from "../components/UI/Background";
+import ButtonMain from "../components/UI/ButtonMain";
+import Sizes from "../constants/Sizes";
+import ImageCustom from "../components/UI/ImageCustom";
 
 function EditDishesScreen({ route, navigation }) {
     const [name, setName] = useState("");
@@ -21,8 +30,6 @@ function EditDishesScreen({ route, navigation }) {
     const [cuisine, setCuisine] = useState("");
 
     const { session, cuisinesList } = useContext(DDContext);
-
-
 
     // Get edit form the route
     let { edit, dish } = route.params || {};
@@ -52,7 +59,7 @@ function EditDishesScreen({ route, navigation }) {
             setName(dish.name);
             setDescription(dish.description);
             setImage({ uri: dish.image });
-            const cuisine = cuisinesList.find(c => c.id === dish.cuisine_id)
+            const cuisine = cuisinesList.find((c) => c.id === dish.cuisine_id);
             setCuisine(cuisine);
         }
     }, [edit]);
@@ -336,75 +343,53 @@ function EditDishesScreen({ route, navigation }) {
     };
 
     // EDIT DISHES MODE
-    if (edit) {
-        return (
-            <View style={styles.root}>
-                <Text>Edit Dish</Text>
-                <TextInput
+    return (
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <ScrollView contentContainerStyle={styles.root}>
+                <Background />
+                <InputField
                     value={name}
                     onChangeText={setName}
                     placeholder="Enter name"
                 />
-                <TextInput
+                <InputField
                     value={description}
                     onChangeText={setDescription}
                     placeholder="Enter description"
                 />
-                <CuisinesList cuisinesList={cuisinesList} selectedCuisineHandler={selectedCuisineHandler} selectedCuisine={cuisine}/>
-                <Button
-                    title="Pick an image from camera roll"
-                    onPress={pickImageHandler}
+                <CuisinesList
+                    cuisinesList={cuisinesList}
+                    selectedCuisineHandler={selectedCuisineHandler}
+                    selectedCuisine={cuisine}
                 />
-                <Button title="Take a picture" onPress={openCameraHandler} />
-                {image && (
-                    <Image source={{ uri: image.uri }} style={styles.image} />
+                {image ? (
+                    <ImageCustom source={{ uri: image.uri }} />
+                ) : (
+                    <ImageCustom empty={true} />
                 )}
-                <View style={{ flexDirection: "row" }}>
-                    <Button
-                        title="Update"
+                <ButtonMain text="Pick an image" onPress={pickImageHandler} />
+                <ButtonMain text="Take a picture" onPress={openCameraHandler} />
+                {edit ? (
+                    <View style={{ flexDirection: "row" }}>
+                        <ButtonMain
+                            text="Update"
+                            onPress={() => {
+                                updateDish();
+                            }}
+                        />
+                        <ButtonMain text="Delete" onPress={deleteDish} />
+                    </View>
+                ) : (
+                    <ButtonMain
+                        text="Save"
                         onPress={() => {
-                            updateDish();
+                            saveDish();
                         }}
                     />
-                    <Button title="Delete" onPress={deleteDish} />
-                </View>
-            </View>
-        );
-
-        // ADD NEW DISH MODE
-    } else {
-        return (
-            <View style={styles.root}>
-                <Text>New Dish</Text>
-                <TextInput
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="Enter name"
-                />
-                <TextInput
-                    value={description}
-                    onChangeText={setDescription}
-                    placeholder="Enter description"
-                />
-                <CuisinesList cuisinesList={cuisinesList} selectedCuisineHandler={selectedCuisineHandler}/>
-                <Button
-                    title="Pick an image from camera roll"
-                    onPress={pickImageHandler}
-                />
-                <Button title="Take a picture" onPress={openCameraHandler} />
-                {image && (
-                    <Image source={{ uri: image.uri }} style={styles.image} />
                 )}
-
-                <Button
-                    title="Save"
-                    onPress={() => {
-                        saveDish();
-                    }}
-                />
-            </View>
-        );
-    }
+            </ScrollView>
+        </TouchableWithoutFeedback>
+    );
 }
 
 export default EditDishesScreen;
@@ -412,12 +397,8 @@ export default EditDishesScreen;
 const styles = StyleSheet.create({
     root: {
         display: "flex",
-        flex: 1,
+        flexGrow: 1,
         justifyContent: "center",
         alignItems: "center",
-    },
-    image: {
-        width: "50%",
-        height: "50%",
     },
 });

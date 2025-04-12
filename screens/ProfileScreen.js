@@ -7,6 +7,9 @@ import {
     TextInput,
     Button,
     ActivityIndicator,
+    TouchableWithoutFeedback,
+    Keyboard,
+    ScrollView,
 } from "react-native";
 import { supabase } from "../util/supabase";
 import Background from "../components/UI/Background";
@@ -14,6 +17,7 @@ import Sizes from "../constants/Sizes";
 import Colors from "../constants/Colors";
 import InputField from "../components/UI/InputField";
 import ButtonMain from "../components/UI/ButtonMain";
+import ImageCustom from "../components/UI/ImageCustom";
 
 function ProfileScreen({ navigation }) {
     const [userName, setUserName] = useState("No name");
@@ -77,42 +81,51 @@ function ProfileScreen({ navigation }) {
     }
 
     return (
-        <View style={styles.root}>
-            <Background />
-            <View style={styles.userEmailContainer}>
-                <Text style={styles.userEmailText}>{userEmail}</Text>
-            </View>
-            <View style={styles.userNameContainer}>
-                <InputField
-                    placeholder="Enter new name"
-                    value={userName}
-                    onChangeText={setUserName}
-                />
-            </View>
-            {userAvatar && (
-                <Image source={{ uri: userAvatar }} style={styles.image} />
-            )}
-            <View style={styles.buttonsContainer}>
-                <ButtonMain
-                    text={updateLoading ? "Updating..." : "Update Name"}
-                    onPress={handleUpdateName}
-                    disabled={updateLoading}
-                />
-                <View style={styles.Seperator} />
-                <ButtonMain
-                    text="My Dishes"
-                    onPress={() => {
-                        navigation.navigate("DishesListScreen", { edit: true });
-                    }}
-                />
-                <ButtonMain text="My Games"
-                onPress={() => {
-                    navigation.navigate("GamesListScreen");
-                }}/>
-            </View>
-            
-
-        </View>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <ScrollView contentContainerStyle={styles.root}>
+                <Background />
+                <View style={styles.userEmailContainer}>
+                    <Text style={styles.userEmailText}>{userEmail}</Text>
+                </View>
+                <View style={styles.userNameContainer}>
+                    <InputField
+                        placeholder="Enter new name"
+                        value={userName}
+                        onChangeText={setUserName}
+                    />
+                </View>
+                {userAvatar ? (
+                    <ImageCustom
+                        source={{ uri: userAvatar }}
+                        style={styles.image}
+                    />
+                ) : (
+                    <ImageCustom empty={true} />
+                )}
+                <View style={styles.buttonsContainer}>
+                    <ButtonMain
+                        text={updateLoading ? "Updating..." : "Update Name"}
+                        onPress={handleUpdateName}
+                        disabled={updateLoading}
+                    />
+                    <View style={styles.Seperator} />
+                    <ButtonMain
+                        text="My Dishes"
+                        onPress={() => {
+                            navigation.navigate("DishesListScreen", {
+                                edit: true,
+                            });
+                        }}
+                    />
+                    <ButtonMain
+                        text="My Games"
+                        onPress={() => {
+                            navigation.navigate("GamesListScreen");
+                        }}
+                    />
+                </View>
+            </ScrollView>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -121,14 +134,11 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
     root: {
         display: "flex",
-        flex: 1,
+        flexGrow: 1,
         justifyContent: "center",
         alignItems: "center",
     },
     userEmailContainer: {
-        marginBottom: Sizes.profileScreenMargin,
-    },
-    userNameContainer: {
         marginBottom: Sizes.profileScreenMargin,
     },
     userEmailText: {
@@ -136,15 +146,7 @@ const styles = StyleSheet.create({
         fontSize: Sizes.profileTextSize,
         color: Colors.black,
     },
-    image: {
-        width: Sizes.imageSize,
-        height: Sizes.imageSize,
-        borderRadius: Sizes.imageSize / 2,
-        borderWidth: 3,
-        borderColor: Colors.black,
-        marginBottom: Sizes.profileScreenMargin,
-    },
     Seperator: {
-        height: Sizes.buttonHeight
-    }
+        height: Sizes.buttonHeight,
+    },
 });
