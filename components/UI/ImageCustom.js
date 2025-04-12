@@ -18,7 +18,7 @@ function ImageCustom({ source, empty }) {
                     <Image
                         source={source}
                         style={styles.image}
-                        resizeMode="contain"
+                        resizeMode="cover"
                     />
                 )}
             </View>
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
         width: Sizes.imageSize,
         height: Sizes.imageSize,
         borderColor: Colors.black,
+        
         borderWidth: 3,
         transform: [
             { translateX: -6 }, // Move horizontally
