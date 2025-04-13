@@ -35,6 +35,11 @@ export default Sizes = {
     // ImageCustom sizes
     editImageTextSize: scrH * 0.03,
 
+    // Modal sizes
+    modalTitleSize: scrH * 0.03,
+    modalTextSize: scrH * 0.025,
+    modalTextMargin: scrH * 0.02,
+
 
 
 }
