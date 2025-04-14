@@ -22,6 +22,9 @@ import Background from "../components/UI/Background";
 import ButtonMain from "../components/UI/ButtonMain";
 import Sizes from "../constants/Sizes";
 import ImageCustom from "../components/UI/ImageCustom";
+import ButtonLogo from "../components/UI/ButtonLogo";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import CustomAlert from "../components/UI/CustomAlert";
 
 function EditDishesScreen({ route, navigation }) {
     const [name, setName] = useState("");
@@ -29,6 +32,9 @@ function EditDishesScreen({ route, navigation }) {
     const [image, setImage] = useState("");
     const [cuisine, setCuisine] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
+    const [alert, setAlert] = useState({});
+    const [alertVisible, setAlertVisible] = useState(false);
 
     const { session, cuisinesList } = useContext(DDContext);
 
@@ -67,15 +73,10 @@ function EditDishesScreen({ route, navigation }) {
 
     // Delete dish
     const deleteDish = async () => {
-        // Show confirm alert
-        const confirm = await showConfirmAlert();
-
-        if (!confirm) {
-            return;
-        }
-
         // Remove image from storage
-        await removeImageFromStorage(dish.image);
+        if (dish.image) {
+            await removeImageFromStorage(dish.image);
+        }
 
         // Delete dish from database
         const { data, error } = await supabase
@@ -89,15 +90,18 @@ function EditDishesScreen({ route, navigation }) {
             console.log("Data deleted successfully:", data);
         }
 
-        Alert.alert("Deleted!", `Dish named ${name} was sucessfully deleted`);
-
         navigation.goBack();
     };
 
     // Update dish
     const updateDish = async () => {
         if (!name || !description || !cuisine) {
-            Alert.alert("Error", "Missing name, description or image");
+            setAlert({
+                title: "Ups",
+                message: "Missing name, description, cusine or image",
+                type: "info",
+            })
+            setAlertVisible(true);
             return;
         }
 
@@ -105,7 +109,12 @@ function EditDishesScreen({ route, navigation }) {
         const inDatabase = await databaseCheck(dish.id);
 
         if (inDatabase) {
-            Alert.alert("Error", `Dish named ${name} is already in database`);
+            setAlert({
+                title: "Ups",
+                message: `Dish named ${name} is already in database`,
+                type: "info",   
+            })
+            setAlertVisible(true);
             return;
         }
 
@@ -135,17 +144,18 @@ function EditDishesScreen({ route, navigation }) {
             console.log("Data updated successfully:", data);
         }
 
-        Alert.alert("Updated!", `Dish named ${name} was sucessfully updated`);
-
         navigation.goBack();
     };
 
     // Save dish
     const saveDish = async () => {
-        setIsLoading(true);
         if (!name || !description || !cuisine || !image) {
-            Alert.alert("Error", "Missing name, description or image");
-            setIsLoading(false);
+            setAlert({
+                title: "Ups",
+                message: "Missing name, description, cusine or image",
+                type: "info",
+            })
+            setAlertVisible(true);
             return;
         }
 
@@ -153,8 +163,12 @@ function EditDishesScreen({ route, navigation }) {
         const inDatabase = await databaseCheck();
 
         if (inDatabase) {
-            Alert.alert("Error", `Dish named ${name} is already in database`);
-            setIsLoading(false);
+            setAlert({
+                title: "Ups",
+                message: `Dish named ${name} is already in database`,
+                type: "info",   
+            })
+            setAlertVisible(true);
             return;
         }
 
@@ -164,9 +178,6 @@ function EditDishesScreen({ route, navigation }) {
         // Save to database
         await saveDishToDatabase(imageURL);
 
-        Alert.alert("Saved!", `Dish named ${name} was sucessfully saved`);
-
-        setIsLoading(false);
 
         navigation.goBack();
     };
@@ -230,7 +241,12 @@ function EditDishesScreen({ route, navigation }) {
     // Save image to Supabase storage
     const saveImageToStorage = async () => {
         if (!image) {
-            Alert.alert("Error", "Missing image");
+            setAlert({
+                title: "Ups",
+                message: "Missing image",
+                type: "info",
+            });
+            setAlertVisible(true);
             return;
         }
 
@@ -323,24 +339,12 @@ function EditDishesScreen({ route, navigation }) {
 
     // Show confirm alert
     const showConfirmAlert = () => {
-        return new Promise((resolve) => {
-            Alert.alert(
-                "Delete",
-                `Are you sure you want to delete ${dish.name}?`, // Message
-                [
-                    {
-                        text: "No",
-                        style: "cancel",
-                        onPress: () => resolve(false), // Return false when user cancels
-                    },
-                    {
-                        text: "Yes",
-                        onPress: () => resolve(true), // Return true when user confirms
-                    },
-                ],
-                { cancelable: true }
-            );
+        setAlert({
+            title: "Are you sure?",
+            message: "This action cannot be undone.",
+            type: "question",
         });
+        setAlertVisible(true);
     };
 
     // Select cuisine handler
@@ -352,6 +356,18 @@ function EditDishesScreen({ route, navigation }) {
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <ScrollView contentContainerStyle={styles.root}>
+                <CustomAlert
+                    visible={alertVisible}
+                    message={alert.message}
+                    title={alert.title}
+                    type={alert.type}
+                    onClose={() => setAlertVisible(false)}
+                    // onYes is only for deleting dishes !
+                    onYes={async () => {
+                        setAlertVisible(false);
+                        await deleteDish();
+                    }}
+                />
                 <Background />
                 <InputField
                     value={name}
@@ -368,22 +384,43 @@ function EditDishesScreen({ route, navigation }) {
                     selectedCuisineHandler={selectedCuisineHandler}
                     selectedCuisine={cuisine}
                 />
-                {image ? (
+                {image.uri ? (
                     <ImageCustom source={{ uri: image.uri }} />
                 ) : (
                     <ImageCustom empty={true} />
                 )}
-                <ButtonMain text="Pick an image" onPress={pickImageHandler} disabled={isLoading} />
-                <ButtonMain text="Take a picture" onPress={openCameraHandler} disabled={isLoading}/>
+                <ButtonMain
+                    text="Pick an image"
+                    onPress={pickImageHandler}
+                    disabled={isLoading}
+                />
+                <ButtonMain
+                    text="Take a picture"
+                    onPress={openCameraHandler}
+                    disabled={isLoading}
+                />
                 {edit ? (
-                    <View style={{ flexDirection: "row" }}>
-                        <ButtonMain
-                            text="Update"
+                    <View style={styles.editButtonsContainer}>
+                        <ButtonLogo
+                            text={
+                                <Ionicons
+                                    name="save-sharp"
+                                    size={Sizes.buttonLogoSize}
+                                />
+                            }
                             onPress={() => {
                                 updateDish();
                             }}
                         />
-                        <ButtonMain text="Delete" onPress={deleteDish} />
+                        <ButtonLogo
+                            text={
+                                <Ionicons
+                                    name="trash-sharp"
+                                    size={Sizes.buttonLogoSize}
+                                />
+                            }
+                            onPress={showConfirmAlert}
+                        />
                     </View>
                 ) : (
                     <ButtonMain
@@ -406,5 +443,10 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    editButtonsContainer: {
+        flexDirection: "row",
+        width: Sizes.buttonWidth,
+        justifyContent: "space-between",
     },
 });
