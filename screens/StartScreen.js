@@ -1,5 +1,16 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import { View, StyleSheet, Alert, Platform, Pressable, ActivityIndicator } from "react-native";
+import {
+    View,
+    StyleSheet,
+    Alert,
+    Platform,
+    Pressable,
+    ActivityIndicator,
+    TouchableWithoutFeedback,
+    Keyboard,
+    ScrollView,
+    KeyboardAvoidingView,
+} from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { DDContext } from "../store/ContextStore";
@@ -20,8 +31,8 @@ function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [isLoading, setIsLoading] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [modalMessage, setModalMessage] = useState({});
+    const [alert, setAlert] = useState({});
+    const [alertVisible, setAlertVisible] = useState(false);
 
     const notificationListener = useRef();
     const responseListener = useRef();
@@ -183,10 +194,11 @@ function StartScreen({ navigation }) {
     // Handle SignUp
     const handleSignUp = async () => {
         if (!email || !password) {
-            setModalVisible(true);
-            setModalMessage({
+            setAlertVisible(true);
+            setAlert({
                 title: "Ups!",
                 message: "Please fill in both fields",
+                type: "info",
             });
             return;
         } else {
@@ -199,21 +211,25 @@ function StartScreen({ navigation }) {
             });
 
             if (error) Alert.alert(error.message);
-            if (!session) setModalVisible(true);
-            setModalMessage({
-                title: "Ups!",
-                message: "Please check your inbox for email verification!",
-            });
+            if (!session) {
+                setAlertVisible(true);
+                setAlert({
+                    title: "Ups!",
+                    message: "Please check your inbox for email verification!",
+                    type: "info",
+                });
+            }
         }
     };
 
     // Handle SignIn
     const handleSignIn = async () => {
         if (!email || !password) {
-            setModalVisible(true);
-            setModalMessage({
+            setAlertVisible(true);
+            setAlert({
                 title: "Ups!",
                 message: "Please fill in both fields",
+                type: "info",
             });
             return;
         } else {
@@ -223,10 +239,11 @@ function StartScreen({ navigation }) {
             });
 
             if (error) {
-                setModalVisible(true);
-                setModalMessage({
+                setAlertVisible(true);
+                setAlert({
                     title: "Ups!",
                     message: error.message,
+                    type: "info",
                 });
             }
         }
@@ -241,96 +258,117 @@ function StartScreen({ navigation }) {
     }
 
     return (
-        <View style={styles.root}>
-            <Background />
-            <CustomAlert
-                visible={modalVisible}
-                message={modalMessage}
-                onClose={() => setModalVisible(false)}
-            />
-            {session && (
-                <View style={styles.profileContainer}>
-                    <Pressable onPress={handleSignOut}>
-                        <Ionicons
-                            name="log-out-outline"
-                            color={Colors.black}
-                            size={Sizes.profileContainerHeight}
-                        />
-                    </Pressable>
-                    <Pressable
-                        onPress={() => navigation.navigate("ProfileScreen")}
-                    >
-                        <Ionicons
-                            name="person-outline"
-                            color={Colors.black}
-                            size={Sizes.profileContainerHeight * 0.9}
-                        />
-                    </Pressable>
-                </View>
-            )}
-            <View style={styles.mainContainer}>
-                <View styles={styles.logoContainer}>
-                    <Logo />
-                </View>
-
-                {!session ? (
-                    <View>
-                        <InputField
-                            placeholder={"Email"}
-                            value={email}
-                            onChangeText={setEmail}
-                        />
-                        <InputField
-                            placeholder={"Password"}
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry={true}
-                        />
-                        <ButtonMain text="Sign In" onPress={handleSignIn} />
-                        <ButtonMain text="Sign Up" onPress={handleSignUp} />
-                        <View style={styles.socialContainer}>
-                            <ButtonLogo
-                                text={
-                                    <Ionicons
-                                        name="logo-google"
-                                        size={Sizes.buttonLogoSize}
-                                    />
-                                }
-                                onPress={handleGoogleSignIn}
-                            />
-                            {Platform.OS === "ios" && (
-                                <ButtonLogo
-                                    text={
-                                        <Ionicons
-                                            name="logo-apple"
-                                            size={Sizes.buttonLogoSize}
-                                        />
-                                    }
-                                    onPress={handleAppleSignIn}
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                <View style={styles.root}>
+                    <Background />
+                    <CustomAlert
+                        visible={alertVisible}
+                        message={alert.message}
+                        title={alert.title}
+                        type={alert.type}
+                        onClose={() => setAlertVisible(false)}
+                    />
+                    {session && (
+                        <View style={styles.profileContainer}>
+                            <Pressable onPress={handleSignOut}>
+                                <Ionicons
+                                    name="log-out-outline"
+                                    color={Colors.black}
+                                    size={Sizes.profileContainerHeight}
                                 />
-                            )}
+                            </Pressable>
+                            <Pressable
+                                onPress={() =>
+                                    navigation.navigate("ProfileScreen")
+                                }
+                            >
+                                <Ionicons
+                                    name="person-outline"
+                                    color={Colors.black}
+                                    size={Sizes.profileContainerHeight * 0.9}
+                                />
+                            </Pressable>
                         </View>
+                    )}
+                    <View style={styles.mainContainer}>
+                        <View styles={styles.logoContainer}>
+                            <Logo />
+                        </View>
+
+                        {!session ? (
+                            <View>
+                                <InputField
+                                    placeholder={"Email"}
+                                    value={email}
+                                    onChangeText={setEmail}
+                                />
+                                <InputField
+                                    placeholder={"Password"}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    secureTextEntry={true}
+                                />
+                                <ButtonMain
+                                    text="Sign In"
+                                    onPress={handleSignIn}
+                                />
+                                <ButtonMain
+                                    text="Sign Up"
+                                    onPress={handleSignUp}
+                                />
+                                <View style={styles.socialContainer}>
+                                    <ButtonLogo
+                                        text={
+                                            <Ionicons
+                                                name="logo-google"
+                                                size={Sizes.buttonLogoSize}
+                                            />
+                                        }
+                                        onPress={handleGoogleSignIn}
+                                    />
+                                    {Platform.OS === "ios" && (
+                                        <ButtonLogo
+                                            text={
+                                                <Ionicons
+                                                    name="logo-apple"
+                                                    size={Sizes.buttonLogoSize}
+                                                />
+                                            }
+                                            onPress={handleAppleSignIn}
+                                        />
+                                    )}
+                                </View>
+                            </View>
+                        ) : (
+                            <View>
+                                <ButtonMain
+                                    text="New Game"
+                                    onPress={() =>
+                                        navigation.navigate("NewGameScreen")
+                                    }
+                                />
+                                <ButtonMain
+                                    text="Join Game"
+                                    onPress={() =>
+                                        navigation.navigate("JoinGameScreen")
+                                    }
+                                />
+                                <ButtonMain
+                                    text="My Dishes"
+                                    onPress={() =>
+                                        navigation.navigate("DishesScreen")
+                                    }
+                                />
+                            </View>
+                        )}
                     </View>
-                ) : (
-                    <View>
-                        <ButtonMain
-                            text="New Game"
-                            onPress={() => navigation.navigate("NewGameScreen")}
-                        />
-                        <ButtonMain
-                            text="Join Game"
-                            onPress={() =>
-                                navigation.navigate("JoinGameScreen")
-                            }
-                        />
-                        <ButtonMain
-                            text="My Dishes"
-                            onPress={() => navigation.navigate("DishesScreen")}
-                        />
-                    </View>
-                )}
-            </View>
-        </View>
+                </View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -360,7 +398,7 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         alignItems: "center",
-        justifyContent: "space-evenly",
+        justifyContent: "space-around",
     },
     socialContainer: {
         width: Sizes.buttonWidth,
