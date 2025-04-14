@@ -2,7 +2,6 @@ import { useContext, useEffect, useState, useRef } from "react";
 import {
     View,
     StyleSheet,
-    Button,
     Alert,
     Platform,
     Pressable,
@@ -21,11 +20,15 @@ import InputField from "../components/UI/InputField";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../components/UI/Logo";
 import Colors from "../constants/Colors";
+import CustomAlert from "../components/UI/CustomAlert";
+import { set } from "date-fns";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [loading, setLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState({});
 
     const notificationListener = useRef();
     const responseListener = useRef();
@@ -42,6 +45,7 @@ function StartScreen({ navigation }) {
 
     // Get dishes from database
     useEffect(() => {
+        setLoading(true);
         loadDishesHandler();
         loadCuisinesHandler();
 
@@ -67,6 +71,7 @@ function StartScreen({ navigation }) {
                 upsertUser(session.user);
             }
         });
+        setLoading(false);
     }, []);
 
     useEffect(() => {
@@ -76,8 +81,7 @@ function StartScreen({ navigation }) {
             );
             return; // Exit early if session is not ready
         }
-
-        console.log("Running now...");
+        
 
         if (notificationListener.current) {
             Notifications.removeNotificationSubscription(
@@ -179,26 +183,19 @@ function StartScreen({ navigation }) {
             if (e.code === "ERR_REQUEST_CANCELED") {
                 // handle that the user canceled the sign-in flow
             } else {
-                // handle other errors
+                console.error("Apple Sign-In error:", error);
             }
         }
-    };
-
-    // Handle anonymous SignIn
-    const handleAnonymousSignIn = async () => {
-        setLoading(true);
-        const {
-            data: { session },
-            error,
-        } = await supabase.auth.signInAnonymously();
-
-        setLoading(false);
     };
 
     // Handle SignUp
     const handleSignUp = async () => {
         if (!email || !password) {
-            Alert.alert("Error", "Please fill in both fields");
+            setModalVisible(true);
+            setModalMessage({
+                title: "Ups!",
+                message: "Please fill in both fields",
+            });
             return;
         } else {
             setLoading(true);
@@ -212,7 +209,11 @@ function StartScreen({ navigation }) {
 
             if (error) Alert.alert(error.message);
             if (!session)
-                Alert.alert("Please check your inbox for email verification!");
+                setModalVisible(true);
+                setModalMessage({
+                    title: "Ups!",
+                    message: "Please check your inbox for email verification!",
+                });
             setLoading(false);
         }
     };
@@ -220,7 +221,11 @@ function StartScreen({ navigation }) {
     // Handle SignIn
     const handleSignIn = async () => {
         if (!email || !password) {
-            Alert.alert("Error", "Please fill in both fields");
+            setModalVisible(true);
+            setModalMessage({
+                title: "Ups!",
+                message: "Please fill in both fields",
+            });
             return;
         } else {
             setLoading(true);
@@ -229,7 +234,13 @@ function StartScreen({ navigation }) {
                 password: password,
             });
 
-            if (error) Alert.alert(error.message);
+            if (error) {
+                setModalVisible(true);
+                setModalMessage({
+                    title: "Ups!",
+                    message: error.message,
+                });
+            };
             setLoading(false);
         }
     };
@@ -237,6 +248,11 @@ function StartScreen({ navigation }) {
     return (
         <View style={styles.root}>
             <Background />
+            <CustomAlert
+                visible={modalVisible}
+                message={modalMessage}
+                onClose={() => setModalVisible(false)}
+            />
             {session && (
                 <View style={styles.profileContainer}>
                     <Pressable onPress={handleSignOut}>
