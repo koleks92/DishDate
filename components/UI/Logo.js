@@ -60,7 +60,7 @@ export default Logo;
 const styles = StyleSheet.create({
     image: {
         width: Sizes.logoSize,
-        height: Sizes.logoSize,
-        resizeMode: "contain",
+        height: Sizes.logoSize * 0.9,
+        resizeMode: "cover",
     },
 });
