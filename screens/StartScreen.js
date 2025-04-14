@@ -1,11 +1,5 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import {
-    View,
-    StyleSheet,
-    Alert,
-    Platform,
-    Pressable,
-} from "react-native";
+import { View, StyleSheet, Alert, Platform, Pressable } from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { DDContext } from "../store/ContextStore";
@@ -26,7 +20,8 @@ import { set } from "date-fns";
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadingButton, setLoadingButton] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState({});
 
@@ -45,7 +40,7 @@ function StartScreen({ navigation }) {
 
     // Get dishes from database
     useEffect(() => {
-        setLoading(true);
+        setIsLoading(true);
         loadDishesHandler();
         loadCuisinesHandler();
 
@@ -71,7 +66,7 @@ function StartScreen({ navigation }) {
                 upsertUser(session.user);
             }
         });
-        setLoading(false);
+        setIsLoading(false);
     }, []);
 
     useEffect(() => {
@@ -81,7 +76,6 @@ function StartScreen({ navigation }) {
             );
             return; // Exit early if session is not ready
         }
-        
 
         if (notificationListener.current) {
             Notifications.removeNotificationSubscription(
@@ -208,12 +202,11 @@ function StartScreen({ navigation }) {
             });
 
             if (error) Alert.alert(error.message);
-            if (!session)
-                setModalVisible(true);
-                setModalMessage({
-                    title: "Ups!",
-                    message: "Please check your inbox for email verification!",
-                });
+            if (!session) setModalVisible(true);
+            setModalMessage({
+                title: "Ups!",
+                message: "Please check your inbox for email verification!",
+            });
             setLoading(false);
         }
     };
@@ -240,10 +233,18 @@ function StartScreen({ navigation }) {
                     title: "Ups!",
                     message: error.message,
                 });
-            };
+            }
             setLoading(false);
         }
     };
+
+    if (isLoading) {
+        return (
+            <View style={styles.root}>
+                <ActivityIndicator size="large" color="blue" />
+            </View>
+        );
+    }
 
     return (
         <View style={styles.root}>
