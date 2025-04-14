@@ -15,7 +15,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../components/UI/Logo";
 import Colors from "../constants/Colors";
 import CustomAlert from "../components/UI/CustomAlert";
-import { set } from "date-fns";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -134,7 +133,6 @@ function StartScreen({ navigation }) {
 
     // Handle Google Sign In
     const handleGoogleSignIn = async () => {
-        setIsLoading(true);
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
@@ -153,12 +151,10 @@ function StartScreen({ navigation }) {
         } catch (error) {
             console.error("Google Sign-In error:", error);
         }
-        setIsLoading(false);
     };
 
     // Handle Apple Sign in
     const handleAppleSignIn = async () => {
-        setIsLoading(true);
         try {
             const credential = await AppleAuthentication.signInAsync({
                 requestedScopes: [
@@ -182,7 +178,6 @@ function StartScreen({ navigation }) {
                 console.error("Apple Sign-In error:", error);
             }
         }
-        setIsLoading(false);
     };
 
     // Handle SignUp
@@ -195,7 +190,6 @@ function StartScreen({ navigation }) {
             });
             return;
         } else {
-            setIsLoading(true);
             const {
                 data: { session },
                 error,
@@ -210,7 +204,6 @@ function StartScreen({ navigation }) {
                 title: "Ups!",
                 message: "Please check your inbox for email verification!",
             });
-            setIsLoading(false);
         }
     };
 
@@ -224,7 +217,6 @@ function StartScreen({ navigation }) {
             });
             return;
         } else {
-            setIsoading(true);
             const { error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
@@ -237,7 +229,6 @@ function StartScreen({ navigation }) {
                     message: error.message,
                 });
             }
-            setIsLoading(false);
         }
     };
 
