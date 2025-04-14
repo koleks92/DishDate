@@ -3,6 +3,7 @@ import DishesList from "../components/DishesList";
 import { useCallback, useContext, useState, useEffect } from "react";
 import { DDContext } from "../store/ContextStore";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import Background from "../components/UI/Background";
 
 function DishesListScreen({ route, navigation }) {
     const { edit } = route.params || {};
@@ -50,6 +51,7 @@ function DishesListScreen({ route, navigation }) {
     if (edit) {
         return (
             <View style={styles.root}>
+                <Background />
                 <DishesList
                     dishes={userDishes}
                     editButton={edit}
