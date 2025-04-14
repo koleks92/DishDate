@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, FlatList, StyleSheet, Image, Button } from "react-native";
+import CustomImage from "./UI/ImageCustom";
+import Sizes from "../constants/Sizes";
+import Colors from "../constants/Colors";
+import { DDContext } from "../store/ContextStore";
+import ButtonMain from "./UI/ButtonMain";
 
 const DishesList = ({ dishes, editButton, editButtonHandler }) => {
+    const { cuisinesList } = useContext(DDContext);
+
+    const getCuisineName = (cuisineId) => {
+        const cuisine = cuisinesList.find((c) => c.id === cuisineId);
+        return cuisine ? cuisine.name : "Unknown";
+    }
+
     const editDish = (item) => {
         editButtonHandler(item);
     };
@@ -9,16 +21,19 @@ const DishesList = ({ dishes, editButton, editButtonHandler }) => {
     const renderItem = ({ item }) => (
         <View style={styles.item}>
             <Text style={styles.title}>{item.name}</Text>
-            <Text style={styles.title}>{item.description}</Text>
-            <Image
-                source={{ uri: item.image }}
-                style={styles.image}
-                resizeMode="contain"
-            />
+            <Text style={styles.cuisine}>{getCuisineName(item.cuisine_id)}</Text>
+            {item.image === null ? (
+                <CustomImage
+                    empty={true}
+                />
+            ) : (
+                <CustomImage
+                    source={{ uri: item.image }}
+                />
+            )}
             {editButton && (
-                <Button
-                    title="Edit"
-                    style={styles.button}
+                <ButtonMain
+                    text="Edit"
                     onPress={() => {
                         editDish(item);
                     }}
@@ -28,8 +43,9 @@ const DishesList = ({ dishes, editButton, editButtonHandler }) => {
     );
 
     return (
-        <View style={styles.container}>
+        <View style={styles.root}>
             <FlatList
+                contentContainerStyle={styles.container}
                 data={dishes}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id.toString()}
@@ -39,25 +55,31 @@ const DishesList = ({ dishes, editButton, editButtonHandler }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
+    root: {
         flex: 1,
-        paddingTop: 22,
+        width: "100%",
+    },
+    container: {
+        flexGrow: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
     item: {
-        flex: 1,
-        padding: 10,
-        fontSize: 18,
-        margin: 20,
-        width: 200,
+        marginBottom: Sizes.dishesListMargin,
     },
     title: {
-        fontSize: 18,
+        fontFamily: "Tektur-Bold",
+        fontSize: Sizes.dishesListTitleSize,
+        color: Colors.black,
+        textAlign: "center",
     },
-    image: {
-        width: 200, // Set a fixed width
-        height: 150, // Set a fixed height
-        borderRadius: 10, // Optional: round the corners
-    },
+    cuisine: {
+        fontFamily: "Tektul-Regular",
+        fontSize: Sizes.dishesListDescriptionSize,
+        color: Colors.black,
+        textAlign: "center",
+
+    }
 });
 
 export default DishesList;
