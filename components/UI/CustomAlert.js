@@ -23,7 +23,7 @@ function CustomAlert({ message, title, type, visible, onClose, onYes }) {
                             <Text style={styles.modalText}>
                                 {message}
                             </Text>
-                            <View stye={styles.questionButtonContainer}>
+                            <View style={styles.questionButtonContainer}>
                                 <ButtonLogo
                                     text={
                                         <Ionicons
@@ -124,4 +124,11 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginBottom: Sizes.modalTextMargin,
     },
+    questionButtonContainer: {
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center",
+        marginTop: Sizes.modalTextMargin,
+    }
 });
