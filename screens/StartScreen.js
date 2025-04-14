@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import { View, StyleSheet, Alert, Platform, Pressable } from "react-native";
+import { View, StyleSheet, Alert, Platform, Pressable, ActivityIndicator } from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { DDContext } from "../store/ContextStore";
@@ -21,7 +21,6 @@ function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [isLoading, setIsLoading] = useState(false);
-    const [loadingButton, setLoadingButton] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState({});
 
@@ -135,6 +134,7 @@ function StartScreen({ navigation }) {
 
     // Handle Google Sign In
     const handleGoogleSignIn = async () => {
+        setIsLoading(true);
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
@@ -153,10 +153,12 @@ function StartScreen({ navigation }) {
         } catch (error) {
             console.error("Google Sign-In error:", error);
         }
+        setIsLoading(false);
     };
 
     // Handle Apple Sign in
     const handleAppleSignIn = async () => {
+        setIsLoading(true);
         try {
             const credential = await AppleAuthentication.signInAsync({
                 requestedScopes: [
@@ -180,6 +182,7 @@ function StartScreen({ navigation }) {
                 console.error("Apple Sign-In error:", error);
             }
         }
+        setIsLoading(false);
     };
 
     // Handle SignUp
@@ -192,7 +195,7 @@ function StartScreen({ navigation }) {
             });
             return;
         } else {
-            setLoading(true);
+            setIsLoading(true);
             const {
                 data: { session },
                 error,
@@ -207,7 +210,7 @@ function StartScreen({ navigation }) {
                 title: "Ups!",
                 message: "Please check your inbox for email verification!",
             });
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -221,7 +224,7 @@ function StartScreen({ navigation }) {
             });
             return;
         } else {
-            setLoading(true);
+            setIsoading(true);
             const { error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
@@ -234,7 +237,7 @@ function StartScreen({ navigation }) {
                     message: error.message,
                 });
             }
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
