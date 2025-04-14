@@ -5,33 +5,81 @@ import ButtonLogo from "./ButtonLogo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Sizes from "../../constants/Sizes";
 
-function CustomAlert({ message, type, visible, onClose }) {
-    return (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={visible}
-            onRequestClose={onClose}
-        >
-            <View style={styles.modalOverlay}>
-                <View style={styles.shadow}>
-                    <View style={styles.modal}>
-                        <Text style={styles.modalTitle}>{message.title}</Text>
-                        <Text style={styles.modalText}>{message.message}</Text>
-                        <ButtonLogo
-                            text={
-                                <Ionicons
-                                    name="close-sharp"
-                                    size={Sizes.buttonLogoSize}
+function CustomAlert({ message, title, type, visible, onClose, onYes }) {
+    if (type === "question") {
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={visible}
+                onRequestClose={onClose}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.shadow}>
+                        <View style={styles.modal}>
+                            <Text style={styles.modalTitle}>
+                                {title}
+                            </Text>
+                            <Text style={styles.modalText}>
+                                {message}
+                            </Text>
+                            <View stye={styles.questionButtonContainer}>
+                                <ButtonLogo
+                                    text={
+                                        <Ionicons
+                                            name="checkmark-sharp"
+                                            size={Sizes.buttonLogoSize}
+                                        />
+                                    }
+                                    onPress={onYes}
                                 />
-                            }
-                            onPress={onClose}
-                        />
+                                <ButtonLogo
+                                    text={
+                                        <Ionicons
+                                            name="close-sharp"
+                                            size={Sizes.buttonLogoSize}
+                                        />
+                                    }
+                                    onPress={onClose}
+                                />
+                            </View>
+                        </View>
                     </View>
                 </View>
-            </View>
-        </Modal>
-    );
+            </Modal>
+        );
+    } else if (type === "info") {
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={visible}
+                onRequestClose={onClose}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.shadow}>
+                        <View style={styles.modal}>
+                            <Text style={styles.modalTitle}>
+                                {title}
+                            </Text>
+                            <Text style={styles.modalText}>
+                                {message}
+                            </Text>
+                            <ButtonLogo
+                                text={
+                                    <Ionicons
+                                        name="close-sharp"
+                                        size={Sizes.buttonLogoSize}
+                                    />
+                                }
+                                onPress={onClose}
+                            />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+        );
+    }
 }
 
 export default CustomAlert;
@@ -67,14 +115,13 @@ const styles = StyleSheet.create({
         fontFamily: "Tektur-Bold",
         color: Colors.black,
         textAlign: "center",
-        marginBottom: Sizes.modalTextMargin
+        marginBottom: Sizes.modalTextMargin,
     },
     modalText: {
         fontSize: Sizes.modalTextSize,
         fontFamily: "Tektur-Bold",
         color: Colors.black,
         textAlign: "center",
-        marginBottom: Sizes.modalTextMargin
-
-    }
+        marginBottom: Sizes.modalTextMargin,
+    },
 });
