@@ -40,6 +40,10 @@ export default Sizes = {
     modalTextSize: scrH * 0.025,
     modalTextMargin: scrH * 0.02,
 
+    // DishesList sizes
+    dishesListTitleSize: scrH * 0.03,
+    dishesListDescriptionSize: scrH * 0.025,
+    dishesListMargin: scrH * 0.03,
 
 
 }
