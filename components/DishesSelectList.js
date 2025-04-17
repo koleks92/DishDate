@@ -19,7 +19,8 @@ function DishesSelectList({ selectedDishesHandler, disabledIndexes }) {
         }, [value]);
 
     return (
-        <View style={styles.container}>
+        <View style={styles.root}>
+            <View style={styles.shadow}>
             <Dropdown
                 style={styles.dropdown}
                 placeholderStyle={styles.placeholderStyle}
@@ -37,6 +38,7 @@ function DishesSelectList({ selectedDishesHandler, disabledIndexes }) {
                 }}
                 visibleSelectedItem={false}
             />
+            </View> 
         </View>
     );
 }
@@ -44,72 +46,60 @@ function DishesSelectList({ selectedDishesHandler, disabledIndexes }) {
 export default DishesSelectList;
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "white",
-        padding: 16,
-        width: "60%",
+    root: {
+        width: Sizes.buttonWidth,
+        height: Sizes.buttonHeight,
+        marginBottom: Sizes.buttonMarginBottom,
+    },
+    shadow: {
+        flex: 1,
+        padding: 1,
+        backgroundColor: Colors.black,
+        transform: [
+            { translateX: 6 }, // Move horizontally
+            { translateY: 6 }, // Move vertically
+        ],
     },
     dropdown: {
-        height: 50,
-        borderColor: "gray",
-        borderWidth: 0.5,
-        borderRadius: 8,
-        paddingHorizontal: 8,
-    },
-    icon: {
-        marginRight: 5,
-    },
-    label: {
-        position: "absolute",
-        backgroundColor: "white",
-        left: 22,
-        top: 8,
-        zIndex: 999,
-        paddingHorizontal: 8,
-        fontSize: 14,
+        flex: 1,
+        backgroundColor: Colors.white,
+        borderColor: Colors.black,
+        borderWidth: 3,
+        transform: [
+            { translateX: -6 }, // Move horizontally
+            { translateY: -6 }, // Move vertically
+        ],
     },
     placeholderStyle: {
-        fontSize: 16,
+        padding: Sizes.buttonInsidePadding,
+        fontFamily: "Tektur-Bold",
+        color: Colors.black,
+        fontSize: Sizes.inputTextSize,
+        textAlign: "center",
     },
     selectedTextStyle: {
-        fontSize: 16,
+        padding: Sizes.buttonInsidePadding,
+        fontFamily: "Tektur-Bold",
+        color: Colors.black,
+        fontSize: Sizes.inputTextSize,
+        textAlign: "center",
     },
     iconStyle: {
-        width: 20,
-        height: 20,
+        display: "none",
     },
     inputSearchStyle: {
-        height: 40,
-        fontSize: 16,
+        padding: Sizes.buttonInsidePadding,
+        fontFamily: "Tektur-Bold",
+        color: Colors.black,
+        fontSize: Sizes.inputTextSize,
+        textAlign: "center",
     },
-    item: {
-        padding: 17,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    selectedStyle: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 14,
-        backgroundColor: "white",
-        shadowColor: "#000",
-        marginTop: 8,
-        marginRight: 12,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.2,
-        shadowRadius: 1.41,
-
-        elevation: 2,
-    },
-    textSelectedStyle: {
-        marginRight: 5,
-        fontSize: 16,
-    },
+    itemTextStyle: {
+        padding: Sizes.buttonInsidePadding,
+        fontFamily: "Tektur-Bold",
+        color: Colors.black,
+        fontSize: Sizes.inputTextSize,
+        textAlign: "center",
+    }
 });
+
