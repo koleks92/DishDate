@@ -4,6 +4,9 @@ import { TextInput } from "react-native-gesture-handler";
 import { DDContext } from "../store/ContextStore";
 import CuisinesList from "../components/CuisinesList";
 import DishesSelectList from "../components/DishesSelectList";
+import Background from "../components/UI/Background";
+import InputField from "../components/UI/InputField";
+import ButtonMain from "../components/UI/ButtonMain";
 
 // Fix user dishes filerting, now return empty array !
 
@@ -195,12 +198,11 @@ function NewGameScreen({ navigation }) {
 
     return (
         <View style={styles.root}>
-            <TextInput
-                value={numOfDishes}
+            <Background />
+            <InputField  value={numOfDishes}
                 keyboardType="numeric" // Show numeric keyboard
                 onChangeText={setNumOfDishes}
-                placeholder="Enter number of dishes ( 5 - 25 )"
-            />
+                placeholder="Enter number of dishes ( 5 - 25 )"/>
             <DishesSelectList
                 selectedDishesHandler={selectedDishesHandler}
                 disabledIndexes={disabledIndexes}
@@ -210,7 +212,7 @@ function NewGameScreen({ navigation }) {
                 selectedCuisineHandler={selectedCuisineHandler}
                 multiselect={true}
             />
-            <Button title="Start Game" onPress={createNewGameHandler} />
+            <ButtonMain text="Start Game" onPress={createNewGameHandler} />
         </View>
     );
 }
