@@ -3,18 +3,26 @@ import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import Sizes from "../constants/Sizes";
 import Colors from "../constants/Colors";
 
-function CustomSelect({ data, placeholder, multichoice, onSelect, selected, maxSelect }) {
+function CustomSelect({
+    data,
+    placeholder,
+    multichoice,
+    onSelect,
+    selected,
+    maxSelect,
+}) {
     const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(multichoice ? [] : null);
 
     useEffect(() => {
-        if (multichoice) {
-            setSelectedItem([...selected]);
-        } else {
-            setSelectedItem(selected);
+        if (selected) {
+            if (multichoice) {
+                setSelectedItem([...selected]);
+            } else {
+                setSelectedItem(selected);
+            }
         }
-    }
-    , [selected]);
+    }, [selected]);
 
     const handleSelect = (item) => {
         if (multichoice) {
@@ -82,12 +90,12 @@ function CustomSelect({ data, placeholder, multichoice, onSelect, selected, maxS
             </View>
             <View>
                 {open && (
-                    <ScrollView contentContainerStyle={styles.content}
-                    style={styles.dropdown}>
-                        {data.map((item) =>(
-                            <View key={item.id}>
-                                {itemToRender(item)}
-                            </View>
+                    <ScrollView
+                        contentContainerStyle={styles.content}
+                        style={styles.dropdown}
+                    >
+                        {data.map((item) => (
+                            <View key={item.id}>{itemToRender(item)}</View>
                         ))}
                     </ScrollView>
                 )}
@@ -101,6 +109,7 @@ export default CustomSelect;
 const styles = StyleSheet.create({
     root: {
         marginBottom: Sizes.buttonMarginBottom,
+        zIndex: 10
     },
     shadow: {
         width: Sizes.buttonWidth,
@@ -130,7 +139,6 @@ const styles = StyleSheet.create({
         top: Sizes.buttonHeight * 0.1, // small gap below button
         maxHeight: Sizes.buttonHeight * 4,
         width: Sizes.buttonWidth,
-        zIndex: 10, // make sure it's above other components if needed
     },
 
     content: {
