@@ -69,6 +69,7 @@ function EditDishesScreen({ route, navigation }) {
             setImage({ uri: dish.image });
             const cuisine = cuisinesList.find((c) => c.id === dish.cuisine_id);
             setCuisine(cuisine);
+            console.log("Cuisine:", cuisine);   
         }
     }, [edit]);
 
@@ -349,13 +350,6 @@ function EditDishesScreen({ route, navigation }) {
 
     // Select cuisine handler
     const selectedCuisineHandler = (cuisine) => {
-        console.log("Selected cuisine:", cuisine);
-        setCuisine(cuisine);
-    };
-
-    // Select cuisine handler
-    const selectedCuisineHandlerTest = (cuisine) => {
-        console.log("Selected cuisine test:", cuisine);
         setCuisine(cuisine);
     };
 
@@ -389,7 +383,8 @@ function EditDishesScreen({ route, navigation }) {
                 <CustomSelect
                     placeholder={"Select cuisine"}
                     data={cuisinesList}
-                    onSelect={selectedCuisineHandlerTest}
+                    onSelect={selectedCuisineHandler}
+                    selected={cuisine}
                 />
                 {image.uri ? (
                     <ImageCustom source={{ uri: image.uri }} />
