@@ -25,6 +25,7 @@ import ImageCustom from "../components/UI/ImageCustom";
 import ButtonLogo from "../components/UI/ButtonLogo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import CustomAlert from "../components/UI/CustomAlert";
+import CustomSelect from "../components/CustomSelect";
 
 function EditDishesScreen({ route, navigation }) {
     const [name, setName] = useState("");
@@ -100,7 +101,7 @@ function EditDishesScreen({ route, navigation }) {
                 title: "Ups",
                 message: "Missing name, description, cusine or image",
                 type: "info",
-            })
+            });
             setAlertVisible(true);
             return;
         }
@@ -112,8 +113,8 @@ function EditDishesScreen({ route, navigation }) {
             setAlert({
                 title: "Ups",
                 message: `Dish named ${name} is already in database`,
-                type: "info",   
-            })
+                type: "info",
+            });
             setAlertVisible(true);
             return;
         }
@@ -154,7 +155,7 @@ function EditDishesScreen({ route, navigation }) {
                 title: "Ups",
                 message: "Missing name, description, cusine or image",
                 type: "info",
-            })
+            });
             setAlertVisible(true);
             return;
         }
@@ -166,8 +167,8 @@ function EditDishesScreen({ route, navigation }) {
             setAlert({
                 title: "Ups",
                 message: `Dish named ${name} is already in database`,
-                type: "info",   
-            })
+                type: "info",
+            });
             setAlertVisible(true);
             return;
         }
@@ -177,7 +178,6 @@ function EditDishesScreen({ route, navigation }) {
 
         // Save to database
         await saveDishToDatabase(imageURL);
-
 
         navigation.goBack();
     };
@@ -349,6 +349,13 @@ function EditDishesScreen({ route, navigation }) {
 
     // Select cuisine handler
     const selectedCuisineHandler = (cuisine) => {
+        console.log("Selected cuisine:", cuisine);
+        setCuisine(cuisine);
+    };
+
+    // Select cuisine handler
+    const selectedCuisineHandlerTest = (cuisine) => {
+        console.log("Selected cuisine test:", cuisine);
         setCuisine(cuisine);
     };
 
@@ -379,10 +386,10 @@ function EditDishesScreen({ route, navigation }) {
                     onChangeText={setDescription}
                     placeholder="Enter description"
                 />
-                <CuisinesList
-                    cuisinesList={cuisinesList}
-                    selectedCuisineHandler={selectedCuisineHandler}
-                    selectedCuisine={cuisine}
+                <CustomSelect
+                    placeholder={"Select cuisine"}
+                    data={cuisinesList}
+                    onSelect={selectedCuisineHandlerTest}
                 />
                 {image.uri ? (
                     <ImageCustom source={{ uri: image.uri }} />
