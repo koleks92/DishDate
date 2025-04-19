@@ -81,7 +81,7 @@ function CustomSelect({
                         {multichoice
                             ? selectedItem.length > 0
                                 ? selectedItem
-                                      .map((item) => item.label)
+                                      .map((item) => item.name)
                                       .join(", ")
                                 : placeholder
                             : selectedItem?.name || placeholder}
