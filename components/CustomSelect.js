@@ -1,11 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import Sizes from "../constants/Sizes";
 import Colors from "../constants/Colors";
 
-function CustomSelect({ data, placeholder, multichoice, onSelect, maxSelect }) {
+function CustomSelect({ data, placeholder, multichoice, onSelect, selected, maxSelect }) {
     const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(multichoice ? [] : null);
+
+    useEffect(() => {
+        if (multichoice) {
+            setSelectedItem([...selected]);
+        } else {
+            setSelectedItem(selected);
+        }
+    }
+    , [selected]);
 
     const handleSelect = (item) => {
         if (multichoice) {
