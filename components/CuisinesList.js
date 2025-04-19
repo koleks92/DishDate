@@ -33,7 +33,8 @@ function CuisinesList({
 
     if (multiselect) {
         return (
-            <View style={styles.container}>
+            <View style={styles.root}>
+                <View style={styles.shadow}>
                 <MultiSelect
                     style={styles.dropdown}
                     placeholderStyle={styles.placeholderStyle}
@@ -55,6 +56,7 @@ function CuisinesList({
                     selectedStyle={styles.selectedStyle}
                 />
                 {allCuisinesView && <Text>All cuisines</Text>}
+                </View>
             </View>
         );
     } else {
