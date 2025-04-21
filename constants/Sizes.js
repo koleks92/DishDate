@@ -56,4 +56,13 @@ export default Sizes = {
     // GameScreen sizes
     gameIdTextSize: scrH * 0.04,
     gameIdTextNumberSize: scrH * 0.05,
+
+    // DishView sizes
+    dishViewHeight: scrH * 0.7,
+    dishViewWidth: scrW * 0.8,
+    dishViewPadding: scrH * 0.02,
+    dishNameTextSize: scrH * 0.04,
+    dishCuisineTextSize: scrH * 0.03,
+    dishDescriptionTextSize: scrH * 0.02,
+    dishViewTextMarginBottom: scrH * 0.02,
 }
