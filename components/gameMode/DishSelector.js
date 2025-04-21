@@ -2,26 +2,17 @@ import { View, Text, StyleSheet, Button } from "react-native";
 import DishView from "./DishView";
 import { useState } from "react";
 
-function DishSelector({ dishes, dishesResultHandler}) {
+function DishSelector({ dishes, dishesResultHandler }) {
     const [results, setResults] = useState([]);
 
     const [currentIndex, setCurrentIndex] = useState(0);
-
-    const handlePrevious = () => {
-        if (currentIndex > 0) {
-            setCurrentIndex(currentIndex - 1);
-        } else {
-            // Handle end of dishes
-            console.log("No more dishes");
-        }
-    };
 
     const handleNext = () => {
         if (currentIndex < dishes.length - 1) {
             setCurrentIndex(currentIndex + 1);
         } else {
             // Handle end of dishes
-            console.log("No more dishes");
+            dishesResultHandler(results)
         }
     };
 
@@ -30,22 +21,10 @@ function DishSelector({ dishes, dishesResultHandler}) {
             const existingIndex = prevResults.findIndex(
                 (result) => result.dish === dishes[currentIndex]
             );
-
-            if (existingIndex !== -1) {
-                // If dish already exists, update its result value
-                const updatedResults = [...prevResults];
-                updatedResults[existingIndex] = {
-                    ...updatedResults[existingIndex],
-                    answer: true,
-                };
-                return updatedResults;
-            } else {
-                // Otherwise, add a new entry
-                return [
-                    ...prevResults,
-                    { dish: dishes[currentIndex], answer: true },
-                ];
-            }
+            return [
+                ...prevResults,
+                { dish: dishes[currentIndex], answer: true },
+            ];
         });
         handleNext();
     };
@@ -56,21 +35,10 @@ function DishSelector({ dishes, dishesResultHandler}) {
                 (result) => result.dish === dishes[currentIndex]
             );
 
-            if (existingIndex !== -1) {
-                // If dish already exists, update its result value
-                const updatedResults = [...prevResults];
-                updatedResults[existingIndex] = {
-                    ...updatedResults[existingIndex],
-                    answer: false,
-                };
-                return updatedResults;
-            } else {
-                // Otherwise, add a new entry
-                return [
-                    ...prevResults,
-                    { dish: dishes[currentIndex], answer: false },
-                ];
-            }
+            return [
+                ...prevResults,
+                { dish: dishes[currentIndex], answer: false },
+            ];
         });
         handleNext();
     };
@@ -79,10 +47,6 @@ function DishSelector({ dishes, dishesResultHandler}) {
 
     return (
         <View style={styles.root}>
-            <View style={styles.buttonsContainer}>
-                <Button title="Previous" onPress={handlePrevious} />
-                <Button title="Next" onPress={handleNext} />
-            </View>
             <View style={styles.dishContainer}>
                 <DishView dish={currentDish} />
             </View>
@@ -96,7 +60,6 @@ function DishSelector({ dishes, dishesResultHandler}) {
                     onPress={() => dishesResultHandler(results)}
                 />
             )}
-            
         </View>
     );
 }
@@ -117,7 +80,6 @@ const styles = StyleSheet.create({
     },
     buttonsContainer: {
         display: "flex",
-        flex: 2,
         flexDirection: "row",
     },
 });
