@@ -1,12 +1,25 @@
-import { View, StyleSheet, Text, Button, ActivityIndicator } from "react-native";
+import {
+    View,
+    StyleSheet,
+    Text,
+    Button,
+    ActivityIndicator,
+    Share,
+} from "react-native";
 import { supabase } from "../util/supabase";
 import { generate6DigitNumber } from "../util/extras";
 import { useContext, useEffect, useState } from "react";
 import { DDContext } from "../store/ContextStore";
 import DishSelector from "../components/gameMode/DishSelector";
+import Background from "../components/UI/Background";
+import Colors from "../constants/Colors";
+import Sizes from "../constants/Sizes";
+import ButtonMain from "../components/UI/ButtonMain";
+import ButtonLogo from "../components/UI/ButtonLogo";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
 
 function GameScreen({ route, navigation }) {
-
     const [dishes, setDishes] = useState(route.params.dishes || null);
     const [gameRoom, setGameRoom] = useState(null);
     const [gameId, setGameId] = useState(route.params.gameId || null);
@@ -14,7 +27,8 @@ function GameScreen({ route, navigation }) {
     const [newGame, setNewGame] = useState(route.params.newGame);
     const [gameMode, setGameMode] = useState("waiting");
 
-    const { session, databaseCheckGameId, fetchGameResults } = useContext(DDContext);
+    const { session, databaseCheckGameId, fetchGameResults } =
+        useContext(DDContext);
 
     useEffect(() => {
         if (newGame) {
@@ -40,9 +54,8 @@ function GameScreen({ route, navigation }) {
         setDishes(data[0].dishes);
 
         setIsLoading(false);
+    };
 
-    }
- 
     // Create new game
     const createNewGame = async (dishes) => {
         setIsLoading(true);
@@ -105,12 +118,11 @@ function GameScreen({ route, navigation }) {
                 .update([
                     {
                         player1_results: results,
-                        status: status
+                        status: status,
                     },
                 ])
                 .eq("id", gameRoom.id)
                 .select();
-
         } else if (gameRoom.status == "open" && gameRoom.player2_id === null) {
             console.log("Saving results for player 2", session["user"]["id"]);
 
@@ -123,7 +135,7 @@ function GameScreen({ route, navigation }) {
             const { data, error } = await supabase
                 .from("GameRoom")
                 .update([
-                    {   
+                    {
                         player2_id: session["user"]["id"],
                         player2_results: results,
                         status: status,
@@ -131,9 +143,8 @@ function GameScreen({ route, navigation }) {
                 ])
                 .eq("id", gameRoom.id)
                 .select();
-            }
+        }
     };
-
 
     // Start game button handler
     const gameModeHandler = (mode) => {
@@ -153,6 +164,29 @@ function GameScreen({ route, navigation }) {
         navigation.replace("GameResultsScreen", { id: gameRoom.id });
     };
 
+    // Sharing
+    const handleShareGameId = async () => {
+        try {
+            const result = await Share.share({
+                message:
+                    "DishDate new game is waiting for you!\n" +
+                    "Game ID is: " +
+                    gameId,
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (error) {
+            Alert.alert(error.message);
+        }
+    };
+
     if (isLoading) {
         return (
             <View style={styles.root}>
@@ -160,14 +194,24 @@ function GameScreen({ route, navigation }) {
             </View>
         );
     }
-
     if (gameMode === "waiting") {
         return (
             <View style={styles.root}>
-                <Text>Game Screen</Text>
-                <Text>Game ID: {gameId}</Text>
-                <Button
-                    title="Start Game"
+                <Background />
+                <Text style={styles.gameIdText}>Game ID:</Text>
+                <Text style={styles.gameIdTextNumber}>{gameId}</Text>
+                <ButtonLogo
+                    text={
+                        <Ionicons
+                            name="share-social-sharp"
+                            size={Sizes.buttonLogoSize}
+                        />
+                    }
+                    onPress={handleShareGameId}
+                />
+                <View style={styles.seperator} />
+                <ButtonMain
+                    text={"Start Game"}
                     onPress={() => {
                         gameModeHandler(1);
                     }}
@@ -196,5 +240,18 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    gameIdText: {
+        fontSize: Sizes.gameIdTextSize,
+        fontFamily: "Tektur-Bold",
+        color: Colors.black,
+    },
+    gameIdTextNumber: {
+        fontSize: Sizes.gameIdTextNumberSize,
+        fontFamily: "Tektur-Bold",
+        color: Colors.black,
+    },
+    seperator: {
+        height: Sizes.buttonHeight,
     },
 });
