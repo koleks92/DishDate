@@ -16,6 +16,7 @@ import InputField from "../components/UI/InputField";
 import ButtonMain from "../components/UI/ButtonMain";
 import CustomSelect from "../components/CustomSelect";
 import CustomSlider from "../components/CustomSlider";
+import CustomAlert from "../components/UI/CustomAlert";
 
 // Fix user dishes filerting, now return empty array !
 
@@ -28,9 +29,15 @@ function NewGameScreen({ navigation }) {
     const [userDishes, setUserDishes] = useState([]);
 
     const [selectedCuisine, setSelectedCuisine] = useState(null);
-    const [selectedDishes, setSelectedDishes] = useState({name: "Standard Dishes", id: 0});
+    const [selectedDishes, setSelectedDishes] = useState({
+        name: "Standard Dishes",
+        id: 0,
+    });
 
     const [newGameDishes, setNewGameDishes] = useState([]);
+
+    const [alert, setAlert] = useState({});
+    const [alertVisible, setAlertVisible] = useState(false);
 
     const {
         loadUserDishes,
@@ -80,7 +87,12 @@ function NewGameScreen({ navigation }) {
     // Validate number of dishes
     const validateNumOfDishes = () => {
         if (numOfDishes < 5 || numOfDishes > 25) {
-            Alert.alert("Error", "Number of dishes must be between 5 and 25");
+            setAlert({
+                title: "Ups",
+                message: "Number of dishes must be between 5 and 25",
+                type: "info",
+            });
+            setAlertVisible(true);
             return false;
         } else {
             return true;
@@ -158,10 +170,12 @@ function NewGameScreen({ navigation }) {
             if (selectedDishes.id === 0) {
                 // Only standard dishes
                 if (standardDishesArray.length < numOfDishes) {
-                    Alert.alert(
-                        "Error",
-                        "Not enough dishes in selected cuisine!"
-                    );
+                    setAlert({
+                        title: "Ups",
+                        message: "Not enough dishes in selected cuisine!",
+                        type: "info",
+                    });
+                    setAlertVisible(true);
                     setIsLoading(false);
                     return;
                 }
@@ -170,14 +184,15 @@ function NewGameScreen({ navigation }) {
                     numOfDishes
                 );
                 setNewGameDishes(dishesArray);
-
             } else if (selectedDishes.id === 1) {
                 // Only user dishes
                 if (userDishesArray.length < numOfDishes) {
-                    Alert.alert(
-                        "Error",
-                        "Not enough dishes in selected cuisine!"
-                    );
+                    setAlert({
+                        title: "Ups",
+                        message: "Not enough dishes in selected cuisine!",
+                        type: "info",
+                    });
+                    setAlertVisible(true);
                     setIsLoading(false);
                     return;
                 }
@@ -198,10 +213,12 @@ function NewGameScreen({ navigation }) {
                 );
                 const mixedDishes = dishesArrayUser.concat(dishesArrayStandard);
                 if (mixedDishes.length < numOfDishes) {
-                    Alert.alert(
-                        "Error",
-                        "Not enough dishes in selected cuisine!"
-                    );
+                    setAlert({
+                        title: "Ups",
+                        message: "Not enough dishes in selected cuisine!",
+                        type: "info",
+                    });
+                    setAlertVisible(true);
                     setIsLoading(false);
                     return;
                 }
@@ -225,7 +242,14 @@ function NewGameScreen({ navigation }) {
     return (
         <View style={styles.root}>
             <Background />
-            <CustomSlider sliderValueHandler={(val) => setNumOfDishes(val)}/>
+            <CustomAlert
+                visible={alertVisible}
+                message={alert.message}
+                title={alert.title}
+                type={alert.type}
+                onClose={() => setAlertVisible(false)}
+            />
+            <CustomSlider sliderValueHandler={(val) => setNumOfDishes(val)} />
             <View style={styles.zIndexFix}>
                 <CustomSelect
                     data={availableDishes}
@@ -302,6 +326,6 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     zIndexFix: {
-        zIndex: 11
-    }
+        zIndex: 11,
+    },
 });
