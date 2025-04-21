@@ -45,5 +45,11 @@ export default Sizes = {
     dishesListDescriptionSize: scrH * 0.025,
     dishesListMargin: scrH * 0.03,
 
-
+    // CustomSlider sizes
+    sliderWidth: scrW * 0.6,
+    sliderHeight: scrH * 0.04,
+    railHeight: scrH * 0.04,
+    tickHeight: scrH * 0.07,
+    tickWidth: scrW * 0.08,
+    tickTextSize: scrH * 0.03,
 }
