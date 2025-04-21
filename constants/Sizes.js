@@ -52,4 +52,8 @@ export default Sizes = {
     tickHeight: scrH * 0.06,
     tickWidth: scrW * 0.08,
     tickTextSize: scrH * 0.025,
+
+    // GameScreen sizes
+    gameIdTextSize: scrH * 0.04,
+    gameIdTextNumberSize: scrH * 0.05,
 }
