@@ -50,7 +50,7 @@ function CustomSelect({
                 updated = [...selectedItem, item];
             }
             setSelectedItem(updated);
-            onSelect?.(updated);
+            onSelect?.(updated.length === 0 ? null : updated);
         } else {
             setSelectedItem(item);
             onSelect?.(item);
@@ -109,7 +109,7 @@ export default CustomSelect;
 const styles = StyleSheet.create({
     root: {
         marginBottom: Sizes.buttonMarginBottom,
-        zIndex: 10
+        zIndex: 10,
     },
     shadow: {
         width: Sizes.buttonWidth,
