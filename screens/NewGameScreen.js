@@ -1,5 +1,12 @@
 import { useState, useContext, useEffect } from "react";
-import { Text, View, StyleSheet, Button, Alert, ActivityIndicator } from "react-native";
+import {
+    Text,
+    View,
+    StyleSheet,
+    Button,
+    Alert,
+    ActivityIndicator,
+} from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { DDContext } from "../store/ContextStore";
 import CuisinesList from "../components/CuisinesList";
@@ -7,19 +14,21 @@ import DishesSelectList from "../components/DishesSelectList";
 import Background from "../components/UI/Background";
 import InputField from "../components/UI/InputField";
 import ButtonMain from "../components/UI/ButtonMain";
+import CustomSelect from "../components/CustomSelect";
+import CustomSlider from "../components/CustomSlider";
 
 // Fix user dishes filerting, now return empty array !
 
 function NewGameScreen({ navigation }) {
     const [choice, setChoice] = useState(null);
     const [numOfDishes, setNumOfDishes] = useState(0);
-    const [disabledIndexes, setDisabledIndexes] = useState([]);
+    const [availableDishes, setAvailableDishes] = useState();
 
     const [isLoading, setIsLoading] = useState(false);
     const [userDishes, setUserDishes] = useState([]);
 
     const [selectedCuisine, setSelectedCuisine] = useState(null);
-    const [selectedDishes, setSelectedDishes] = useState([]);
+    const [selectedDishes, setSelectedDishes] = useState({name: "Standard Dishes", id: 0});
 
     const [newGameDishes, setNewGameDishes] = useState([]);
 
@@ -49,11 +58,19 @@ function NewGameScreen({ navigation }) {
         setIsLoading(true);
         const data = await loadUserDishes();
 
+        const dishes = [
+            { name: "Standard Dishes", id: 0 },
+            { name: "My Dishes", id: 1 },
+            { name: "Mix Dishes", id: 2 },
+        ];
+
         // Set disabled if no user dishes or less than 5 user dishes
         if (!data || data.length === 0) {
-            setDisabledIndexes([1, 2]);
+            setAvailableDishes([dishes[0]]);
         } else if (data.length < 5) {
-            setDisabledIndexes([1]);
+            setAvailableDishes([dishes[0], dishes[2]]);
+        } else {
+            setAvailableDishes(dishes);
         }
 
         setUserDishes(data);
@@ -111,7 +128,7 @@ function NewGameScreen({ navigation }) {
 
         // Validate number of dishes
         if (validateNumOfDishes()) {
-            if (selectedCuisine === 999) {
+            if (selectedCuisine === null) {
                 // Get all standard dishes
                 standardDishesArray = dishes;
                 userDishesArray = userDishes;
@@ -138,10 +155,13 @@ function NewGameScreen({ navigation }) {
                 }
             }
 
-            if (selectedDishes === 0) {
+            if (selectedDishes.id === 0) {
                 // Only standard dishes
                 if (standardDishesArray.length < numOfDishes) {
-                    Alert.alert("Error", "Not enough dishes in selected cuisine!");
+                    Alert.alert(
+                        "Error",
+                        "Not enough dishes in selected cuisine!"
+                    );
                     setIsLoading(false);
                     return;
                 }
@@ -150,10 +170,14 @@ function NewGameScreen({ navigation }) {
                     numOfDishes
                 );
                 setNewGameDishes(dishesArray);
-            } else if (selectedDishes === 1) {
+
+            } else if (selectedDishes.id === 1) {
                 // Only user dishes
                 if (userDishesArray.length < numOfDishes) {
-                    Alert.alert("Error", "Not enough dishes in selected cuisine!");
+                    Alert.alert(
+                        "Error",
+                        "Not enough dishes in selected cuisine!"
+                    );
                     setIsLoading(false);
                     return;
                 }
@@ -162,7 +186,7 @@ function NewGameScreen({ navigation }) {
                     numOfDishes
                 );
                 setNewGameDishes(dishesArray);
-            } else if (selectedDishes === 2) {
+            } else if (selectedDishes.id === 2) {
                 // Mix dishes
                 const dishesArrayUser = createDishesArray(
                     userDishesArray,
@@ -174,7 +198,10 @@ function NewGameScreen({ navigation }) {
                 );
                 const mixedDishes = dishesArrayUser.concat(dishesArrayStandard);
                 if (mixedDishes.length < numOfDishes) {
-                    Alert.alert("Error", "Not enough dishes in selected cuisine!");
+                    Alert.alert(
+                        "Error",
+                        "Not enough dishes in selected cuisine!"
+                    );
                     setIsLoading(false);
                     return;
                 }
@@ -195,22 +222,25 @@ function NewGameScreen({ navigation }) {
             </View>
         );
     }
-
     return (
         <View style={styles.root}>
             <Background />
-            <InputField  value={numOfDishes}
-                keyboardType="numeric" // Show numeric keyboard
-                onChangeText={setNumOfDishes}
-                placeholder="Enter number of dishes ( 5 - 25 )"/>
-            <DishesSelectList
-                selectedDishesHandler={selectedDishesHandler}
-                disabledIndexes={disabledIndexes}
-            />
-            <CuisinesList
-                cuisinesList={cuisinesList}
-                selectedCuisineHandler={selectedCuisineHandler}
-                multiselect={true}
+            <CustomSlider sliderValueHandler={(val) => setNumOfDishes(val)}/>
+            <View style={styles.zIndexFix}>
+                <CustomSelect
+                    data={availableDishes}
+                    onSelect={selectedDishesHandler}
+                    selected={selectedDishes}
+                    placeholder="Select dishes"
+                />
+            </View>
+            <CustomSelect
+                data={cuisinesList}
+                onSelect={selectedCuisineHandler}
+                selected={selectedCuisine}
+                placeholder="All cuisines"
+                multichoice={true}
+                maxSelect={6}
             />
             <ButtonMain text="Start Game" onPress={createNewGameHandler} />
         </View>
@@ -271,4 +301,7 @@ const styles = StyleSheet.create({
         fontSize: 28,
         marginRight: 8,
     },
+    zIndexFix: {
+        zIndex: 11
+    }
 });
