@@ -223,6 +223,7 @@ function GameScreen({ route, navigation }) {
     if (gameMode === "playing") {
         return (
             <View style={styles.root}>
+                <Background />
                 <DishSelector
                     dishes={dishes}
                     dishesResultHandler={dishesResultHandler}
