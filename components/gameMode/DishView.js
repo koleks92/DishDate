@@ -1,11 +1,11 @@
 import { useContext } from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Animated } from "react-native";
 import { DDContext } from "../../store/ContextStore";
 import Sizes from "../../constants/Sizes";
 import Colors from "../../constants/Colors";
 import ImageCustom from "../UI/ImageCustom";
 
-function DishView({ dish }) {
+function DishView({ dish, backgroundColor }) {
     const { cuisinesList } = useContext(DDContext);
 
     const cuisine = cuisinesList.find(
@@ -15,7 +15,7 @@ function DishView({ dish }) {
     return (
         <View style={styles.root}>
             <View style={styles.shadow}>
-                <View style={styles.container}>
+                <Animated.View style={[styles.container, { backgroundColor }]}>
                     <View style={styles.textContainer}>
                         <Text style={styles.nameText}>{dish.name}</Text>
                     </View>
@@ -30,7 +30,7 @@ function DishView({ dish }) {
                     <View style={styles.imageContainer}>
                         <ImageCustom source={{ uri: dish.image }} />
                     </View>
-                </View>
+                </Animated.View>
             </View>
         </View>
     );
