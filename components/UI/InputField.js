@@ -2,7 +2,7 @@ import { View, StyleSheet, TextInput } from "react-native";
 import Colors from "../../constants/Colors";
 import Sizes from "../../constants/Sizes";
 
-function InputField({ placeholder, value, onChangeText, secureTextEntry, keyboardType }) {
+function InputField({ placeholder, value, onChangeText, secureTextEntry, keyboardType, maxLength }) {
     return (
         <View style={styles.root}>
             <View style={styles.shadow}>
@@ -11,9 +11,10 @@ function InputField({ placeholder, value, onChangeText, secureTextEntry, keyboar
                     value={value}
                     onChangeText={onChangeText}
                     secureTextEntry={secureTextEntry}
-                    style={styles.textInput}
+                    style={[styles.textInput, keyboardType === "numeric" && { fontSize: Sizes.inputTextSize * 1.6 }]}
                     autoCapitalize="none"
-                    keyboardType="numeric"
+                    keyboardType={keyboardType}
+                    maxLength={maxLength}
                 />
             </View>
         </View>
