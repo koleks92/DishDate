@@ -16,6 +16,7 @@ function DishSelector({ dishes, dishesResultHandler }) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+    const currentIndexRef = useRef(currentIndex);
 
     useEffect(() => {
         if (results.length == dishes.length) {
@@ -24,6 +25,10 @@ function DishSelector({ dishes, dishesResultHandler }) {
             dishesResultHandler(results);
         }
     }, [results]);
+
+    useEffect(() => {
+        currentIndexRef.current = currentIndex;
+    }, [currentIndex]);
 
     const rotate = pan.x.interpolate({
         inputRange: [-Sizes.scrW / 2, 0, Sizes.scrW / 2],
@@ -111,7 +116,6 @@ function DishSelector({ dishes, dishesResultHandler }) {
                 }
                 // Reset the offset
                 pan.flattenOffset();
-
             },
         })
     ).current;
@@ -119,10 +123,10 @@ function DishSelector({ dishes, dishesResultHandler }) {
     const handleYes = () => {
         setResults((prevResults) => [
             ...prevResults,
-            { dish: dishes[currentIndex], answer: true },
+            { dish: dishes[currentIndexRef.current], answer: true },
         ]);
 
-        if (currentIndex < dishes.length - 1) {
+        if (currentIndexRef.current < dishes.length - 1) {
             setCurrentIndex((prevIndex) => prevIndex + 1);
         }
     };
@@ -130,13 +134,14 @@ function DishSelector({ dishes, dishesResultHandler }) {
     const handleNo = () => {
         setResults((prevResults) => [
             ...prevResults,
-            { dish: dishes[currentIndex], answer: false },
+            { dish: dishes[currentIndexRef.current], answer: false },
         ]);
 
-        if (currentIndex < dishes.length - 1) {
+        if (currentIndexRef.current < dishes.length - 1) {
             setCurrentIndex((prevIndex) => prevIndex + 1);
         }
     };
+    
     const currentDish = dishes[currentIndex] || null;
 
     return (
