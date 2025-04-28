@@ -152,6 +152,21 @@ export const DDProvider = ({ children }) => {
         }
     };
 
+    const fetchUserName = async (userId) => {
+        const { data, error } = await supabase
+            .from("users")
+            .select("name")
+            .eq("id", userId);
+
+
+        if (error) {
+            console.error("Error fetching data:", error.message);
+            return null;
+        }
+
+        return data[0].name;
+    }
+
  
 
     return (
@@ -169,7 +184,8 @@ export const DDProvider = ({ children }) => {
                 loadUserDishesByCuisines,
                 databaseCheckGameId,
                 saveExpoPushToken,
-                fetchGameResults
+                fetchGameResults,
+                fetchUserName
             }}
         >
             {children}
