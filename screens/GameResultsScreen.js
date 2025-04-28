@@ -8,6 +8,9 @@ import {
 } from "react-native";
 import { supabase } from "../util/supabase";
 import DishesList from "../components/DishesList";
+import Background from "../components/UI/Background";
+import { DDContext } from "../store/ContextStore";
+import Colors from "../constants/Colors";
 
 function GameResultScreen({ route, navigation }) {
     const [id, setId] = useState(route.params.id);
@@ -15,6 +18,10 @@ function GameResultScreen({ route, navigation }) {
     const [isLoading, setIsLoading] = useState(true);
     const [gameRoom, setGameRoom] = useState(null);
     const [matchingResults, setMatchingResults] = useState(null);
+    const [username, setUsername] = useState(null);
+    const [date, setDate] = useState(null);
+
+    const { fetchUserName, session } = useContext(DDContext);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -42,22 +49,47 @@ function GameResultScreen({ route, navigation }) {
             console.error("Error fetching data:", error.message);
             return null;
         }
+
+        const date = new Date(data[0].created_at);
+        const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+        setDate(formattedDate);
+
         createResultsArray(data[0]);
+        getUserNames(data[0]);
         setGameRoom(data[0]);
     };
 
+    const getUserNames = async (gameRoom) => {
+        const player1Name = await fetchUserName(gameRoom.player1_id);
+        const player2Name = await fetchUserName(gameRoom.player2_id);
+
+        if (session.user.id === gameRoom.player1_id) {
+            setUsername(player2Name);
+        }
+        if (session.user.id === gameRoom.player2_id) {
+            setUsername(player1Name);
+        }
+    }
+
     // Create results array
     const createResultsArray = (results) => {
-        const resultsArray = results.player1_results
-            .filter(
-                (p1) =>
-                    p1.answer === true &&
-                    results.player2_results.some(
-                        (p2) => p2.answer === true && p2.dish.id === p1.dish.id
-                    )
+        const player1Results = results.player1_results.filter(
+            (result) => result.answer === true
+        );
+        const player2Results = results.player2_results.filter(
+            (result) => result.answer === true
+        );
+
+        const matches = player1Results
+            .filter((player1Result) =>
+                player2Results.some(
+                    (player2Result) =>
+                        player2Result.dish.id === player1Result.dish.id
+                )
             )
-            .map((p1) => p1.dish);
-        setMatchingResults(resultsArray);
+            .map((result) => result.dish);
+
+        setMatchingResults(matches);
     };
 
     // Check game status
@@ -135,7 +167,9 @@ function GameResultScreen({ route, navigation }) {
     } else {
         return (
             <View style={styles.root}>
-                <Text>Game Result Screen</Text>
+                <Background />
+                <Text style={styles.title}>Game with {username}</Text>
+                <Text style={styles.date}>{date}</Text>
                 <DishesList dishes={matchingResults} />
                 <Button
                     title="Back to Start"
@@ -159,6 +193,16 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginVertical: "10%",
     },
+    title: {
+        fontSize: Sizes.gameResultsTitleSize,
+        fontFamily: "Tektur-Bold",
+        color: Colors.black,
+    },
+    date: {
+        fontSize: Sizes.gameResultsDateSize,
+        fontFamily: "Tektur-Regular",
+        color: Colors.black,
+        marginBottom: Sizes.gameResultsTextMargin,
+    }
 });
