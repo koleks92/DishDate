@@ -23,7 +23,7 @@ function GameResultScreen({ route, navigation }) {
     const [username, setUsername] = useState(null);
     const [date, setDate] = useState(null);
 
-    const { fetchUserName, session } = useContext(DDContext);
+    const { fetchUserName, session, setNotification } = useContext(DDContext);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -92,9 +92,12 @@ function GameResultScreen({ route, navigation }) {
 
     // Check game status
     const gameStatusCheck = () => {
-        if (gameRoom.status === "closed") {
+        if (gameRoom.status === "closed" && gameRoom.notificationSend === false) {
             // Send notification to players
             sendNotifications(gameRoom);
+
+            // Update gameRoom notification
+            setNotification(gameRoom.id);
 
             setWaiting(false);
         } else if (gameRoom.status === "open") {

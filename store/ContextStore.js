@@ -167,6 +167,17 @@ export const DDProvider = ({ children }) => {
         return data[0].name;
     }
 
+    const setNotification = async (gameId) => {
+        const { data, error } = await supabase.from("GameRoom").update({
+            notificationSend: true,
+        }).eq("id", gameId);
+
+        if (error) {
+            console.error("Error updating data:", error.message);
+            return null;
+        }
+    }
+
  
 
     return (
@@ -185,7 +196,8 @@ export const DDProvider = ({ children }) => {
                 databaseCheckGameId,
                 saveExpoPushToken,
                 fetchGameResults,
-                fetchUserName
+                fetchUserName,
+                setNotification
             }}
         >
             {children}
