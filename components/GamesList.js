@@ -1,16 +1,20 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
 import { supabase } from "../util/supabase";
 import { format } from "date-fns";
+import Sizes from "../constants/Sizes";
+import { DDContext } from "../store/ContextStore";
+import Colors from "../constants/Colors";
 
 function GamesList({ gamesList, handleGamePress }) {
     // State to store player names for each game
     const [playersNames, setPlayersNames] = useState({});
+    const { session } = useContext(DDContext);
 
     // Get player name asynchronously
     const getPlayerName = async (playerId) => {
         const { data, error } = await supabase
-            .from("users") // or your custom users table
+            .from("users")
             .select("*")
             .eq("id", playerId);
 
@@ -30,11 +34,15 @@ function GamesList({ gamesList, handleGamePress }) {
             for (const game of gamesList) {
                 const player1Name = await getPlayerName(game.player1_id);
                 const player2Name = await getPlayerName(game.player2_id);
-
-                updatedNames[game.id] = {
-                    player1: player1Name,
-                    player2: player2Name
-                };
+                if (game.player1_id === session.user.id) {
+                    updatedNames[game.id] = {
+                        player: player2Name,
+                    };
+                } else if (game.player2_id === session.user.id) {
+                    updatedNames[game.id] = {
+                        player: player1Name,
+                    };
+                }
             }
 
             setPlayersNames(updatedNames);
@@ -43,47 +51,74 @@ function GamesList({ gamesList, handleGamePress }) {
         fetchPlayerNames();
     }, [gamesList]);
 
+    const renderGameView = (item) => {
+        const { player, opositePlayer } = playersNames[item.id] || {};
+
+        return (
+            <View style={styles.rootItem}>
+                <View style={styles.shadow} />
+                <Pressable
+                    onPress={() => {
+                        handleGamePress(item.id);
+                    }}
+                    style={styles.item}
+                >
+                    <Text style={styles.text}>
+                        {format(new Date(item.created_at), "do MMMM yyyy")}
+                    </Text>
+                    <Text style={styles.text}>
+                        {player ? player : "Loading player2..."}
+                    </Text>
+                </Pressable>
+            </View>
+        );
+    };
 
     return (
-        <View style={styles.root}>
-            <Text>Games List</Text>
-            <FlatList
-                data={gamesList}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => {
-                    const { player1, player2 } = playersNames[item.id] || {};
-
-                    return (
-                        <Pressable
-                            onPress={() => {handleGamePress(item.id)}}
-                            style={styles.item}
-                        >
-                            <Text>
-                                {format(new Date(item.created_at), "do MMMM yyyy")}
-                            </Text>
-                            <Text>{player1 ? player1 : "Loading player1..."}</Text>
-                            <Text>{player2 ? player2 : "Loading player2..."}</Text>
-                            <Text>{item.status}</Text>
-                        </Pressable>
-                    );
-                }}
-            />
-        </View>
+        <FlatList
+            data={gamesList}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => {
+                return renderGameView(item);
+            }}
+        />
     );
 }
 
 const styles = StyleSheet.create({
-    root: {
-        flex: 1,
-        padding: 16,
+    rootItem: {
+        width: Sizes.gameListItemWidth + 6, // add 6px for shadow
+        height: Sizes.gameListItemHeight, // add 6px for shadow
+        marginBottom: Sizes.gameListItemMargin,
+        position: "relative", // <- important
+    },
+    shadow: {
+        position: "absolute",
+        top: 6, // move down
+        left: 6, // move right
+        width: "100%",
+        height: "100%",
+        backgroundColor: Colors.black,
     },
     item: {
-        flex: 1,
-        flexDirection: "column",
-        marginBottom: 16,
-        padding: 12,
+        position: "absolute", // << YOU FORGOT THIS
+        flexDirection: "row", // ✅ you can use it
+        justifyContent: "space-around", // or whatever you want
+        alignItems: "center", // typical
+        width: Sizes.gameListItemWidth,
+        height: Sizes.gameListItemHeight,
+        top: 0,
+        left: 0,
+        padding: Sizes.gameListItemPadding,
         backgroundColor: "#f0f0f0",
+        borderWidth: 3,
+        backgroundColor: Colors.backgroundButton,
     },
+    text: {
+        fontFamily: "Tektur-Bold",
+        fontSize: Sizes.gameListItemTextSize,
+        color: Colors.black,
+    }
 });
 
 export default GamesList;

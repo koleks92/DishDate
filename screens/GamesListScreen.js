@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
 import GamesList from "../components/GamesList";
+import Background from "../components/UI/Background";
 
 function GamesListScreen({ navigation }) {
     const { session } = useContext(DDContext);
@@ -38,8 +39,6 @@ function GamesListScreen({ navigation }) {
         navigation.navigate("GameResultsScreen", { id: gameId });
     };
 
-    
-
     if (isLoading) {
         return (
             <View style={styles.root}>
@@ -50,7 +49,12 @@ function GamesListScreen({ navigation }) {
 
     return (
         <View style={styles.root}>
-            <GamesList gamesList={gamesList} handleGamePress={handleGamePress} />
+            <Background />
+            <Text style={styles.title}> My Games</Text>
+            <GamesList
+                gamesList={gamesList}
+                handleGamePress={handleGamePress}
+            />
         </View>
     );
 }
@@ -63,5 +67,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    title: {
+        fontSize: Sizes.gameListTitleSize,
+        fontFamily: "Tektur-Bold",
+        color: Colors.black,
+        marginBottom: Sizes.gameListTitleMargin, 
     },
 });

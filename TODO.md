@@ -13,6 +13,10 @@
 
 - Sharing game id, deep linking so you can open the app
 
+- Notifiactions android doesnt work
+
+- When logging in, maybe choose a friendly name !
+
 ## Extra
 
 - Users can add/change their profile picture
