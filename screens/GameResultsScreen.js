@@ -11,8 +11,8 @@ import DishesList from "../components/DishesList";
 import Background from "../components/UI/Background";
 import { DDContext } from "../store/ContextStore";
 import Colors from "../constants/Colors";
-import { format } from "date-fns";
-
+import { format, set } from "date-fns";
+import ButtonMain from "../components/UI/ButtonMain";
 
 function GameResultScreen({ route, navigation }) {
     const [id, setId] = useState(route.params.id);
@@ -21,7 +21,6 @@ function GameResultScreen({ route, navigation }) {
     const [gameRoom, setGameRoom] = useState(null);
     const [matchingResults, setMatchingResults] = useState(null);
     const [username, setUsername] = useState(null);
-    const [date, setDate] = useState(null);
 
     const { fetchUserName, session, setNotification } = useContext(DDContext);
 
@@ -39,6 +38,20 @@ function GameResultScreen({ route, navigation }) {
             gameStatusCheck();
         }
     }, [gameRoom]);
+
+    const refreshGameRoom = async () => {
+        setIsLoading(true);
+        const timer = setTimeout(() => {
+            fetchGameRoomHandler(id);
+            setIsLoading(false);
+        }, 1000); // Wait 1 second
+
+        if (gameRoom.status === "closed") {
+            setWaiting(false);
+        }
+
+        return () => clearTimeout(timer); // Cleanup on unmount
+    };
 
     const fetchGameRoomHandler = async (id) => {
         console.log("Fetching game room");
@@ -92,7 +105,10 @@ function GameResultScreen({ route, navigation }) {
 
     // Check game status
     const gameStatusCheck = () => {
-        if (gameRoom.status === "closed" && gameRoom.notificationSend === false) {
+        if (
+            gameRoom.status === "closed" &&
+            gameRoom.notificationSend === false
+        ) {
             // Send notification to players
             sendNotifications(gameRoom);
 
@@ -156,13 +172,15 @@ function GameResultScreen({ route, navigation }) {
     if (waiting) {
         return (
             <View style={styles.root}>
-                <Text>Waiting for the other player to finish</Text>
-                <Button
-                    title="Back to Start"
-                    onPress={() => {
-                        navigation.navigate("StartScreen");
-                    }}
-                />
+                <Background />
+                <Text style={styles.waitingText}>
+                    Waiting for the other player to finish
+                </Text>
+                <ButtonMain
+                    text="Refresh"
+                    onPress={refreshGameRoom}
+                    />
+                
             </View>
         );
     } else {
@@ -170,17 +188,10 @@ function GameResultScreen({ route, navigation }) {
             <View style={styles.root}>
                 <Background />
                 <Text style={styles.title}>Game with {username}</Text>
-                <Text style={styles.date}>{format(new Date(gameRoom.created_at), "do MMMM yyyy")}</Text>
+                <Text style={styles.date}>
+                    {format(new Date(gameRoom.created_at), "do MMMM yyyy")}
+                </Text>
                 <DishesList dishes={matchingResults} />
-                <Button
-                    title="Back to Start"
-                    onPress={() => {
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: "StartScreen" }],
-                        });
-                    }}
-                />
             </View>
         );
     }
@@ -206,4 +217,11 @@ const styles = StyleSheet.create({
         color: Colors.black,
         marginBottom: Sizes.gameResultsTextMargin,
     },
+    waitingText: {
+        fontSize: Sizes.gameResultsWaitingTextSize,
+        fontFamily: "Tektur-Bold",
+        tAlign: "center",
+        color: Colors.black,
+        marginBottom: Sizes.gameResultsWaitingTextMargin,
+    }
 });
