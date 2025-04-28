@@ -11,6 +11,8 @@ import DishesList from "../components/DishesList";
 import Background from "../components/UI/Background";
 import { DDContext } from "../store/ContextStore";
 import Colors from "../constants/Colors";
+import { format } from "date-fns";
+
 
 function GameResultScreen({ route, navigation }) {
     const [id, setId] = useState(route.params.id);
@@ -50,10 +52,6 @@ function GameResultScreen({ route, navigation }) {
             return null;
         }
 
-        const date = new Date(data[0].created_at);
-        const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-        setDate(formattedDate);
-
         createResultsArray(data[0]);
         getUserNames(data[0]);
         setGameRoom(data[0]);
@@ -69,7 +67,7 @@ function GameResultScreen({ route, navigation }) {
         if (session.user.id === gameRoom.player2_id) {
             setUsername(player1Name);
         }
-    }
+    };
 
     // Create results array
     const createResultsArray = (results) => {
@@ -169,7 +167,7 @@ function GameResultScreen({ route, navigation }) {
             <View style={styles.root}>
                 <Background />
                 <Text style={styles.title}>Game with {username}</Text>
-                <Text style={styles.date}>{date}</Text>
+                <Text style={styles.date}>{format(new Date(gameRoom.created_at), "do MMMM yyyy")}</Text>
                 <DishesList dishes={matchingResults} />
                 <Button
                     title="Back to Start"
@@ -204,5 +202,5 @@ const styles = StyleSheet.create({
         fontFamily: "Tektur-Regular",
         color: Colors.black,
         marginBottom: Sizes.gameResultsTextMargin,
-    }
+    },
 });
