@@ -118,6 +118,8 @@ function GameResultScreen({ route, navigation }) {
             setWaiting(false);
         } else if (gameRoom.status === "open") {
             setWaiting(true);
+        } else if (gameRoom.status === "closed") {
+            setWaiting(false);
         }
     };
 
@@ -178,7 +180,7 @@ function GameResultScreen({ route, navigation }) {
                 </Text>
                 <ButtonMain
                     text="Refresh"
-                    onPress={refreshGameRoom}
+                    onPress={() => {refreshGameRoom()}}
                     />
                 
             </View>
