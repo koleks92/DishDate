@@ -66,4 +66,9 @@ export default Sizes = {
     dishCuisineTextSize: scrH * 0.03,
     dishDescriptionTextSize: scrH * 0.02,
     dishViewTextMarginBottom: scrH * 0.02,
+
+    // GameResultsScreen sizes
+    gameResultsTitleSize: scrH * 0.025,
+    gameResultsDateSize: scrH * 0.02,
+    gameResultsTextMargin: scrH * 0.01,
 }
