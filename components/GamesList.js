@@ -3,7 +3,7 @@ import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
 import { supabase } from "../util/supabase";
 import { format } from "date-fns";
 
-function GamesList({ gamesList }) {
+function GamesList({ gamesList, handleGamePress }) {
     // State to store player names for each game
     const [playersNames, setPlayersNames] = useState({});
 
@@ -43,6 +43,7 @@ function GamesList({ gamesList }) {
         fetchPlayerNames();
     }, [gamesList]);
 
+
     return (
         <View style={styles.root}>
             <Text>Games List</Text>
@@ -54,7 +55,7 @@ function GamesList({ gamesList }) {
 
                     return (
                         <Pressable
-                            onPress={() => console.log(item.id)}
+                            onPress={() => {handleGamePress(item.id)}}
                             style={styles.item}
                         >
                             <Text>
