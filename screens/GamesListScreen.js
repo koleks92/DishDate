@@ -4,7 +4,7 @@ import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
 import GamesList from "../components/GamesList";
 
-function GamesListScreen() {
+function GamesListScreen({ navigation }) {
     const { session } = useContext(DDContext);
 
     const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +33,11 @@ function GamesListScreen() {
         fetchGamesList();
     }, []);
 
+    const handleGamePress = (gameId) => {
+        // Navigate to the game screen with the selected gameId
+        navigation.navigate("GameResultsScreen", { id: gameId });
+    };
+
     
 
     if (isLoading) {
@@ -45,7 +50,7 @@ function GamesListScreen() {
 
     return (
         <View style={styles.root}>
-            <GamesList gamesList={gamesList} />
+            <GamesList gamesList={gamesList} handleGamePress={handleGamePress} />
         </View>
     );
 }
