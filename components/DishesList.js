@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { View, Text, FlatList, StyleSheet, Image, Button } from "react-native";
-import CustomImage from "./UI/ImageCustom";
+import ImageCustom from "./UI/ImageCustom";
 import Sizes from "../constants/Sizes";
 import Colors from "../constants/Colors";
 import { DDContext } from "../store/ContextStore";
@@ -23,11 +23,11 @@ const DishesList = ({ dishes, editButton, editButtonHandler }) => {
             <Text style={styles.title}>{item.name}</Text>
             <Text style={styles.cuisine}>{getCuisineName(item.cuisine_id)}</Text>
             {item.image === null ? (
-                <CustomImage
+                <ImageCustom
                     empty={true}
                 />
             ) : (
-                <CustomImage
+                <ImageCustom
                     source={{ uri: item.image }}
                 />
             )}
@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     item: {
+        alignItems: "center",
         marginBottom: Sizes.dishesListMargin,
     },
     title: {
