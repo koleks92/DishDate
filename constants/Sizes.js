@@ -71,4 +71,13 @@ export default Sizes = {
     gameResultsTitleSize: scrH * 0.025,
     gameResultsDateSize: scrH * 0.02,
     gameResultsTextMargin: scrH * 0.01,
+
+    // GamesListScreen sizes
+    gameListTitleSize: scrH * 0.04,
+    gameListTitleMargin: scrH * 0.02,
+    gameListItemWidth: scrW * 0.8,
+    gameListItemHeight: scrH * 0.08,
+    gameListItemMargin: scrH * 0.02,
+    gameListItemPadding: scrH * 0.02,
+    gameListItemTextSize: scrH * 0.02,
 }
