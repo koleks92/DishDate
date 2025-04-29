@@ -16,7 +16,7 @@ function NewGameScreen({ navigation }) {
     const [numOfDishes, setNumOfDishes] = useState(0);
     const [availableDishes, setAvailableDishes] = useState();
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [userDishes, setUserDishes] = useState([]);
 
     const [selectedCuisine, setSelectedCuisine] = useState(null);
@@ -42,6 +42,9 @@ function NewGameScreen({ navigation }) {
 
     useEffect(() => {
         getUserDishes();
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 500);
     }, []);
 
     // Root view fade in animation
@@ -66,7 +69,6 @@ function NewGameScreen({ navigation }) {
 
     // Get user dishes from the database
     const getUserDishes = async () => {
-        setIsLoading(true);
         const data = await loadUserDishes();
 
         const dishes = [
@@ -85,7 +87,6 @@ function NewGameScreen({ navigation }) {
         }
 
         setUserDishes(data);
-        setIsLoading(false);
     };
 
     // Validate number of dishes

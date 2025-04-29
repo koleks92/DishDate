@@ -18,18 +18,17 @@ import Colors from "../constants/Colors";
 import InputField from "../components/UI/InputField";
 import ButtonMain from "../components/UI/ButtonMain";
 import ImageCustom from "../components/UI/ImageCustom";
+import Loading from "../components/UI/Loading";
 
 function ProfileScreen({ navigation }) {
     const [userName, setUserName] = useState("No name");
     const [userEmail, setUserEmail] = useState("No email");
     const [userAvatar, setUserAvatar] = useState(null);
     const [updateLoading, setUpdateLoading] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchUserData = async () => {
-            setIsLoading(true);
-
             const {
                 data: { user },
                 error,
@@ -42,7 +41,10 @@ function ProfileScreen({ navigation }) {
                 setUserAvatar(metadata.avatar_url);
             }
 
-            setIsLoading(false);
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
+    
 
             if (error) {
                 console.error("Error fetching user data:", error.message);
@@ -75,7 +77,7 @@ function ProfileScreen({ navigation }) {
     if (isLoading) {
         return (
             <View style={styles.root}>
-                <ActivityIndicator size="large" color="blue" />
+                <Loading />
             </View>
         );
     }
