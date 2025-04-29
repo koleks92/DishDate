@@ -5,11 +5,10 @@ import {
     Alert,
     Platform,
     Pressable,
-    ActivityIndicator,
     TouchableWithoutFeedback,
     Keyboard,
-    ScrollView,
     KeyboardAvoidingView,
+    Animated,
 } from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
@@ -26,6 +25,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../components/UI/Logo";
 import Colors from "../constants/Colors";
 import CustomAlert from "../components/UI/CustomAlert";
+import Loading from "../components/UI/Loading";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -36,6 +36,8 @@ function StartScreen({ navigation }) {
 
     const notificationListener = useRef();
     const responseListener = useRef();
+
+    const fadeAnim = useRef(new Animated.Value(0)).current;
 
     // Context Stores
     const {
@@ -76,6 +78,13 @@ function StartScreen({ navigation }) {
             }
         });
         setIsLoading(false);
+
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+        }).start();
+
     }, []);
 
     useEffect(() => {
@@ -144,6 +153,7 @@ function StartScreen({ navigation }) {
 
     // Handle Google Sign In
     const handleGoogleSignIn = async () => {
+        setIsLoading(true);
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
@@ -162,10 +172,12 @@ function StartScreen({ navigation }) {
         } catch (error) {
             console.error("Google Sign-In error:", error);
         }
+        setIsLoading(false);
     };
 
     // Handle Apple Sign in
     const handleAppleSignIn = async () => {
+        setIsLoading(true);
         try {
             const credential = await AppleAuthentication.signInAsync({
                 requestedScopes: [
@@ -189,10 +201,12 @@ function StartScreen({ navigation }) {
                 console.error("Apple Sign-In error:", error);
             }
         }
+        setIsLoading(false);
     };
 
     // Handle SignUp
     const handleSignUp = async () => {
+        setIsLoading(true);
         if (!email || !password) {
             setAlertVisible(true);
             setAlert({
@@ -220,10 +234,12 @@ function StartScreen({ navigation }) {
                 });
             }
         }
+        setIsLoading(false);
     };
 
     // Handle SignIn
     const handleSignIn = async () => {
+        setIsLoading(true);
         if (!email || !password) {
             setAlertVisible(true);
             setAlert({
@@ -247,14 +263,11 @@ function StartScreen({ navigation }) {
                 });
             }
         }
+        setIsLoading(false);
     };
 
     if (isLoading) {
-        return (
-            <View style={styles.root}>
-                <ActivityIndicator size="large" color="blue" />
-            </View>
-        );
+        return <Loading />;
     }
 
     return (
@@ -263,7 +276,8 @@ function StartScreen({ navigation }) {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                <View style={styles.root}>
+                <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
+                    <Loading visible={isLoading} />
                     <Background />
                     <CustomAlert
                         visible={alertVisible}
@@ -366,7 +380,7 @@ function StartScreen({ navigation }) {
                             </View>
                         )}
                     </View>
-                </View>
+                </Animated.View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
     );
