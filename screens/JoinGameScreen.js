@@ -1,16 +1,37 @@
-import { useContext, useState } from "react";
-import { Text, View, StyleSheet, TextInput, Button } from "react-native";
+import { useContext, useState, useRef, useEffect } from "react";
+import {
+    Text,
+    View,
+    StyleSheet,
+    Animated,
+    TouchableWithoutFeedback,
+    Keyboard,
+    KeyboardAvoidingView,
+    Platform,
+} from "react-native";
 import { DDContext } from "../store/ContextStore";
 import Background from "../components/UI/Background";
 import Sizes from "../constants/Sizes";
 import Colors from "../constants/Colors";
 import InputField from "../components/UI/InputField";
 import ButtonMain from "../components/UI/ButtonMain";
+import Loading from "../components/UI/Loading";
 
 function JoinGameScreen({ navigation }) {
     const [gameId, setGameId] = useState("");
 
     const { databaseCheckGameId } = useContext(DDContext);
+
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    // Root view fade in animation
+    useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 250,
+            useNativeDriver: false,
+        }).start();
+    }, []);
 
     function isSixDigits(value) {
         return /^\d{6}$/.test(value);
@@ -34,20 +55,29 @@ function JoinGameScreen({ navigation }) {
     };
 
     return (
-        <View style={styles.root}>
-            <Background />
-            <Text style={styles.gameIdText}>Game ID:</Text>
-            <View style={styles.inputFieldContainer}>
-                <InputField
-                    value={gameId}
-                    onChangeText={setGameId}
-                    placeholder="Enter Game ID"
-                    keyboardType={"numeric"}
-                    maxLength={6}
-                />
-            </View>
-            <ButtonMain text="Join Game" onPress={joinGameHandler} />
-        </View>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
+                    <Background />
+                    <View>
+                        <Text style={styles.gameIdText}>Game ID:</Text>
+                    </View>
+                    <View style={styles.inputFieldContainer}>
+                        <InputField
+                            value={gameId}
+                            onChangeText={setGameId}
+                            placeholder="Enter Game ID"
+                            keyboardType={"numeric"}
+                            maxLength={6}
+                        />
+                    </View>
+                    <ButtonMain text="Join Game" onPress={joinGameHandler} />
+                </Animated.View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -68,6 +98,5 @@ const styles = StyleSheet.create({
     },
     inputFieldContainer: {
         marginBottom: Sizes.buttonHeight,
-
     },
 });
