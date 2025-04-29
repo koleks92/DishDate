@@ -277,6 +277,14 @@ function StartScreen({ navigation }) {
         setIsLoading(false);
     }
 
+    if (isLoading) {
+        return (
+            <View style={styles.root}>
+                <Loading visible={isLoading} />
+            </View>
+        );
+    }
+
     return (
         <KeyboardAvoidingView
             style={{ flex: 1 }}
@@ -284,7 +292,6 @@ function StartScreen({ navigation }) {
         >
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
-                    <Loading visible={isLoading} />
                     <Background />
                     <CustomAlert
                         visible={alertVisible}
