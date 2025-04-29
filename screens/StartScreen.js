@@ -78,14 +78,18 @@ function StartScreen({ navigation }) {
             }
         });
         setIsLoading(false);
-
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 200,
-            useNativeDriver: true,
-        }).start();
-
     }, []);
+
+    // Root view fade in animation
+    useEffect(() => {
+        if (!isLoading) {
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 200,
+                useNativeDriver: true,
+            }).start();
+        }
+    }, [isLoading]);
 
     useEffect(() => {
         if (!session || !session.user) {
@@ -266,8 +270,11 @@ function StartScreen({ navigation }) {
         setIsLoading(false);
     };
 
-    if (isLoading) {
-        return <Loading />;
+    // Handle SignOut
+    const handleSignOutHandler = async () => {
+        setIsLoading(true);
+        await handleSignOut();
+        setIsLoading(false);
     }
 
     return (
@@ -288,7 +295,7 @@ function StartScreen({ navigation }) {
                     />
                     {session && (
                         <View style={styles.profileContainer}>
-                            <Pressable onPress={handleSignOut}>
+                            <Pressable onPress={handleSignOutHandler}>
                                 <Ionicons
                                     name="log-out-outline"
                                     color={Colors.black}
