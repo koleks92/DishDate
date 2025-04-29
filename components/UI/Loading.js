@@ -1,41 +1,51 @@
-import { StyleSheet, View, Animated, Easing } from "react-native";
+import { StyleSheet, View, Animated, Modal } from "react-native";
 import Background from "./Background";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import Sizes from "../../constants/Sizes";
-Easing
-function Loading() {
-    const animatedValue = useRef(new Animated.Value(0.8)).current;
+import Colors from "../../constants/Colors";
 
-    Animated.loop(
-        Animated.sequence([
-          Animated.timing(animatedValue, {
-            toValue: 1.1,
-            duration: 500,
-            useNativeDriver: true,
-          }),
-          Animated.timing(animatedValue, {
-            toValue: 0.8,
-            duration: 500,
-            useNativeDriver: true,
-          }),
-        ])
-      ).start();
-      
+function Loading({ visible }) {
+    const animatedValue = useRef(new Animated.Value(0.4)).current;
+
+    useEffect(() => {
+        const loop = Animated.loop(
+            Animated.sequence([
+                Animated.timing(animatedValue, {
+                    toValue: 0.6,
+                    duration: 500,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(animatedValue, {
+                    toValue: 0.4,
+                    duration: 500,
+                    useNativeDriver: true,
+                }),
+            ])
+        );
+        loop.start();
+        return () => loop.stop(); // Cleanup on unmount
+    }, []);
 
     return (
-        <View style={styles.root}>
-            <Background />
-            <Animated.Image
-                source={require("../../assets/Images/LogoTextTransparent.png")}
-                style={[
-                    styles.image,
-                    {
-                        transform: [{ scale: animatedValue }],
-                        opacity: animatedValue,
-                    },
-                ]}
-            />
-        </View>
+        <Modal
+            visible={visible}
+            transparent={true}
+            animationType="fade"
+            statusBarTranslucent={true}
+        >
+            <View style={styles.root}>
+                <Animated.Image
+                    source={require("../../assets/Images/LogoTextTransparent.png")}
+                    style={[
+                        styles.image,
+                        {
+                            transform: [{ scale: animatedValue }],
+                            opacity: animatedValue,
+                        },
+                    ]}
+                />
+            </View>
+        </Modal>
     );
 }
 
@@ -46,6 +56,13 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: Colors.background,
+        position: "absolute", // <--- Helps stack over existing UI
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 999, // <--- Ensure it's above everything
     },
     image: {
         width: Sizes.scrW * 0.8,
