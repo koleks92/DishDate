@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+    createStackNavigator,
+    CardStyleInterpolators,
+} from "@react-navigation/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import StartScreen from "./screens/StartScreen";
@@ -53,7 +56,12 @@ function App() {
                             initialRouteName="StartScreen" // Set the initial screen here
                             screenOptions={{
                                 headerShown: false,
-                                cardStyle: { backgroundColor: Colors.background }, // transition bg color
+                                cardStyle: {
+                                    backgroundColor: Colors.background,
+                                },
+                                gestureEnabled: true,
+                                cardStyleInterpolator:
+                                    CardStyleInterpolators.forHorizontalIOS, // <-- This makes Android behave like iOS // transition bg color
                             }}
                         >
                             <Stack.Screen
