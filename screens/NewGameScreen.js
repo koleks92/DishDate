@@ -1,22 +1,13 @@
-import { useState, useContext, useEffect } from "react";
-import {
-    Text,
-    View,
-    StyleSheet,
-    Button,
-    Alert,
-    ActivityIndicator,
-} from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { useState, useContext, useEffect, useRef } from "react";
+import { Text, View, StyleSheet, Animated } from "react-native";
 import { DDContext } from "../store/ContextStore";
-import CuisinesList from "../components/CuisinesList";
-import DishesSelectList from "../components/DishesSelectList";
 import Background from "../components/UI/Background";
-import InputField from "../components/UI/InputField";
 import ButtonMain from "../components/UI/ButtonMain";
 import CustomSelect from "../components/CustomSelect";
 import CustomSlider from "../components/CustomSlider";
 import CustomAlert from "../components/UI/CustomAlert";
+import Loading from "../components/UI/Loading";
+Loading;
 
 // Fix user dishes filerting, now return empty array !
 
@@ -39,6 +30,8 @@ function NewGameScreen({ navigation }) {
     const [alert, setAlert] = useState({});
     const [alertVisible, setAlertVisible] = useState(false);
 
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
     const {
         loadUserDishes,
         dishes,
@@ -50,6 +43,17 @@ function NewGameScreen({ navigation }) {
     useEffect(() => {
         getUserDishes();
     }, []);
+
+    // Root view fade in animation
+    useEffect(() => {
+        if (!isLoading) {
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 250,
+                useNativeDriver: true,
+            }).start();
+        }
+    }, [isLoading]);
 
     useEffect(() => {
         if (newGameDishes.length > 0) {
@@ -232,16 +236,10 @@ function NewGameScreen({ navigation }) {
         setIsLoading(false);
     };
 
-    if (isLoading) {
-        return (
-            <View style={styles.root}>
-                <ActivityIndicator size="large" color="#0000ff" />
-            </View>
-        );
-    }
     return (
-        <View style={styles.root}>
+        <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
             <Background />
+            <Loading visible={isLoading} />
             <CustomAlert
                 visible={alertVisible}
                 message={alert.message}
@@ -267,7 +265,7 @@ function NewGameScreen({ navigation }) {
                 maxSelect={6}
             />
             <ButtonMain text="Start Game" onPress={createNewGameHandler} />
-        </View>
+        </Animated.View>
     );
 }
 
