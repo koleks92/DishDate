@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
         zIndex: 999, // <--- Ensure it's above everything
     },
     image: {
-        width: Sizes.scrW * 0.4,
-        height: Sizes.scrH * 0.4,
+        width: Sizes.scrW * 0.8,
+        height: Sizes.scrH * 0.8,
         resizeMode: "contain",
     },
 });
