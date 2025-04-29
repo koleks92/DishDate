@@ -236,10 +236,17 @@ function NewGameScreen({ navigation }) {
         setIsLoading(false);
     };
 
+    if (isLoading) {
+        return (
+            <View style={styles.root}>
+                <Loading visible={isLoading} />
+            </View>
+        );
+    }
+
     return (
         <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
             <Background />
-            <Loading visible={isLoading} />
             <CustomAlert
                 visible={alertVisible}
                 message={alert.message}
