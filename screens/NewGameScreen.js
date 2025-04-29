@@ -234,7 +234,9 @@ function NewGameScreen({ navigation }) {
                 setNewGameDishes(mixedDishesArray);
             }
         }
-        setIsLoading(false);
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 500);
     };
 
     if (isLoading) {
