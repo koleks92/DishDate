@@ -77,6 +77,5 @@ const styles = StyleSheet.create({
             { translateX: 6 }, // Move horizontally
             { translateY: 6 }, // Move vertically], // This will scale the component to 50% of its original size
         ],
-        opacity: 0.9,
     },
 });
