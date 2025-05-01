@@ -28,7 +28,6 @@ function GamesList({ gamesList, handleGamePress }) {
     
     // UseEffect to set the player names once the gamesList is loaded
     useEffect(() => {
-        console.log("GamesList useEffect");
         const fetchPlayerNames = async () => {
             const updatedNames = {};
             
@@ -36,8 +35,7 @@ function GamesList({ gamesList, handleGamePress }) {
                 if (game.status === "closed") {
                     const player1Name = await getPlayerName(game.player1_id);
                     const player2Name = await getPlayerName(game.player2_id);
-                    console.log("Player1 name:", player1Name);
-                    console.log("Player2 name:", player2Name);
+
                     if (game.player1_id === session.user.id) {
                         updatedNames[game.id] = {
                             player: player2Name,
