@@ -1,14 +1,7 @@
-import {
-    View,
-    StyleSheet,
-    Text,
-    Button,
-    ActivityIndicator,
-    Share,
-} from "react-native";
+import { View, StyleSheet, Text, Animated, Share } from "react-native";
 import { supabase } from "../util/supabase";
 import { generate6DigitNumber } from "../util/extras";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { DDContext } from "../store/ContextStore";
 import DishSelector from "../components/gameMode/DishSelector";
 import Background from "../components/UI/Background";
@@ -17,15 +10,18 @@ import Sizes from "../constants/Sizes";
 import ButtonMain from "../components/UI/ButtonMain";
 import ButtonLogo from "../components/UI/ButtonLogo";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
+import Loading from "../components/UI/Loading";
 
 function GameScreen({ route, navigation }) {
     const [dishes, setDishes] = useState(route.params.dishes || null);
     const [gameRoom, setGameRoom] = useState(null);
     const [gameId, setGameId] = useState(route.params.gameId || null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [newGame, setNewGame] = useState(route.params.newGame);
     const [gameMode, setGameMode] = useState("waiting");
+
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const secondFadeAnim = useRef(new Animated.Value(0)).current;
 
     const { session, databaseCheckGameId, fetchGameResults } =
         useContext(DDContext);
@@ -40,10 +36,30 @@ function GameScreen({ route, navigation }) {
         }
     }, []);
 
+    // Root view fade in animation
+    useEffect(() => {
+        if (!isLoading) {
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 250,
+                useNativeDriver: true,
+            }).start();
+        }
+    }, [isLoading]);
+
+    // Second view fade in animation
+    useEffect(() => {
+        if (gameMode === "playing") {
+            Animated.timing(secondFadeAnim, {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true,
+            }).start();
+        }
+    }, [gameMode]);
+
     // Join existing game
     const joinExistingGame = async (gameId) => {
-        setIsLoading(true);
-
         const { data, error } = await supabase
             .from("GameRoom")
             .select("*")
@@ -53,13 +69,13 @@ function GameScreen({ route, navigation }) {
         setGameRoom(data[0]);
         setDishes(data[0].dishes);
 
-        setIsLoading(false);
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 500);
     };
 
     // Create new game
     const createNewGame = async (dishes) => {
-        setIsLoading(true);
-
         let gameId;
         let gameIdExists = true; // Initialize to true to enter the loop at least once
 
@@ -96,7 +112,9 @@ function GameScreen({ route, navigation }) {
             setGameId(gameId);
             setGameRoom(data[0]);
         }
-        setIsLoading(false);
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 500);
     };
 
     // Save result to the database
@@ -190,13 +208,13 @@ function GameScreen({ route, navigation }) {
     if (isLoading) {
         return (
             <View style={styles.root}>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <Loading visible={isLoading} />
             </View>
         );
     }
     if (gameMode === "waiting") {
         return (
-            <View style={styles.root}>
+            <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
                 <Background />
                 <Text style={styles.gameIdText}>Game ID:</Text>
                 <Text style={styles.gameIdTextNumber}>{gameId}</Text>
@@ -216,19 +234,19 @@ function GameScreen({ route, navigation }) {
                         gameModeHandler(1);
                     }}
                 />
-            </View>
+            </Animated.View>
         );
     }
 
     if (gameMode === "playing") {
         return (
-            <View style={styles.root}>
+            <Animated.View style={[styles.root, { opacity: secondFadeAnim }]}>
                 <Background />
                 <DishSelector
                     dishes={dishes}
                     dishesResultHandler={dishesResultHandler}
                 />
-            </View>
+            </Animated.View>
         );
     }
 }
