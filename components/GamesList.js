@@ -14,33 +14,42 @@ function GamesList({ gamesList, handleGamePress }) {
     // Get player name asynchronously
     const getPlayerName = async (playerId) => {
         const { data, error } = await supabase
-            .from("users")
-            .select("*")
-            .eq("id", playerId);
-
+        .from("users")
+        .select("*")
+        .eq("id", playerId);
+        
         if (error) {
-            console.error("Error fetching data:", error.message);
-            return "No name";
+            console.error("Error fetching player name:", error.message);
+            return "Error";
         }
-
-        return data[0]?.name || "No name";
+        
+        return data[0]?.name;
     };
-
+    
     // UseEffect to set the player names once the gamesList is loaded
     useEffect(() => {
+        console.log("GamesList useEffect");
         const fetchPlayerNames = async () => {
             const updatedNames = {};
-
+            
             for (const game of gamesList) {
-                const player1Name = await getPlayerName(game.player1_id);
-                const player2Name = await getPlayerName(game.player2_id);
-                if (game.player1_id === session.user.id) {
+                if (game.status === "closed") {
+                    const player1Name = await getPlayerName(game.player1_id);
+                    const player2Name = await getPlayerName(game.player2_id);
+                    console.log("Player1 name:", player1Name);
+                    console.log("Player2 name:", player2Name);
+                    if (game.player1_id === session.user.id) {
+                        updatedNames[game.id] = {
+                            player: player2Name,
+                        };
+                    } else if (game.player2_id === session.user.id) {
+                        updatedNames[game.id] = {
+                            player: player1Name,
+                        };
+                    }
+                } else if (game.status === "open") {
                     updatedNames[game.id] = {
-                        player: player2Name,
-                    };
-                } else if (game.player2_id === session.user.id) {
-                    updatedNames[game.id] = {
-                        player: player1Name,
+                        player: "Not finished yet",
                     };
                 }
             }
@@ -49,10 +58,11 @@ function GamesList({ gamesList, handleGamePress }) {
         };
 
         fetchPlayerNames();
-    }, [gamesList]);
+    }, []);
 
     const renderGameView = (item) => {
-        const { player, opositePlayer } = playersNames[item.id] || {};
+
+        const { player } = playersNames[item.id] || {};
 
         return (
             <View style={styles.rootItem}>
@@ -118,7 +128,7 @@ const styles = StyleSheet.create({
         fontFamily: "Tektur-Bold",
         fontSize: Sizes.gameListItemTextSize,
         color: Colors.black,
-    }
+    },
 });
 
 export default GamesList;
