@@ -137,8 +137,6 @@ function NewGameScreen({ navigation }) {
 
     // Create new game
     const createNewGameHandler = async () => {
-        setIsLoading(true);
-
         let standardDishesArray = [];
         let userDishesArray = [];
         let selectedCuisinesIds = [];
@@ -234,9 +232,6 @@ function NewGameScreen({ navigation }) {
                 setNewGameDishes(mixedDishesArray);
             }
         }
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 500);
     };
 
     if (isLoading) {
