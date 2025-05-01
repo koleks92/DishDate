@@ -1,9 +1,10 @@
-import { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { useContext, useEffect, useState, useRef } from "react";
+import { View, Text, StyleSheet, Animated } from "react-native";
 import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
 import GamesList from "../components/GamesList";
 import Background from "../components/UI/Background";
+import Loading from "../components/UI/Loading";
 
 function GamesListScreen({ navigation }) {
     const { session } = useContext(DDContext);
@@ -11,7 +12,19 @@ function GamesListScreen({ navigation }) {
     const [isLoading, setIsLoading] = useState(true);
     const [gamesList, setGamesList] = useState([]);
 
-    // Fetch users games list
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    // Root view fade in animation
+    useEffect(() => {
+        if (!isLoading) {
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 250,
+                useNativeDriver: true,
+            }).start();
+        }
+    }, [isLoading]);
+
     useEffect(() => {
         const fetchGamesList = async () => {
             const { data, error } = await supabase
@@ -21,14 +34,16 @@ function GamesListScreen({ navigation }) {
                     `player1_id.eq.${session.user.id},player2_id.eq.${session.user.id}`
                 );
 
-            setGamesList(data);
-
             if (error) {
                 console.error("Error fetching data:", error.message);
-                return null;
+                return;
             }
 
-            setIsLoading(false);
+            setGamesList(data);
+
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
         };
 
         fetchGamesList();
@@ -42,20 +57,20 @@ function GamesListScreen({ navigation }) {
     if (isLoading) {
         return (
             <View style={styles.root}>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <Loading visible={isLoading} />
             </View>
         );
     }
 
     return (
-        <View style={styles.root}>
+        <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
             <Background />
             <Text style={styles.title}> My Games</Text>
             <GamesList
                 gamesList={gamesList}
                 handleGamePress={handleGamePress}
             />
-        </View>
+        </Animated.View>
     );
 }
 
@@ -72,6 +87,6 @@ const styles = StyleSheet.create({
         fontSize: Sizes.gameListTitleSize,
         fontFamily: "Tektur-Bold",
         color: Colors.black,
-        marginBottom: Sizes.gameListTitleMargin, 
+        marginBottom: Sizes.gameListTitleMargin,
     },
 });
