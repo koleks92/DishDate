@@ -11,6 +11,7 @@ import ButtonMain from "../components/UI/ButtonMain";
 import ButtonLogo from "../components/UI/ButtonLogo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Loading from "../components/UI/Loading";
+import GameInfo from "../components/gameMode/GameInfo";
 
 function GameScreen({ route, navigation }) {
     const [dishes, setDishes] = useState(route.params.dishes || null);
@@ -182,28 +183,7 @@ function GameScreen({ route, navigation }) {
         navigation.replace("GameResultsScreen", { id: gameRoom.id });
     };
 
-    // Sharing
-    const handleShareGameId = async () => {
-        try {
-            const result = await Share.share({
-                message:
-                    "DishDate new game is waiting for you!\n" +
-                    "Game ID is: " +
-                    gameId,
-            });
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                    // shared with activity type of result.activityType
-                } else {
-                    // shared
-                }
-            } else if (result.action === Share.dismissedAction) {
-                // dismissed
-            }
-        } catch (error) {
-            Alert.alert(error.message);
-        }
-    };
+
 
     if (isLoading) {
         return (
@@ -216,17 +196,7 @@ function GameScreen({ route, navigation }) {
         return (
             <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
                 <Background />
-                <Text style={styles.gameIdText}>Game ID:</Text>
-                <Text style={styles.gameIdTextNumber}>{gameId}</Text>
-                <ButtonLogo
-                    text={
-                        <Ionicons
-                            name="share-social-sharp"
-                            size={Sizes.buttonLogoSize}
-                        />
-                    }
-                    onPress={handleShareGameId}
-                />
+                <GameInfo gameId={gameId}/>
                 <View style={styles.seperator} />
                 <ButtonMain
                     text={"Start Game"}
@@ -259,16 +229,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-    },
-    gameIdText: {
-        fontSize: Sizes.gameIdTextSize,
-        fontFamily: "Tektur-Bold",
-        color: Colors.black,
-    },
-    gameIdTextNumber: {
-        fontSize: Sizes.gameIdTextNumberSize,
-        fontFamily: "Tektur-Bold",
-        color: Colors.black,
     },
     seperator: {
         height: Sizes.buttonHeight,
