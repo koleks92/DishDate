@@ -7,7 +7,6 @@ import CustomSelect from "../components/CustomSelect";
 import CustomSlider from "../components/CustomSlider";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
-Loading;
 
 // Fix user dishes filerting, now return empty array !
 
