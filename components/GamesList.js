@@ -77,7 +77,7 @@ function GamesList({ gamesList, handleGamePress }) {
                         {format(new Date(item.created_at), "do MMMM yyyy")}
                     </Text>
                     <Text style={styles.text}>
-                        {player ? player : "Loading player2..."}
+                        {player ? player : "Loading player..."}
                     </Text>
                 </Pressable>
             </View>
