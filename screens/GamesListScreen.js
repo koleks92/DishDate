@@ -32,12 +32,15 @@ function GamesListScreen({ navigation }) {
                 .select("*")
                 .or(
                     `player1_id.eq.${session.user.id},player2_id.eq.${session.user.id}`
-                );
+                )
+                .order("created_at", { ascending: false });
 
             if (error) {
                 console.error("Error fetching data:", error.message);
                 return;
             }
+
+
 
             setGamesList(data);
 
