@@ -275,7 +275,7 @@ function StartScreen({ navigation }) {
         setIsLoading(true);
         await handleSignOut();
         setIsLoading(false);
-    }
+    };
 
     if (isLoading) {
         return (
@@ -390,6 +390,12 @@ function StartScreen({ navigation }) {
                                     onPress={() =>
                                         navigation.navigate("DishesScreen")
                                     }
+                                />
+                                <ButtonMain
+                                    text="My Games"
+                                    onPress={() => {
+                                        navigation.navigate("GamesListScreen");
+                                    }}
                                 />
                             </View>
                         )}
