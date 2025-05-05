@@ -45,9 +45,8 @@ function GameResultScreen({ route, navigation }) {
     }, [isLoading, waiting]);
 
     useEffect(() => {
-        fetchGameRoomHandler(id);
-
         setTimeout(() => {
+            fetchGameRoomHandler(id);
             setIsLoading(false);
         }, 1000);
     }, []);
@@ -79,12 +78,15 @@ function GameResultScreen({ route, navigation }) {
             return null;
         }
 
+        console.log("Game room data:", data[0].status);
+
         gameStatusCheck(data[0]);
         setGameRoom(data[0]);
 
         if (data[0].status === "closed") {
             createResultsArray(data[0]);
             getUserNames(data[0]);
+            setWaiting(false);
         }
     };
 
