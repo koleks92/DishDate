@@ -30,7 +30,7 @@ function GameInfo({gameId}) {
     return (
         <View style={styles.root}>
             <Text style={styles.gameIdText}>Game ID:</Text>
-            <Text style={styles.gameIdTextNumber}>{gameId}</Text>
+            <Text style={styles.gameIdTextNumber}>{gameId ? gameId : "Not avaliable"}</Text>
             <ButtonLogo
                 text={
                     <Ionicons
