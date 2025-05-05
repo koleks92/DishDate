@@ -1,5 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
+import {
+    View,
+    Text,
+    FlatList,
+    Pressable,
+    StyleSheet,
+    ScrollView,
+} from "react-native";
 import { supabase } from "../util/supabase";
 import { format } from "date-fns";
 import Sizes from "../constants/Sizes";
@@ -14,23 +21,23 @@ function GamesList({ gamesList, handleGamePress }) {
     // Get player name asynchronously
     const getPlayerName = async (playerId) => {
         const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", playerId);
-        
+            .from("users")
+            .select("*")
+            .eq("id", playerId);
+
         if (error) {
             console.error("Error fetching player name:", error.message);
             return "Error";
         }
-        
+
         return data[0]?.name;
     };
-    
+
     // UseEffect to set the player names once the gamesList is loaded
     useEffect(() => {
         const fetchPlayerNames = async () => {
             const updatedNames = {};
-            
+
             for (const game of gamesList) {
                 if (game.status === "closed") {
                     const player1Name = await getPlayerName(game.player1_id);
@@ -59,7 +66,6 @@ function GamesList({ gamesList, handleGamePress }) {
     }, []);
 
     const renderGameView = (item) => {
-
         const { player } = playersNames[item.id] || {};
 
         return (
@@ -71,12 +77,20 @@ function GamesList({ gamesList, handleGamePress }) {
                     }}
                     style={styles.item}
                 >
-                    <Text style={styles.text}>
-                        {format(new Date(item.created_at), "do MMMM yyyy")}
-                    </Text>
-                    <Text style={styles.text}>
-                        {player ? player : "Loading player..."}
-                    </Text>
+                    <View style={styles.dateTextContainer}>
+                        <Text style={styles.dateText}>
+                            {format(new Date(item.created_at), "do MMMM yyyy")}
+                        </Text>
+                    </View>
+                    <View style={styles.playerTextContainer}>
+                        <Text
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={styles.playerText}
+                        >
+                            {player ? player : "Loading player..."}
+                        </Text>
+                    </View>
                 </Pressable>
             </View>
         );
@@ -98,7 +112,7 @@ const styles = StyleSheet.create({
         width: Sizes.gameListItemWidth + 6, // add 6px for shadow
         height: Sizes.gameListItemHeight, // add 6px for shadow
         marginBottom: Sizes.gameListItemMargin,
-        position: "relative", // <- important
+        position: "relative",
     },
     shadow: {
         position: "absolute",
@@ -109,10 +123,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.black,
     },
     item: {
-        position: "absolute", // << YOU FORGOT THIS
-        flexDirection: "row", // ✅ you can use it
-        justifyContent: "space-around", // or whatever you want
-        alignItems: "center", // typical
+        position: "absolute",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center",
         width: Sizes.gameListItemWidth,
         height: Sizes.gameListItemHeight,
         top: 0,
@@ -122,7 +136,20 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         backgroundColor: Colors.backgroundButton,
     },
-    text: {
+    dateTextContainer: {
+        width: "45%",
+        alignItems: "left",
+    },
+    dateText: {
+        fontFamily: "Tektur-Bold",
+        fontSize: Sizes.gameListItemTextSize,
+        color: Colors.black,
+    },
+    playerTextContainer: {
+        width: "55%",
+        alignItems: "center",
+    },
+    playerText: {
         fontFamily: "Tektur-Bold",
         fontSize: Sizes.gameListItemTextSize,
         color: Colors.black,
