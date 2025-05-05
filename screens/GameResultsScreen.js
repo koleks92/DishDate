@@ -1,11 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import {
-    Text,
-    View,
-    Button,
-    StyleSheet,
-    ActivityIndicator,
-} from "react-native";
+import { useContext, useEffect, useState, useRef } from "react";
+import { Text, View, StyleSheet, Animated } from "react-native";
 import { supabase } from "../util/supabase";
 import DishesList from "../components/DishesList";
 import Background from "../components/UI/Background";
@@ -13,10 +7,12 @@ import { DDContext } from "../store/ContextStore";
 import Colors from "../constants/Colors";
 import { format, set } from "date-fns";
 import ButtonMain from "../components/UI/ButtonMain";
+import Loading from "../components/UI/Loading";
+import GameInfo from "../components/gameMode/GameInfo";
 
 function GameResultScreen({ route, navigation }) {
     const [id, setId] = useState(route.params.id);
-    const [waiting, setWaiting] = useState(true);
+    const [waiting, setWaiting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [gameRoom, setGameRoom] = useState(null);
     const [matchingResults, setMatchingResults] = useState(null);
@@ -24,20 +20,37 @@ function GameResultScreen({ route, navigation }) {
 
     const { fetchUserName, session, setNotification } = useContext(DDContext);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            fetchGameRoomHandler(id);
-            setIsLoading(false);
-        }, 1000); // Wait 1 second
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const secondFadeAnim = useRef(new Animated.Value(0)).current;
 
-        return () => clearTimeout(timer); // Cleanup on unmount
-    }, [id]);
-
+    // Root view fade in animation
     useEffect(() => {
-        if (gameRoom) {
-            gameStatusCheck();
+        if (!isLoading) {
+            if (waiting) {
+                Animated.timing(fadeAnim, {
+                    toValue: 1,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }).start();
+            }
+
+            if (!waiting) {
+                Animated.timing(secondFadeAnim, {
+                    toValue: 1,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }).start();
+            }
         }
-    }, [gameRoom]);
+    }, [isLoading, waiting]);
+
+    useEffect(() => {
+        fetchGameRoomHandler(id);
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
+    }, []);
 
     const refreshGameRoom = async () => {
         setIsLoading(true);
@@ -55,6 +68,7 @@ function GameResultScreen({ route, navigation }) {
 
     const fetchGameRoomHandler = async (id) => {
         console.log("Fetching game room");
+
         const { data, error } = await supabase
             .from("GameRoom")
             .select("*")
@@ -65,9 +79,13 @@ function GameResultScreen({ route, navigation }) {
             return null;
         }
 
-        createResultsArray(data[0]);
-        getUserNames(data[0]);
+        gameStatusCheck(data[0]);
         setGameRoom(data[0]);
+
+        if (data[0].status === "closed") {
+            createResultsArray(data[0]);
+            getUserNames(data[0]);
+        }
     };
 
     const getUserNames = async (gameRoom) => {
@@ -104,21 +122,18 @@ function GameResultScreen({ route, navigation }) {
     };
 
     // Check game status
-    const gameStatusCheck = () => {
-        if (
-            gameRoom.status === "closed" &&
-            gameRoom.notificationSend === false
-        ) {
+    const gameStatusCheck = (room) => {
+        if (room.status === "closed" && room.notificationSend === false) {
             // Send notification to players
-            sendNotifications(gameRoom);
+            sendNotifications(room);
 
             // Update gameRoom notification
-            setNotification(gameRoom.id);
+            setNotification(room.id);
 
             setWaiting(false);
-        } else if (gameRoom.status === "open") {
+        } else if (room.status === "open") {
             setWaiting(true);
-        } else if (gameRoom.status === "closed") {
+        } else if (room.status === "closed") {
             setWaiting(false);
         }
     };
@@ -166,35 +181,41 @@ function GameResultScreen({ route, navigation }) {
     if (isLoading) {
         return (
             <View style={styles.root}>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <Loading visible={isLoading} />
             </View>
         );
     }
 
     if (waiting) {
         return (
-            <View style={styles.root}>
+            <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
                 <Background />
                 <Text style={styles.waitingText}>
-                    Waiting for the other player to finish
+                    Waiting for the other player
                 </Text>
+                <View style={styles.gameInfoContainer}>
+                    <GameInfo gameId={gameRoom?.game_id} />
+                </View>
                 <ButtonMain
                     text="Refresh"
-                    onPress={() => {refreshGameRoom()}}
-                    />
-                
-            </View>
+                    onPress={() => {
+                        refreshGameRoom();
+                    }}
+                />
+            </Animated.View>
         );
     } else {
         return (
-            <View style={styles.root}>
+            <Animated.View style={[styles.root, { opacity: secondFadeAnim }]}>
                 <Background />
                 <Text style={styles.title}>Game with {username}</Text>
                 <Text style={styles.date}>
-                    {format(new Date(gameRoom.created_at), "do MMMM yyyy")}
+                    {gameRoom?.created_at
+                        ? format(new Date(gameRoom.created_at), "do MMMM yyyy")
+                        : ""}
                 </Text>
                 <DishesList dishes={matchingResults} />
-            </View>
+            </Animated.View>
         );
     }
 }
@@ -222,8 +243,11 @@ const styles = StyleSheet.create({
     waitingText: {
         fontSize: Sizes.gameResultsWaitingTextSize,
         fontFamily: "Tektur-Bold",
-        tAlign: "center",
+        textAlign: "center",
         color: Colors.black,
         marginBottom: Sizes.gameResultsWaitingTextMargin,
-    }
+    },
+    gameInfoContainer: {
+        marginBottom: Sizes.buttonHeight,
+    },
 });
