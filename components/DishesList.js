@@ -1,13 +1,17 @@
 import React, { useContext } from "react";
-import { View, Text, FlatList, StyleSheet, Image, Button } from "react-native";
+import { View, Text, FlatList, StyleSheet, Pressable} from "react-native";
 import ImageCustom from "./UI/ImageCustom";
 import Sizes from "../constants/Sizes";
 import Colors from "../constants/Colors";
 import { DDContext } from "../store/ContextStore";
 import ButtonMain from "./UI/ButtonMain";
+import { useNavigation } from "@react-navigation/native";
+
 
 const DishesList = ({ dishes, editButton, editButtonHandler }) => {
     const { cuisinesList } = useContext(DDContext);
+
+    const navigation = useNavigation();
 
     const getCuisineName = (cuisineId) => {
         const cuisine = cuisinesList.find((c) => c.id === cuisineId);
@@ -19,7 +23,9 @@ const DishesList = ({ dishes, editButton, editButtonHandler }) => {
     };
 
     const renderItem = ({ item }) => (
-        <View style={styles.item}>
+        <Pressable style={styles.item} onPress={() => {navigation.navigate('DishScreen', {
+            dish: item
+        })}}>
             <Text style={styles.title}>{item.name}</Text>
             <Text style={styles.cuisine}>{getCuisineName(item.cuisine_id)}</Text>
             {item.image === null ? (
@@ -39,7 +45,7 @@ const DishesList = ({ dishes, editButton, editButtonHandler }) => {
                     }}
                 />
             )}
-        </View>
+        </Pressable>
     );
 
     return (
