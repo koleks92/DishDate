@@ -88,4 +88,9 @@ export default Sizes = {
 
     // BackContainer sizes
     backContainerHeight: scrH * 0.05,
+
+    // DishScreen sizes
+    dishTextTitle: scrH * 0.04,
+    dishTextDescription: scrH * 0.03,
+    dishDescriptionMargin: scrH * 0.04
 }
