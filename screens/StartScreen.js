@@ -281,7 +281,9 @@ function StartScreen({ navigation }) {
                 });
             }
         }
-        setIsLoading(false);
+        await fetchUserName();
+
+        setNameModalVisible(true);
     };
 
     // Handle SignOut
