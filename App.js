@@ -16,6 +16,7 @@ import GameScreen from "./screens/GameScreen";
 import JoinGameScreen from "./screens/JoinGameScreen";
 import GameResultScreen from "./screens/GameResultsScreen";
 import GamesListScreen from "./screens/GamesListScreen";
+import DishScreen from "./screens/DishScreen";
 
 import DDProvider from "./store/ContextStore";
 import * as Notifications from "expo-notifications";
@@ -103,6 +104,10 @@ function App() {
                             <Stack.Screen
                                 name="GamesListScreen"
                                 component={GamesListScreen}
+                            />
+                            <Stack.Screen
+                                name="DishScreen"
+                                component={DishScreen}
                             />
                         </Stack.Navigator>
                     </NavigationContainer>
