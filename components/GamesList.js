@@ -16,23 +16,9 @@ import Colors from "../constants/Colors";
 function GamesList({ gamesList, handleGamePress }) {
     // State to store player names for each game
     const [playersNames, setPlayersNames] = useState({});
-    const { session } = useContext(DDContext);
+    const { session, fetchUserName } = useContext(DDContext);
 
-    // Get player name asynchronously
-    const getPlayerName = async (playerId) => {
-        const { data, error } = await supabase
-            .from("users")
-            .select("*")
-            .eq("id", playerId);
-
-        if (error) {
-            console.error("Error fetching player name:", error.message);
-            return "Error";
-        }
-
-        return data[0]?.name;
-    };
-
+    
     // UseEffect to set the player names once the gamesList is loaded
     useEffect(() => {
         const fetchPlayerNames = async () => {
@@ -40,8 +26,8 @@ function GamesList({ gamesList, handleGamePress }) {
 
             for (const game of gamesList) {
                 if (game.status === "closed") {
-                    const player1Name = await getPlayerName(game.player1_id);
-                    const player2Name = await getPlayerName(game.player2_id);
+                    const player1Name = await fetchUserName(game.player1_id);
+                    const player2Name = await fetchUserName(game.player2_id);
 
                     if (game.player1_id === session.user.id) {
                         updatedNames[game.id] = {
@@ -118,7 +104,6 @@ const styles = StyleSheet.create({
     gamesListContainer: {
         flexGrow: 1,
         marginTop: Sizes.gameListContainerMargin,
-        justifyContent: "center",
         alignContent: 'center'
     },
     shadow: {
