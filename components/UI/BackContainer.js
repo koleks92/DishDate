@@ -4,14 +4,14 @@ import ButtonLogo from "./ButtonLogo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 
-function BackContainer() {
+function BackContainer({ goStart }) {
     const navigation = useNavigation();
 
     return (
         <View style={styles.root}>
             <Pressable
                 onPress={() => {
-                    navigation.goBack();
+                    goStart ? navigation.navigate("StartScreen"): navigation.goBack() ;
                 }}
             >
                 <Ionicons
@@ -20,7 +20,7 @@ function BackContainer() {
                     size={Sizes.backContainerHeight}
                 />
             </Pressable>
-            
+
             <></>
         </View>
     );
