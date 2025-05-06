@@ -97,13 +97,14 @@ function GamesList({ gamesList, handleGamePress }) {
     };
 
     return (
-        <FlatList
-            data={gamesList}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => {
-                return renderGameView(item);
-            }}
-        />
+            <FlatList
+                data={gamesList}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.gamesListContainer}
+                renderItem={({ item }) => {
+                    return renderGameView(item);
+                }}
+            />
     );
 }
 
@@ -113,6 +114,12 @@ const styles = StyleSheet.create({
         height: Sizes.gameListItemHeight, // add 6px for shadow
         marginBottom: Sizes.gameListItemMargin,
         position: "relative",
+    },
+    gamesListContainer: {
+        flexGrow: 1,
+        marginTop: Sizes.gameListContainerMargin,
+        justifyContent: "center",
+        alignContent: 'center'
     },
     shadow: {
         position: "absolute",
