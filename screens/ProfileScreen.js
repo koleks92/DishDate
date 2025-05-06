@@ -19,6 +19,7 @@ import InputField from "../components/UI/InputField";
 import ButtonMain from "../components/UI/ButtonMain";
 import ImageCustom from "../components/UI/ImageCustom";
 import Loading from "../components/UI/Loading";
+import BackContainer from "../components/UI/BackContainer";
 
 function ProfileScreen({ navigation }) {
     const [userName, setUserName] = useState("No name");
@@ -44,7 +45,6 @@ function ProfileScreen({ navigation }) {
             setTimeout(() => {
                 setIsLoading(false);
             }, 500);
-    
 
             if (error) {
                 console.error("Error fetching user data:", error.message);
@@ -84,49 +84,54 @@ function ProfileScreen({ navigation }) {
 
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <ScrollView contentContainerStyle={styles.root}>
+            <View style={styles.root}>
                 <Background />
-                <View style={styles.userEmailContainer}>
-                    <Text style={styles.userEmailText}>{userEmail}</Text>
+                <View>
+                    <BackContainer />
                 </View>
-                <View style={styles.userNameContainer}>
-                    <InputField
-                        placeholder="Enter new name"
-                        value={userName}
-                        onChangeText={setUserName}
-                    />
+                <View style={styles.profileContainer}>
+                    <View style={styles.userEmailContainer}>
+                        <Text style={styles.userEmailText}>{userEmail}</Text>
+                    </View>
+                    <View style={styles.userNameContainer}>
+                        <InputField
+                            placeholder="Enter new name"
+                            value={userName}
+                            onChangeText={setUserName}
+                        />
+                    </View>
+                    {userAvatar ? (
+                        <ImageCustom
+                            source={{ uri: userAvatar }}
+                            style={styles.image}
+                        />
+                    ) : (
+                        <ImageCustom empty={true} />
+                    )}
+                    <View style={styles.buttonsContainer}>
+                        <ButtonMain
+                            text={updateLoading ? "Updating..." : "Update Name"}
+                            onPress={handleUpdateName}
+                            disabled={updateLoading}
+                        />
+                        <View style={styles.Seperator} />
+                        <ButtonMain
+                            text="My Dishes"
+                            onPress={() => {
+                                navigation.navigate("DishesListScreen", {
+                                    edit: true,
+                                });
+                            }}
+                        />
+                        <ButtonMain
+                            text="My Games"
+                            onPress={() => {
+                                navigation.navigate("GamesListScreen");
+                            }}
+                        />
+                    </View>
                 </View>
-                {userAvatar ? (
-                    <ImageCustom
-                        source={{ uri: userAvatar }}
-                        style={styles.image}
-                    />
-                ) : (
-                    <ImageCustom empty={true} />
-                )}
-                <View style={styles.buttonsContainer}>
-                    <ButtonMain
-                        text={updateLoading ? "Updating..." : "Update Name"}
-                        onPress={handleUpdateName}
-                        disabled={updateLoading}
-                    />
-                    <View style={styles.Seperator} />
-                    <ButtonMain
-                        text="My Dishes"
-                        onPress={() => {
-                            navigation.navigate("DishesListScreen", {
-                                edit: true,
-                            });
-                        }}
-                    />
-                    <ButtonMain
-                        text="My Games"
-                        onPress={() => {
-                            navigation.navigate("GamesListScreen");
-                        }}
-                    />
-                </View>
-            </ScrollView>
+            </View>
         </TouchableWithoutFeedback>
     );
 }
@@ -136,9 +141,12 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
     root: {
         display: "flex",
-        flexGrow: 1,
-        justifyContent: "center",
+        flex: 1,
         alignItems: "center",
+    },
+    profileContainer: {
+        flex: 1,
+        justifyContent: "center"
     },
     userEmailContainer: {
         marginBottom: Sizes.profileScreenMargin,

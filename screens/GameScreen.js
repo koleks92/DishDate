@@ -12,6 +12,7 @@ import ButtonLogo from "../components/UI/ButtonLogo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Loading from "../components/UI/Loading";
 import GameInfo from "../components/gameMode/GameInfo";
+import BackContainer from "../components/UI/BackContainer";
 
 function GameScreen({ route, navigation }) {
     const [dishes, setDishes] = useState(route.params.dishes || null);
@@ -183,8 +184,6 @@ function GameScreen({ route, navigation }) {
         navigation.replace("GameResultsScreen", { id: gameRoom.id });
     };
 
-
-
     if (isLoading) {
         return (
             <View style={styles.root}>
@@ -196,14 +195,19 @@ function GameScreen({ route, navigation }) {
         return (
             <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
                 <Background />
-                <GameInfo gameId={gameId}/>
-                <View style={styles.seperator} />
-                <ButtonMain
-                    text={"Start Game"}
-                    onPress={() => {
-                        gameModeHandler(1);
-                    }}
-                />
+                <View>
+                    <BackContainer />
+                </View>
+                <View style={styles.gameContainer}>
+                    <GameInfo gameId={gameId} />
+                    <View style={styles.seperator} />
+                    <ButtonMain
+                        text={"Start Game"}
+                        onPress={() => {
+                            gameModeHandler(1);
+                        }}
+                    />
+                </View>
             </Animated.View>
         );
     }
@@ -229,6 +233,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    gameContainer: {
+        flex: 1,
+        justifyContent: 'center'
     },
     seperator: {
         height: Sizes.buttonHeight,

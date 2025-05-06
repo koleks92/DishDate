@@ -26,6 +26,7 @@ import ButtonLogo from "../components/UI/ButtonLogo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import CustomAlert from "../components/UI/CustomAlert";
 import CustomSelect from "../components/CustomSelect";
+import BackContainer from "../components/UI/BackContainer";
 
 function EditDishesScreen({ route, navigation }) {
     const [name, setName] = useState("");
@@ -69,7 +70,7 @@ function EditDishesScreen({ route, navigation }) {
             setImage({ uri: dish.image });
             const cuisine = cuisinesList.find((c) => c.id === dish.cuisine_id);
             setCuisine(cuisine);
-            console.log("Cuisine:", cuisine);   
+            console.log("Cuisine:", cuisine);
         }
     }, [edit]);
 
@@ -370,68 +371,73 @@ function EditDishesScreen({ route, navigation }) {
                     }}
                 />
                 <Background />
-                <InputField
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="Enter name"
-                />
-                <InputField
-                    value={description}
-                    onChangeText={setDescription}
-                    placeholder="Enter description"
-                />
-                <CustomSelect
-                    placeholder={"Select cuisine"}
-                    data={cuisinesList}
-                    onSelect={selectedCuisineHandler}
-                    selected={cuisine}
-                />
-                {image.uri ? (
-                    <ImageCustom source={{ uri: image.uri }} />
-                ) : (
-                    <ImageCustom empty={true} />
-                )}
-                <ButtonMain
-                    text="Pick an image"
-                    onPress={pickImageHandler}
-                    disabled={isLoading}
-                />
-                <ButtonMain
-                    text="Take a picture"
-                    onPress={openCameraHandler}
-                    disabled={isLoading}
-                />
-                {edit ? (
-                    <View style={styles.editButtonsContainer}>
-                        <ButtonLogo
-                            text={
-                                <Ionicons
-                                    name="save-sharp"
-                                    size={Sizes.buttonLogoSize}
-                                />
-                            }
+                <View>
+                    <BackContainer />
+                </View>
+                <View style={styles.editContainer}>
+                    <InputField
+                        value={name}
+                        onChangeText={setName}
+                        placeholder="Enter name"
+                    />
+                    <InputField
+                        value={description}
+                        onChangeText={setDescription}
+                        placeholder="Enter description"
+                    />
+                    <CustomSelect
+                        placeholder={"Select cuisine"}
+                        data={cuisinesList}
+                        onSelect={selectedCuisineHandler}
+                        selected={cuisine}
+                    />
+                    {image.uri ? (
+                        <ImageCustom source={{ uri: image.uri }} />
+                    ) : (
+                        <ImageCustom empty={true} />
+                    )}
+                    <ButtonMain
+                        text="Pick an image"
+                        onPress={pickImageHandler}
+                        disabled={isLoading}
+                    />
+                    <ButtonMain
+                        text="Take a picture"
+                        onPress={openCameraHandler}
+                        disabled={isLoading}
+                    />
+                    {edit ? (
+                        <View style={styles.editButtonsContainer}>
+                            <ButtonLogo
+                                text={
+                                    <Ionicons
+                                        name="save-sharp"
+                                        size={Sizes.buttonLogoSize}
+                                    />
+                                }
+                                onPress={() => {
+                                    updateDish();
+                                }}
+                            />
+                            <ButtonLogo
+                                text={
+                                    <Ionicons
+                                        name="trash-sharp"
+                                        size={Sizes.buttonLogoSize}
+                                    />
+                                }
+                                onPress={showConfirmAlert}
+                            />
+                        </View>
+                    ) : (
+                        <ButtonMain
+                            text={isLoading ? "Saving..." : "Save"}
                             onPress={() => {
-                                updateDish();
+                                saveDish();
                             }}
                         />
-                        <ButtonLogo
-                            text={
-                                <Ionicons
-                                    name="trash-sharp"
-                                    size={Sizes.buttonLogoSize}
-                                />
-                            }
-                            onPress={showConfirmAlert}
-                        />
-                    </View>
-                ) : (
-                    <ButtonMain
-                        text={isLoading ? "Saving..." : "Save"}
-                        onPress={() => {
-                            saveDish();
-                        }}
-                    />
-                )}
+                    )}
+                </View>
             </ScrollView>
         </TouchableWithoutFeedback>
     );
@@ -445,6 +451,10 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    editContainer: {
+        flex: 1,
+        justifyContent: 'center'
     },
     editButtonsContainer: {
         flexDirection: "row",

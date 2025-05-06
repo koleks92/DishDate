@@ -16,6 +16,7 @@ import Colors from "../constants/Colors";
 import InputField from "../components/UI/InputField";
 import ButtonMain from "../components/UI/ButtonMain";
 import Loading from "../components/UI/Loading";
+import BackContainer from "../components/UI/BackContainer";
 
 function JoinGameScreen({ navigation }) {
     const [gameId, setGameId] = useState("");
@@ -63,18 +64,26 @@ function JoinGameScreen({ navigation }) {
                 <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
                     <Background />
                     <View>
-                        <Text style={styles.gameIdText}>Game ID:</Text>
+                        <BackContainer />
                     </View>
-                    <View style={styles.inputFieldContainer}>
-                        <InputField
-                            value={gameId}
-                            onChangeText={setGameId}
-                            placeholder="Enter Game ID"
-                            keyboardType={"numeric"}
-                            maxLength={6}
+                    <View style={styles.joinGameContainer}>
+                        <View>
+                            <Text style={styles.gameIdText}>Game ID:</Text>
+                        </View>
+                        <View style={styles.inputFieldContainer}>
+                            <InputField
+                                value={gameId}
+                                onChangeText={setGameId}
+                                placeholder="Enter Game ID"
+                                keyboardType={"numeric"}
+                                maxLength={6}
+                            />
+                        </View>
+                        <ButtonMain
+                            text="Join Game"
+                            onPress={joinGameHandler}
                         />
                     </View>
-                    <ButtonMain text="Join Game" onPress={joinGameHandler} />
                 </Animated.View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -87,8 +96,12 @@ const styles = StyleSheet.create({
     root: {
         display: "flex",
         flex: 1,
-        justifyContent: "center",
         alignItems: "center",
+    },
+    joinGameContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     gameIdText: {
         fontSize: Sizes.gameIdTextSize,

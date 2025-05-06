@@ -9,6 +9,7 @@ import { format, set } from "date-fns";
 import ButtonMain from "../components/UI/ButtonMain";
 import Loading from "../components/UI/Loading";
 import GameInfo from "../components/gameMode/GameInfo";
+import BackContainer from "../components/UI/BackContainer";
 
 function GameResultScreen({ route, navigation }) {
     const [id, setId] = useState(route.params.id);
@@ -192,31 +193,44 @@ function GameResultScreen({ route, navigation }) {
         return (
             <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
                 <Background />
-                <Text style={styles.waitingText}>
-                    Waiting for the other player
-                </Text>
-                <View style={styles.gameInfoContainer}>
-                    <GameInfo gameId={gameRoom?.game_id} />
+                <View>
+                    <BackContainer goStart={true} />
                 </View>
-                <ButtonMain
-                    text="Refresh"
-                    onPress={() => {
-                        refreshGameRoom();
-                    }}
-                />
+                <View style={styles.gameResultsContainer}>
+                    <Text style={styles.waitingText}>
+                        Waiting for the other player
+                    </Text>
+                    <View style={styles.gameInfoContainer}>
+                        <GameInfo gameId={gameRoom?.game_id} />
+                    </View>
+                    <ButtonMain
+                        text="Refresh"
+                        onPress={() => {
+                            refreshGameRoom();
+                        }}
+                    />
+                </View>
             </Animated.View>
         );
     } else {
         return (
             <Animated.View style={[styles.root, { opacity: secondFadeAnim }]}>
                 <Background />
-                <Text style={styles.title}>Game with {username}</Text>
-                <Text style={styles.date}>
-                    {gameRoom?.created_at
-                        ? format(new Date(gameRoom.created_at), "do MMMM yyyy")
-                        : ""}
-                </Text>
-                <DishesList dishes={matchingResults} />
+                <View>
+                    <BackContainer goStart={true} />
+                </View>
+                <View style={styles.gameResultsContainer}>
+                    <Text style={styles.title}>Game with {username}</Text>
+                    <Text style={styles.date}>
+                        {gameRoom?.created_at
+                            ? format(
+                                  new Date(gameRoom.created_at),
+                                  "do MMMM yyyy"
+                              )
+                            : ""}
+                    </Text>
+                    <DishesList dishes={matchingResults} />
+                </View>
             </Animated.View>
         );
     }
@@ -230,6 +244,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    gameResultsContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     title: {
         fontSize: Sizes.gameResultsTitleSize,

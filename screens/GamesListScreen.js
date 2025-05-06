@@ -5,6 +5,7 @@ import { supabase } from "../util/supabase";
 import GamesList from "../components/GamesList";
 import Background from "../components/UI/Background";
 import Loading from "../components/UI/Loading";
+import BackContainer from "../components/UI/BackContainer";
 
 function GamesListScreen({ navigation }) {
     const { session } = useContext(DDContext);
@@ -40,8 +41,6 @@ function GamesListScreen({ navigation }) {
                 return;
             }
 
-
-
             setGamesList(data);
 
             setTimeout(() => {
@@ -68,11 +67,15 @@ function GamesListScreen({ navigation }) {
     return (
         <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
             <Background />
-            <Text style={styles.title}> My Games</Text>
-            <GamesList
-                gamesList={gamesList}
-                handleGamePress={handleGamePress}
-            />
+            <View>
+                <BackContainer />
+            </View>
+            <View style={styles.gamesListContainer}>
+                <GamesList
+                    gamesList={gamesList}
+                    handleGamePress={handleGamePress}
+                />
+            </View>
         </Animated.View>
     );
 }
@@ -83,8 +86,11 @@ const styles = StyleSheet.create({
     root: {
         display: "flex",
         flex: 1,
-        justifyContent: "center",
         alignItems: "center",
+    },
+    gamesListContainer: {
+        flex: 1,
+        justifyContent: "center",
     },
     title: {
         fontSize: Sizes.gameListTitleSize,

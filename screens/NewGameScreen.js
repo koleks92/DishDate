@@ -7,6 +7,7 @@ import CustomSelect from "../components/CustomSelect";
 import CustomSlider from "../components/CustomSlider";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
+import BackContainer from "../components/UI/BackContainer";
 
 // Fix user dishes filerting, now return empty array !
 
@@ -251,24 +252,31 @@ function NewGameScreen({ navigation }) {
                 type={alert.type}
                 onClose={() => setAlertVisible(false)}
             />
-            <CustomSlider sliderValueHandler={(val) => setNumOfDishes(val)} />
-            <View style={styles.zIndexFix}>
-                <CustomSelect
-                    data={availableDishes}
-                    onSelect={selectedDishesHandler}
-                    selected={selectedDishes}
-                    placeholder="Select dishes"
-                />
+            <View>
+                <BackContainer />
             </View>
-            <CustomSelect
-                data={cuisinesList}
-                onSelect={selectedCuisineHandler}
-                selected={selectedCuisine}
-                placeholder="All cuisines"
-                multichoice={true}
-                maxSelect={6}
-            />
-            <ButtonMain text="Start Game" onPress={createNewGameHandler} />
+            <View style={styles.newGameContainer}>
+                <CustomSlider
+                    sliderValueHandler={(val) => setNumOfDishes(val)}
+                />
+                <View style={styles.zIndexFix}>
+                    <CustomSelect
+                        data={availableDishes}
+                        onSelect={selectedDishesHandler}
+                        selected={selectedDishes}
+                        placeholder="Select dishes"
+                    />
+                </View>
+                <CustomSelect
+                    data={cuisinesList}
+                    onSelect={selectedCuisineHandler}
+                    selected={selectedCuisine}
+                    placeholder="All cuisines"
+                    multichoice={true}
+                    maxSelect={6}
+                />
+                <ButtonMain text="Start Game" onPress={createNewGameHandler} />
+            </View>
         </Animated.View>
     );
 }
@@ -279,9 +287,14 @@ const styles = StyleSheet.create({
     root: {
         display: "flex",
         flex: 1,
-        justifyContent: "center",
         alignItems: "center",
     },
+    newGameContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+
+    },  
     dropdownButtonStyle: {
         width: 200,
         height: 50,

@@ -8,6 +8,7 @@ import Loading from "../components/UI/Loading";
 import CustomAlert from "../components/UI/CustomAlert";
 import Colors from "../constants/Colors";
 import { set } from "date-fns";
+import BackContainer from "../components/UI/BackContainer";
 
 function DishesListScreen({ route, navigation }) {
     const { edit } = route.params || {};
@@ -90,20 +91,27 @@ function DishesListScreen({ route, navigation }) {
                     }}
                 />
                 <Background />
-                {userDishes.length > 0 ? (
-                    <DishesList
-                        dishes={userDishes}
-                        editButton={edit}
-                        editButtonHandler={editButtonHandler}
-                    />
-                ) : (
-                    <Animated.View style={{ opacity: fadeAnim }}>
-                        <Text style={styles.backupText}>
-                            There are no dishes in the database
-                        </Text>
-                        <Text style={styles.backupText}>Please add some.</Text>
-                    </Animated.View>
-                )}
+                <View>
+                    <BackContainer />
+                </View>
+                <View style={styles.dishesListContainer}>
+                    {userDishes.length > 0 ? (
+                        <DishesList
+                            dishes={userDishes}
+                            editButton={edit}
+                            editButtonHandler={editButtonHandler}
+                        />
+                    ) : (
+                        <Animated.View style={{ opacity: fadeAnim }}>
+                            <Text style={styles.backupText}>
+                                There are no dishes in the database
+                            </Text>
+                            <Text style={styles.backupText}>
+                                Please add some.
+                            </Text>
+                        </Animated.View>
+                    )}
+                </View>
             </View>
         );
     }
@@ -115,8 +123,11 @@ const styles = StyleSheet.create({
     root: {
         display: "flex",
         flex: 1,
-        justifyContent: "center",
         alignItems: "center",
+    },
+    dishesListContainer: {
+        flex: 1,
+        justifyContent: 'center',
     },
     backupText: {
         fontFamily: "Tektur-Bold",
