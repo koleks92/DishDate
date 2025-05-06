@@ -83,6 +83,9 @@ export default Sizes = {
     gameListItemPadding: scrH * 0.02,
     gameListItemTextSize: scrH * 0.02,
 
+    // GamesList Sizes
+    gameListContainerMargin: scrH * 0.02,
+
     // BackContainer sizes
     backContainerHeight: scrH * 0.05,
 }
