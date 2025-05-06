@@ -1,6 +1,6 @@
 import { StyleSheet, View, PanResponder, Animated, Text } from "react-native";
-import Sizes from "../constants/Sizes";
-import Colors from "../constants/Colors";
+import Sizes from "../../constants/Sizes";
+import Colors from "../../constants/Colors";
 import { useRef, useState } from "react";
 
 function CustomSlider({ min = 5, max = 25, sliderValueHandler }) {
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginBottom: Sizes.buttonMarginBottom,
-        height: Sizes.tickHeight
+        height: Sizes.tickHeight,
     },
     slider: {
         width: Sizes.sliderWidth,

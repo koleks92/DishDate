@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
-import Sizes from "../constants/Sizes";
-import Colors from "../constants/Colors";
+import Sizes from "../../constants/Sizes";
+import Colors from "../../constants/Colors";
 
 function CustomSelect({
     data,
