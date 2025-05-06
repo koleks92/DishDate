@@ -25,7 +25,7 @@ import ImageCustom from "../components/UI/ImageCustom";
 import ButtonLogo from "../components/UI/ButtonLogo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import CustomAlert from "../components/UI/CustomAlert";
-import CustomSelect from "../components/CustomSelect";
+import CustomSelect from "../components/UI/CustomSelect";
 import BackContainer from "../components/UI/BackContainer";
 
 function EditDishesScreen({ route, navigation }) {
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
     },
     editContainer: {
         flex: 1,
-        justifyContent: 'center'
+        justifyContent: "center",
     },
     editButtonsContainer: {
         flexDirection: "row",

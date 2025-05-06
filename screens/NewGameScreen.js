@@ -3,8 +3,8 @@ import { Text, View, StyleSheet, Animated } from "react-native";
 import { DDContext } from "../store/ContextStore";
 import Background from "../components/UI/Background";
 import ButtonMain from "../components/UI/ButtonMain";
-import CustomSelect from "../components/CustomSelect";
-import CustomSlider from "../components/CustomSlider";
+import CustomSelect from "../components/UI/CustomSelect";
+import CustomSlider from "../components/UI/CustomSlider";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
 import BackContainer from "../components/UI/BackContainer";
@@ -291,10 +291,9 @@ const styles = StyleSheet.create({
     },
     newGameContainer: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-
-    },  
+        justifyContent: "center",
+        alignItems: "center",
+    },
     dropdownButtonStyle: {
         width: 200,
         height: 50,
