@@ -26,13 +26,18 @@ import Logo from "../components/UI/Logo";
 import Colors from "../constants/Colors";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
+import NameModal from "../components/UI/NameModal";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [isLoading, setIsLoading] = useState(false);
+
     const [alert, setAlert] = useState({});
     const [alertVisible, setAlertVisible] = useState(false);
+
+    const [name, setName] = useState("");
+    const [nameModalVisible, setNameModalVisible] = useState(false);
 
     const notificationListener = useRef();
     const responseListener = useRef();
@@ -176,7 +181,10 @@ function StartScreen({ navigation }) {
         } catch (error) {
             console.error("Google Sign-In error:", error);
         }
-        setIsLoading(false);
+
+        await fetchUserName();
+
+        setNameModalVisible(true);
     };
 
     // Handle Apple Sign in
@@ -205,7 +213,10 @@ function StartScreen({ navigation }) {
                 console.error("Apple Sign-In error:", error);
             }
         }
-        setIsLoading(false);
+
+        await fetchUserName();
+
+        setNameModalVisible(true);
     };
 
     // Handle SignUp
@@ -238,7 +249,10 @@ function StartScreen({ navigation }) {
                 });
             }
         }
-        setIsLoading(false);
+
+        await fetchUserName();
+
+        setNameModalVisible(true);
     };
 
     // Handle SignIn
@@ -277,10 +291,49 @@ function StartScreen({ navigation }) {
         setIsLoading(false);
     };
 
+    // Handle custom name save
+    const handleNameModalSave = async (name) => {
+        const { data, error } = await supabase.auth.updateUser({
+            data: { name: name }, // Updating metadata
+        });
+
+        setNameModalVisible(false);
+
+        setIsLoading(false);
+
+        return;
+    };
+
+    // Get user name from database
+    const fetchUserName = async () => {
+        const { data: user } = await supabase.auth.getUser();
+
+        if (user) {
+            const userId = user.user.id;
+
+            const { data, error } = await supabase
+                .from("users")
+                .select("name")
+                .eq("id", userId)
+                .single();
+
+            if (error) {
+                console.error("Error fetching name:", error.message);
+            } else {
+                setName(data.name);
+            }
+        }
+    };
+
     if (isLoading) {
         return (
             <View style={styles.root}>
                 <Loading visible={isLoading} />
+                <NameModal
+                    visible={nameModalVisible}
+                    onSave={handleNameModalSave}
+                    sessionName={name}
+                />
             </View>
         );
     }
@@ -300,6 +353,7 @@ function StartScreen({ navigation }) {
                         type={alert.type}
                         onClose={() => setAlertVisible(false)}
                     />
+
                     {session && (
                         <View style={styles.profileContainer}>
                             <Pressable onPress={handleSignOutHandler}>
