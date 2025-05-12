@@ -16,7 +16,6 @@ import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState, useContext } from "react";
 import { supabase } from "../util/supabase";
 import { DDContext } from "../store/ContextStore";
-import CuisinesList from "../components/CuisinesList";
 import InputField from "../components/UI/InputField";
 import Background from "../components/UI/Background";
 import ButtonMain from "../components/UI/ButtonMain";
@@ -384,6 +383,8 @@ function EditDishesScreen({ route, navigation }) {
                         value={description}
                         onChangeText={setDescription}
                         placeholder="Enter description"
+                        strech={true}
+                        maxLength={140}
                     />
                     <CustomSelect
                         placeholder={"Select cuisine"}
