@@ -1,23 +1,55 @@
-import { View, StyleSheet, TextInput } from "react-native";
+import { Animated, View, StyleSheet, TextInput } from "react-native";
 import Colors from "../../constants/Colors";
 import Sizes from "../../constants/Sizes";
+import { useRef, useState, useEffect } from "react";
 
-function InputField({ placeholder, value, onChangeText, secureTextEntry, keyboardType, maxLength }) {
+function InputField({
+    placeholder,
+    value,
+    onChangeText,
+    secureTextEntry,
+    keyboardType,
+    maxLength,
+    strech,
+}) {
+    const [long, setLong] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
+    const heightAnim = useRef(new Animated.Value(Sizes.buttonHeight)).current; // Initial height
+
+    useEffect(() => {
+        Animated.timing(heightAnim, {
+            toValue: isFocused ? Sizes.buttonHeight * 3 : Sizes.buttonHeight, // Expand to 80 when focused
+            duration: 500,
+            useNativeDriver: false,
+        }).start();
+    }, [isFocused]);
+
     return (
-        <View style={styles.root}>
+        <Animated.View style={[styles.root, strech && { height: heightAnim }]}>
             <View style={styles.shadow}>
                 <TextInput
                     placeholder={placeholder}
                     value={value}
                     onChangeText={onChangeText}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
                     secureTextEntry={secureTextEntry}
-                    style={[styles.textInput, keyboardType === "numeric" && { fontSize: Sizes.inputTextSize * 1.6 }]}
+                    style={[
+                        styles.textInput,
+                        keyboardType === "numeric" && {
+                            fontSize: Sizes.inputTextSize * 1.6,
+                        },
+                        strech && {
+                            textAlign: 'justify', // Align text to the left when stretched
+                        },
+                    ]}
+                    multiline={strech}
                     autoCapitalize="none"
                     keyboardType={keyboardType}
                     maxLength={maxLength}
                 />
             </View>
-        </View>
+        </Animated.View>
     );
 }
 
@@ -42,11 +74,11 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         borderColor: Colors.black,
         borderWidth: 3,
-        padding: Sizes.buttonInsidePadding,
+        padding: Sizes.inputInsidePadding,
         fontFamily: "Tektur-Bold",
+        textAlign: "center", // Default alignment for non-stretched
         color: Colors.black,
         fontSize: Sizes.inputTextSize,
-        textAlign: "center",
         transform: [
             { translateX: -6 }, // Move horizontally
             { translateY: -6 }, // Move vertically
