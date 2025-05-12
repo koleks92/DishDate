@@ -56,6 +56,7 @@ function EditDishesScreen({ route, navigation }) {
         requestPermission();
     }, []);
 
+    // Set the data if edit
     useEffect(() => {
         if (edit && dish) {
             setName(dish.name);
@@ -290,7 +291,7 @@ function EditDishesScreen({ route, navigation }) {
             console.log("Sucessfully removed from storage");
         }
     };
-
+    
     const extractFilePath = (publicURL) => {
         const baseURL = `${supabase.storageUrl}/object/public/dishesImages/`; // Your storage bucket URL
         return publicURL.replace(baseURL, ""); // Remove the base URL to get the file path

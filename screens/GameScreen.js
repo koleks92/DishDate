@@ -25,6 +25,7 @@ function GameScreen({ route, navigation }) {
     const { session, databaseCheckGameId, fetchGameResults } =
         useContext(DDContext);
 
+    // Initial game creation or joining existing game
     useEffect(() => {
         if (newGame) {
             console.log("Creating new game");

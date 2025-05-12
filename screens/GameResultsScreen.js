@@ -45,6 +45,7 @@ function GameResultScreen({ route, navigation }) {
         }
     }, [isLoading, waiting]);
 
+    // Initial loding, fetching GameRoom
     useEffect(() => {
         setTimeout(() => {
             fetchGameRoomHandler(id);
@@ -66,6 +67,7 @@ function GameResultScreen({ route, navigation }) {
         return () => clearTimeout(timer); // Cleanup on unmount
     };
 
+    // Fetch GameRoom and create Results, get usernames etc.
     const fetchGameRoomHandler = async (id) => {
         console.log("Fetching game room");
 
@@ -91,6 +93,7 @@ function GameResultScreen({ route, navigation }) {
         }
     };
 
+    // Get user names from the database
     const getUserNames = async (gameRoom) => {
         const player1Name = await fetchUserName(gameRoom.player1_id);
         const player2Name = await fetchUserName(gameRoom.player2_id);
@@ -141,6 +144,7 @@ function GameResultScreen({ route, navigation }) {
         }
     };
 
+    // Get Expo Token for push notifications
     const getExpoToken = async (userId) => {
         const { data, error } = await supabase
             .from("ExpoPushTokens")

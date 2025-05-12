@@ -26,6 +26,7 @@ function GamesListScreen({ navigation }) {
         }
     }, [isLoading]);
 
+    // Get gamesList
     useEffect(() => {
         const fetchGamesList = async () => {
             const { data, error } = await supabase
@@ -51,6 +52,7 @@ function GamesListScreen({ navigation }) {
         fetchGamesList();
     }, []);
 
+    // On game click handler
     const handleGamePress = (gameId) => {
         // Navigate to the game screen with the selected gameId
         navigation.navigate("GameResultsScreen", { id: gameId });

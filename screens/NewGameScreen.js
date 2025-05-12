@@ -40,6 +40,7 @@ function NewGameScreen({ navigation }) {
         loadUserDishesByCuisines,
     } = useContext(DDContext);
 
+    // Initial loading, getUserDishies
     useEffect(() => {
         getUserDishes();
         setTimeout(() => {
@@ -58,6 +59,7 @@ function NewGameScreen({ navigation }) {
         }
     }, [isLoading]);
 
+    // If dishes array created, navigate to GameScreen
     useEffect(() => {
         if (newGameDishes.length > 0) {
             navigation.navigate("GameScreen", {

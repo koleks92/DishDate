@@ -33,10 +33,12 @@ function JoinGameScreen({ navigation }) {
         }).start();
     }, []);
 
+    // 6 digits error handling
     function isSixDigits(value) {
         return /^\d{6}$/.test(value);
     }
 
+    // JoinGameHandler
     const joinGameHandler = async () => {
         if (isSixDigits(gameId)) {
             // Check if game code exists
