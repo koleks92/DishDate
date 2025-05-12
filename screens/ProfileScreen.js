@@ -10,6 +10,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
+    Pressable,
 } from "react-native";
 import { supabase } from "../util/supabase";
 import Background from "../components/UI/Background";
@@ -20,13 +21,17 @@ import ButtonMain from "../components/UI/ButtonMain";
 import ImageCustom from "../components/UI/ImageCustom";
 import Loading from "../components/UI/Loading";
 import BackContainer from "../components/UI/BackContainer";
+import ImageModal from "../components/UI/ImageModal";
 
 function ProfileScreen({ navigation }) {
     const [userName, setUserName] = useState("No name");
     const [userEmail, setUserEmail] = useState("No email");
     const [userAvatar, setUserAvatar] = useState(null);
+    const [userId, setUserId] = useState(null);
     const [updateLoading, setUpdateLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [imageModalVisible, setImageModalVisible] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -40,6 +45,10 @@ function ProfileScreen({ navigation }) {
                 setUserName(metadata.name);
                 setUserEmail(metadata.email);
                 setUserAvatar(metadata.avatar_url);
+            }
+
+            if (user) {
+                setUserId(user.id);
             }
 
             setTimeout(() => {
@@ -74,6 +83,71 @@ function ProfileScreen({ navigation }) {
         }
     };
 
+    // Get publicUrl
+    const getPublicUrl = async (filepath) => {
+        const { data } = supabase.storage
+            .from("profileimages")
+            .getPublicUrl(filepath);
+        return data.publicUrl;
+    };
+
+    const saveAvatarToStorage = async (image) => {
+        const fileName = `${userId}/avatar.jpeg`;
+
+        // Create new FormData to upload to supabase
+        const formData = new FormData();
+
+        // Append the file to the FormData
+        formData.append("file", {
+            uri: image, // File URI from Image Picker or other sources
+            name: fileName, // A unique file name (e.g., "image.jpg")
+            type: image.mimeType || "image/jpeg", // File MIME type (e.g., "image/png")
+        });
+
+        const { data, error } = await supabase.storage
+            .from("profileimages")
+            .upload(fileName, formData, {
+                upsert: true,
+            });
+
+        const filePath = data.path;
+
+        if (error) {
+            console.error("Error uploading file:", error);
+            return;
+        } else {
+            console.log("Sucessfully send to storage");
+            // Get image URL
+            const publicUrl = await getPublicUrl(filePath);
+
+            return publicUrl;
+        }
+    };
+
+    const handleUpdateImage = async (image) => {
+        if (image === userAvatar) {
+            setImageModalVisible(false);
+            return;
+        } else {
+            // Save new image
+            const publicURL = await saveAvatarToStorage(image);
+
+            // Save path for the new image in the database
+            const { data, error } = await supabase.auth.updateUser({
+                data: { avatar_url: publicURL }, // Updating metadata
+            });
+
+            if (error) {
+                Alert.alert("Error", error.message);
+            } else {
+                setUserAvatar(publicURL);
+            }
+
+            // Close modal
+            setImageModalVisible(false);
+        }
+    };
+
     if (isLoading) {
         return (
             <View style={styles.root}>
@@ -86,6 +160,11 @@ function ProfileScreen({ navigation }) {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={styles.root}>
                 <Background />
+                <ImageModal
+                    visible={imageModalVisible}
+                    onSave={handleUpdateImage}
+                    sessionImage={userAvatar}
+                />
                 <View>
                     <BackContainer />
                 </View>
@@ -100,14 +179,20 @@ function ProfileScreen({ navigation }) {
                             onChangeText={setUserName}
                         />
                     </View>
-                    {userAvatar ? (
-                        <ImageCustom
-                            source={{ uri: userAvatar }}
+                    <Pressable
+                        onPress={() => {
+                            setImageModalVisible(true);
+                        }}
+                    >
+                        {userAvatar ? (
+                            <ImageCustom
+                            source={{ uri: `${userAvatar}?t=${Date.now()}` }}
                             style={styles.image}
-                        />
-                    ) : (
-                        <ImageCustom empty={true} />
-                    )}
+                            />
+                        ) : (
+                            <ImageCustom empty={true} />
+                        )}
+                    </Pressable>
                     <View style={styles.buttonsContainer}>
                         <ButtonMain
                             text={updateLoading ? "Updating..." : "Update Name"}
@@ -146,7 +231,7 @@ const styles = StyleSheet.create({
     },
     profileContainer: {
         flex: 1,
-        justifyContent: "center"
+        justifyContent: "center",
     },
     userEmailContainer: {
         marginBottom: Sizes.profileScreenMargin,
