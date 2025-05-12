@@ -34,6 +34,7 @@ function Loading({ visible }) {
             statusBarTranslucent={true}
         >
             <View style={styles.root}>
+            <Background />
                 <Animated.Image
                     source={require("../../assets/Images/LogoTextTransparent.png")}
                     style={[
