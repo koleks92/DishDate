@@ -13,13 +13,13 @@ export default Sizes = {
     buttonWidth: scrW * 0.6,
     buttonHeight: scrW * 0.16,
     buttonMarginBottom: scrH * 0.015,
-    buttonInsidePadding: scrH * 0.01,
-
+    
     // ButtonLogo sizes
     buttonLogoSize: scrH * 0.04,
-
+    
     // InputField sizes
     inputTextSize: scrH * 0.02,
+    inputInsidePadding: scrH * 0.02,
 
     // Logo sizes
     logoSize: scrH * 0.4,
