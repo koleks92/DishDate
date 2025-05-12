@@ -1,16 +1,10 @@
 import {
-    Text,
     View,
     StyleSheet,
-    TextInput,
-    Button,
-    Image,
     Platform,
-    Alert,
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
-    KeyboardAvoidingView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState, useContext } from "react";

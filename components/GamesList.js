@@ -5,9 +5,7 @@ import {
     FlatList,
     Pressable,
     StyleSheet,
-    ScrollView,
 } from "react-native";
-import { supabase } from "../util/supabase";
 import { format } from "date-fns";
 import Sizes from "../constants/Sizes";
 import { DDContext } from "../store/ContextStore";

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Modal, View, Text, StyleSheet, Platform } from "react-native";
+import { Modal, View, StyleSheet, Platform } from "react-native";
 import Colors from "../../constants/Colors";
 import ButtonLogo from "./ButtonLogo";
 import Ionicons from "@expo/vector-icons/Ionicons";

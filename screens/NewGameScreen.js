@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect, useRef } from "react";
-import { Text, View, StyleSheet, Animated } from "react-native";
+import { View, StyleSheet, Animated } from "react-native";
 import { DDContext } from "../store/ContextStore";
 import Background from "../components/UI/Background";
 import ButtonMain from "../components/UI/ButtonMain";

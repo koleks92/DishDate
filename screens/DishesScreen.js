@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Button } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Background from "../components/UI/Background";
 import ButtonMain from "../components/UI/ButtonMain";
 import BackContainer from "../components/UI/BackContainer";
@@ -40,6 +40,6 @@ const styles = StyleSheet.create({
     },
     dishesContainer: {
         flex: 1,
-        justifyContent: 'center'
-    }
+        justifyContent: "center",
+    },
 });

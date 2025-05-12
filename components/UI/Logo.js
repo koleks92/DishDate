@@ -1,4 +1,4 @@
-import { Pressable, View, Image, StyleSheet, Animated } from "react-native";
+import { Pressable, StyleSheet, Animated } from "react-native";
 import Sizes from "../../constants/Sizes";
 import { useRef } from "react";
 

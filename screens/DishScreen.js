@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import BackContainer from "../components/UI/BackContainer";
 import Background from "../components/UI/Background";
 import { Text, View, StyleSheet, Animated } from "react-native";
@@ -28,7 +28,9 @@ function DishScreen({ route }) {
                     <Text style={styles.titleText}>{dish.name}</Text>
                 </View>
                 <View style={styles.cuisineTextContainer}>
-                    <Text style={styles.cuisineText}>{getCuisineName(dish.cuisine_id)}</Text>
+                    <Text style={styles.cuisineText}>
+                        {getCuisineName(dish.cuisine_id)}
+                    </Text>
                 </View>
                 <View style={styles.descriptionTextContainer}>
                     <Text style={styles.descriptionText}>

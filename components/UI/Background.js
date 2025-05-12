@@ -3,7 +3,6 @@ import {
     Easing,
     ImageBackground,
     StyleSheet,
-    View,
 } from "react-native";
 import React, { useEffect, useRef } from "react";
 import backgroundImage from "../../assets//Images/background/logos_20.png";

@@ -3,13 +3,8 @@ import {
     Text,
     View,
     StyleSheet,
-    Image,
-    TextInput,
-    Button,
-    ActivityIndicator,
     TouchableWithoutFeedback,
     Keyboard,
-    ScrollView,
     Pressable,
 } from "react-native";
 import { supabase } from "../util/supabase";
@@ -186,8 +181,10 @@ function ProfileScreen({ navigation }) {
                     >
                         {userAvatar ? (
                             <ImageCustom
-                            source={{ uri: `${userAvatar}?t=${Date.now()}` }}
-                            style={styles.image}
+                                source={{
+                                    uri: `${userAvatar}?t=${Date.now()}`,
+                                }}
+                                style={styles.image}
                             />
                         ) : (
                             <ImageCustom empty={true} />

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Modal, View, Text, StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
 import ButtonLogo from "./ButtonLogo";

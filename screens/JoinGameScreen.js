@@ -15,7 +15,6 @@ import Sizes from "../constants/Sizes";
 import Colors from "../constants/Colors";
 import InputField from "../components/UI/InputField";
 import ButtonMain from "../components/UI/ButtonMain";
-import Loading from "../components/UI/Loading";
 import BackContainer from "../components/UI/BackContainer";
 
 function JoinGameScreen({ navigation }) {

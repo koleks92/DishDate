@@ -1,6 +1,5 @@
 import { StyleSheet, Pressable, View } from "react-native";
 import Sizes from "../../constants/Sizes";
-import ButtonLogo from "./ButtonLogo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 

@@ -5,11 +5,8 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { DDContext } from "../store/ContextStore";
 import DishSelector from "../components/gameMode/DishSelector";
 import Background from "../components/UI/Background";
-import Colors from "../constants/Colors";
 import Sizes from "../constants/Sizes";
 import ButtonMain from "../components/UI/ButtonMain";
-import ButtonLogo from "../components/UI/ButtonLogo";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import Loading from "../components/UI/Loading";
 import GameInfo from "../components/gameMode/GameInfo";
 import BackContainer from "../components/UI/BackContainer";
@@ -236,7 +233,7 @@ const styles = StyleSheet.create({
     },
     gameContainer: {
         flex: 1,
-        justifyContent: 'center'
+        justifyContent: "center",
     },
     seperator: {
         height: Sizes.buttonHeight,

@@ -2,12 +2,11 @@ import { Text, View, StyleSheet, Animated } from "react-native";
 import DishesList from "../components/DishesList";
 import { useCallback, useContext, useState, useRef, useEffect } from "react";
 import { DDContext } from "../store/ContextStore";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import Background from "../components/UI/Background";
 import Loading from "../components/UI/Loading";
 import CustomAlert from "../components/UI/CustomAlert";
 import Colors from "../constants/Colors";
-import { set } from "date-fns";
 import BackContainer from "../components/UI/BackContainer";
 
 function DishesListScreen({ route, navigation }) {

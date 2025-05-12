@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import { View, StyleSheet, Animated } from "react-native";
 import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
 import GamesList from "../components/GamesList";

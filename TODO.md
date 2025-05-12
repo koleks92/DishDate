@@ -1,22 +1,18 @@
 
 ## General
 
-- Finish first version
-
 - Test !
 
 - Picture compressing on upload (they take too much space, makbe right away make them smaller)
 
-- Dismiss keyboard, not working everywhere
-
-- Custom Loading screen
-
 - Sharing game id, deep linking so you can open the app
 
-- Notifiactions android doesnt work
-
-- When logging in, maybe choose a friendly name !
+- When created a game but never finished, or didinty even start, allow to finish !
 
 ## Extra
 
-- Users can add/change their profile picture
+- Messaging ( emojis on ressults maybe, small converstions etc.)
+
+- Rolling text animation on names !
+
+- Recipies in dishes ( maybe some colabo )
