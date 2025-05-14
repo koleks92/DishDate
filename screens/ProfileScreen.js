@@ -174,6 +174,11 @@ function ProfileScreen({ navigation }) {
                             onChangeText={setUserName}
                         />
                     </View>
+                    <ButtonMain
+                        text={updateLoading ? "Updating..." : "Update Name"}
+                        onPress={handleUpdateName}
+                        disabled={updateLoading}
+                    />
                     <Pressable
                         onPress={() => {
                             setImageModalVisible(true);
@@ -191,11 +196,6 @@ function ProfileScreen({ navigation }) {
                         )}
                     </Pressable>
                     <View style={styles.buttonsContainer}>
-                        <ButtonMain
-                            text={updateLoading ? "Updating..." : "Update Name"}
-                            onPress={handleUpdateName}
-                            disabled={updateLoading}
-                        />
                         <View style={styles.Seperator} />
                         <ButtonMain
                             text="My Dishes"
