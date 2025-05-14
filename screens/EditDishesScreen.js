@@ -1,7 +1,7 @@
 import {
     View,
     StyleSheet,
-    Platform,
+    Pressable,
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
@@ -20,6 +20,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import CustomAlert from "../components/UI/CustomAlert";
 import CustomSelect from "../components/UI/CustomSelect";
 import BackContainer from "../components/UI/BackContainer";
+import ImageModal from "../components/UI/ImageModal";
 
 function EditDishesScreen({ route, navigation }) {
     const [name, setName] = useState("");
@@ -31,37 +32,19 @@ function EditDishesScreen({ route, navigation }) {
     const [alert, setAlert] = useState({});
     const [alertVisible, setAlertVisible] = useState(false);
 
+    const [imageModalVisible, setImageModalVisible] = useState(false);
+
     const { session, cuisinesList } = useContext(DDContext);
 
     // Get edit form the route
     let { edit, dish } = route.params || {};
-
-    // Request permission for camera and media library
-    const requestPermission = async () => {
-        if (Platform.OS !== "web") {
-            const { status: cameraStatus } =
-                await ImagePicker.requestCameraPermissionsAsync();
-            const { status: libraryStatus } =
-                await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-            if (cameraStatus !== "granted" || libraryStatus !== "granted") {
-                alert(
-                    "Sorry, we need camera roll permissions to make this work!"
-                );
-            }
-        }
-    };
-
-    useEffect(() => {
-        requestPermission();
-    }, []);
 
     // Set the data if edit
     useEffect(() => {
         if (edit && dish) {
             setName(dish.name);
             setDescription(dish.description);
-            setImage({ uri: dish.image });
+            setImage(dish.image);
             const cuisine = cuisinesList.find((c) => c.id === dish.cuisine_id);
             setCuisine(cuisine);
             console.log("Cuisine:", cuisine);
@@ -115,13 +98,11 @@ function EditDishesScreen({ route, navigation }) {
             return;
         }
 
-        let imageURL = image.uri;
+        let imageURL = image;
 
         // Remove old image if new image is selected
         if (dish.image != image.uri) {
-            await removeImageFromStorage(dish.image);
             imageURL = await saveImageToStorage();
-            setImage({ uri: imageURL });
         }
 
         // Update dish in database
@@ -171,6 +152,9 @@ function EditDishesScreen({ route, navigation }) {
 
         // Save image to storage
         const imageURL = await saveImageToStorage();
+
+        // Set new image
+        setImage(imageURL);
 
         // Save to database
         await saveDishToDatabase(imageURL);
@@ -246,21 +230,23 @@ function EditDishesScreen({ route, navigation }) {
             return;
         }
 
-        const fileName = `${session["user"]["id"]}/${name}-${image.fileSize}.jpeg`;
+        const fileName = `${session["user"]["id"]}/${name}.jpeg`;
 
         // Create new FormData to upload to supabase
         const formData = new FormData();
 
         // Append the file to the FormData
         formData.append("file", {
-            uri: image.uri, // File URI from Image Picker or other sources
+            uri: image, // File URI from Image Picker or other sources
             name: fileName, // A unique file name (e.g., "image.jpg")
             type: image.mimeType || "image/jpeg", // File MIME type (e.g., "image/png")
         });
 
         const { data, error } = await supabase.storage
             .from("dishesImages")
-            .upload(fileName, formData);
+            .upload(fileName, formData, {
+                upsert: true,
+            });
 
         const filePath = data.path;
 
@@ -291,7 +277,7 @@ function EditDishesScreen({ route, navigation }) {
             console.log("Sucessfully removed from storage");
         }
     };
-    
+
     const extractFilePath = (publicURL) => {
         const baseURL = `${supabase.storageUrl}/object/public/dishesImages/`; // Your storage bucket URL
         return publicURL.replace(baseURL, ""); // Remove the base URL to get the file path
@@ -303,34 +289,6 @@ function EditDishesScreen({ route, navigation }) {
             .from("dishesImages")
             .getPublicUrl(filepath);
         return data.publicUrl;
-    };
-
-    // Pick image from the library handler
-    const pickImageHandler = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ["images"],
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setImage(result.assets[0]);
-        }
-    };
-
-    // Function to open the camera
-    const openCameraHandler = async () => {
-        const result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ["images"],
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setImage(result.assets[0]);
-        }
     };
 
     // Show confirm alert
@@ -348,6 +306,12 @@ function EditDishesScreen({ route, navigation }) {
         setCuisine(cuisine);
     };
 
+    // Handle image modal
+    const handleUpdateImage = async (image) => {
+        setImage(image);
+        setImageModalVisible(false);
+    };
+
     // EDIT DISHES MODE
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -363,6 +327,11 @@ function EditDishesScreen({ route, navigation }) {
                         setAlertVisible(false);
                         await deleteDish();
                     }}
+                />
+                <ImageModal
+                    visible={imageModalVisible}
+                    onSave={handleUpdateImage}
+                    sessionImage={image}
                 />
                 <Background />
                 <View>
@@ -387,21 +356,19 @@ function EditDishesScreen({ route, navigation }) {
                         onSelect={selectedCuisineHandler}
                         selected={cuisine}
                     />
-                    {image.uri ? (
-                        <ImageCustom source={{ uri: image.uri }} />
-                    ) : (
-                        <ImageCustom empty={true} />
-                    )}
-                    <ButtonMain
-                        text="Pick an image"
-                        onPress={pickImageHandler}
-                        disabled={isLoading}
-                    />
-                    <ButtonMain
-                        text="Take a picture"
-                        onPress={openCameraHandler}
-                        disabled={isLoading}
-                    />
+                    <Pressable
+                        onPress={() => {
+                            setImageModalVisible(true);
+                        }}
+                    >
+                        {image ? (
+                            <ImageCustom
+                                source={{ uri: `${image}?t=${Date.now()}` }}
+                            />
+                        ) : (
+                            <ImageCustom empty={true} />
+                        )}
+                    </Pressable>
                     {edit ? (
                         <View style={styles.editButtonsContainer}>
                             <ButtonLogo
