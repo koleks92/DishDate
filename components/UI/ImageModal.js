@@ -7,7 +7,11 @@ import Sizes from "../../constants/Sizes";
 import ImageCustom from "./ImageCustom";
 import ButtonMain from "./ButtonMain";
 import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
+import {
+    ImageManipulator,
+    SaveFormat,
+    useImageManipulator,
+} from "expo-image-manipulator";
 
 function ImageModal({ visible, onSave, sessionImage }) {
     const [image, setImage] = useState(sessionImage || "");
@@ -38,23 +42,34 @@ function ImageModal({ visible, onSave, sessionImage }) {
         }
     };
 
+    // Compress and resize
+    const compressImage = async (uri) => {
+        const context = ImageManipulator.manipulate(uri);
+
+        context.resize({ width: 700, height: 700 });
+
+        const newImage = await context.renderAsync();
+
+        const result = await newImage.saveAsync({
+            format: SaveFormat.PNG,
+          });
+
+        return result.uri;
+    };
+
     // Pick image from the library handler
     const pickImageHandler = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ["images"],
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 1,
+            quality: 0.6,
         });
 
         if (!result.canceled) {
-            const manipulatedImage = await ImageManipulator.manipulateAsync(
-                result.assets[0].uri,
-                [{ resize: { width: 700, height: 700 } }],
-                { compress: 0.75, format: ImageManipulator.SaveFormat.JPEG }
-            );
+            const newImage = await compressImage(result.assets[0].uri);
 
-            setImage(manipulatedImage.uri);
+            setImage(newImage); 
         }
     };
 
@@ -64,17 +79,13 @@ function ImageModal({ visible, onSave, sessionImage }) {
             mediaTypes: ["images"],
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 1,
+            quality: 0.6,
         });
 
         if (!result.canceled) {
-            const manipulatedImage = await ImageManipulator.manipulateAsync(
-                result.assets[0].uri,
-                [{ resize: { width: 700, height: 700 } }],
-                { compress: 0.75, format: ImageManipulator.SaveFormat.JPEG }
-            );
+            const newImage = await compressImage(result.assets[0].uri);
 
-            setImage(manipulatedImage.uri);
+            setImage(newImage);
         }
     };
 
