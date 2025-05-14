@@ -7,7 +7,7 @@ import Sizes from "../../constants/Sizes";
 import ImageCustom from "./ImageCustom";
 import ButtonMain from "./ButtonMain";
 import * as ImagePicker from "expo-image-picker";
-
+import * as ImageManipulator from "expo-image-manipulator";
 
 function ImageModal({ visible, onSave, sessionImage }) {
     const [image, setImage] = useState(sessionImage || "");
@@ -43,12 +43,18 @@ function ImageModal({ visible, onSave, sessionImage }) {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ["images"],
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            const manipulatedImage = await ImageManipulator.manipulateAsync(
+                result.assets[0].uri,
+                [{ resize: { width: 700, height: 700 } }],
+                { compress: 0.75, format: ImageManipulator.SaveFormat.JPEG }
+            );
+
+            setImage(manipulatedImage.uri);
         }
     };
 
@@ -57,12 +63,18 @@ function ImageModal({ visible, onSave, sessionImage }) {
         const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ["images"],
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            const manipulatedImage = await ImageManipulator.manipulateAsync(
+                result.assets[0].uri,
+                [{ resize: { width: 700, height: 700 } }],
+                { compress: 0.75, format: ImageManipulator.SaveFormat.JPEG }
+            );
+
+            setImage(manipulatedImage.uri);
         }
     };
 
