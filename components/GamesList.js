@@ -1,11 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import {
-    View,
-    Text,
-    FlatList,
-    Pressable,
-    StyleSheet,
-} from "react-native";
+import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
 import { format } from "date-fns";
 import Sizes from "../constants/Sizes";
 import { DDContext } from "../store/ContextStore";
@@ -16,7 +10,6 @@ function GamesList({ gamesList, handleGamePress }) {
     const [playersNames, setPlayersNames] = useState({});
     const { session, fetchUserName } = useContext(DDContext);
 
-    
     // UseEffect to set the player names once the gamesList is loaded
     useEffect(() => {
         const fetchPlayerNames = async () => {
@@ -38,7 +31,7 @@ function GamesList({ gamesList, handleGamePress }) {
                     }
                 } else if (game.status === "open") {
                     updatedNames[game.id] = {
-                        player: "Not finished yet",
+                        player: "Not finished",
                     };
                 }
             }
@@ -63,7 +56,7 @@ function GamesList({ gamesList, handleGamePress }) {
                 >
                     <View style={styles.dateTextContainer}>
                         <Text style={styles.dateText}>
-                            {format(new Date(item.created_at), "do MMMM yyyy")}
+                            {format(new Date(item.created_at), "dd-MM-yyyy")}
                         </Text>
                     </View>
                     <View style={styles.playerTextContainer}>
@@ -81,14 +74,14 @@ function GamesList({ gamesList, handleGamePress }) {
     };
 
     return (
-            <FlatList
-                data={gamesList}
-                keyExtractor={(item) => item.id.toString()}
-                contentContainerStyle={styles.gamesListContainer}
-                renderItem={({ item }) => {
-                    return renderGameView(item);
-                }}
-            />
+        <FlatList
+            data={gamesList}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={styles.gamesListContainer}
+            renderItem={({ item }) => {
+                return renderGameView(item);
+            }}
+        />
     );
 }
 
@@ -102,7 +95,7 @@ const styles = StyleSheet.create({
     gamesListContainer: {
         flexGrow: 1,
         marginTop: Sizes.gameListContainerMargin,
-        alignContent: 'center'
+        alignContent: "center",
     },
     shadow: {
         position: "absolute",
