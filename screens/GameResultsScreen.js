@@ -138,6 +138,10 @@ function GameResultScreen({ route, navigation }) {
 
             setWaiting(false);
         } else if (room.status === "open") {
+            // Send to GameScreen if player 1 (creator) never finished
+            if (!room.player1_results) {
+                navigation.navigate("GameScreen", { gameId: room.game_id });
+            }
             setWaiting(true);
         } else if (room.status === "closed") {
             setWaiting(false);
@@ -251,8 +255,8 @@ const styles = StyleSheet.create({
     },
     gameResultsContainer: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        justifyContent: "center",
+        alignItems: "center",
     },
     title: {
         fontSize: Sizes.gameResultsTitleSize,
