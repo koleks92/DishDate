@@ -1,27 +1,28 @@
-import { View, StyleSheet, Image, Text } from "react-native";
+import { View, StyleSheet, Text, Animated } from "react-native";
 import Sizes from "../../constants/Sizes";
 import Colors from "../../constants/Colors";
+import { useEffect, useRef, useState } from "react";
+import { Image } from "expo-image";
 
 function ImageCustom({ source, empty }) {
+    const blurhash = "U1RVHG-nfQ-n~Sj@fQkCfQfQfQfQ^~jFfQj@";
+
     return (
         <View style={styles.root}>
-            <View style={styles.shadow}>
-                {empty ? (
-                    <View style={styles.imageEmpty}>
-                        <Text
-                            style={styles.imageText}
-                        >
-                            No Image
-                        </Text>
-                    </View>
-                ) : (
-                    <Image
-                        source={source}
-                        style={styles.image}
-                        resizeMode="cover"
-                    />
-                )}
-            </View>
+            <Animated.View style={styles.shadow} />
+            {empty ? (
+                <View style={styles.imageEmpty}>
+                    <Text style={styles.imageText}>No Image</Text>
+                </View>
+            ) : (
+                <Image
+                    source={source}
+                    style={styles.image}
+                    contentFit="cover"
+                    transition={50}
+                    placeholder={{ blurhash }}
+                />
+            )}
         </View>
     );
 }
@@ -36,7 +37,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     shadow: {
-        flex: 1,
+        width: Sizes.imageSize,
+        height: Sizes.imageSize,
         position: "absolute",
         backgroundColor: Colors.black,
         transform: [
@@ -48,12 +50,8 @@ const styles = StyleSheet.create({
         width: Sizes.imageSize,
         height: Sizes.imageSize,
         borderColor: Colors.black,
-        
         borderWidth: 3,
-        transform: [
-            { translateX: -6 }, // Move horizontally
-            { translateY: -6 }, // Move vertically
-        ],
+        opacity: 1,
     },
     imageEmpty: {
         width: Sizes.imageSize,
@@ -70,8 +68,8 @@ const styles = StyleSheet.create({
     },
     imageText: {
         fontFamily: "Tektur-Bold",
-                fontSize: Sizes.editImageTextSize,
-                color: Colors.black,
-                textAlign: "center",
-    }
+        fontSize: Sizes.editImageTextSize,
+        color: Colors.black,
+        textAlign: "center",
+    },
 });
