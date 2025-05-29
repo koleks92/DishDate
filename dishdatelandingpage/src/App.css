@@ -1,0 +1,128 @@
+:root {
+    --color-background: #f2de77;
+    --color-background-second: #f2bc1b;
+    --color-background-third: #d98e04;
+    --color-black: #0a0a0a;
+    --color-white: #f2f2f2;
+    --color-green: #558c03;
+    --color-red: #f24822;
+}
+
+body {
+    margin: 0;
+    font-family: "Tektur", sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-black);
+}
+
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--color-background, #f2de77);
+    text-align: center;
+}
+
+.slogan-text {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-black);
+    margin-top: 20px;
+}
+
+.screenshot-container-one {
+    position: relative;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* optional if you use absolute positioning */
+    background-color: var(--color-background-second);
+}
+
+.footer {
+    position: relative;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* optional if you use absolute positioning */
+    background-color: var(--color-background-first);
+}
+
+.footer-text {
+    font-size: 1.5rem;
+    color: var(--color-black);
+    text-align: center;
+}
+
+.social-icons {
+    font-size: 3rem;
+}
+
+.screenshot_one {
+    width: 30vw;
+    position: absolute;
+    top: 50%;
+    transition: left 0.5s ease-out, opacity 0.6s ease, transform 0.6s ease;
+    overflow: hidden;
+}
+
+.screenshot_two {
+    width: 30vw;
+    position: absolute;
+    top: 50%;
+    transition: left 0.5s ease-out, opacity 0.6s ease, transform 0.6s ease;
+    overflow: hidden;
+}
+
+.screenshot-container-two {
+    position: relative;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* optional if you use absolute positioning */
+    background-color: var(--color-background-third, #f2de77);
+}
+
+.logo {
+    width: 40vw;
+    height: auto;
+}
+
+@keyframes bounce {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    15% {
+        transform: scale(1.15);
+    }
+    30% {
+        transform: scale(0.9);
+    }
+    45% {
+        transform: scale(1.08);
+    }
+    60% {
+        transform: scale(0.95);
+    }
+    75% {
+        transform: scale(1.02);
+    }
+    90% {
+        transform: scale(0.98);
+    }
+}
+
+.bounce {
+    animation: bounce 1.4s ease forwards;
+}
