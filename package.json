@@ -38,7 +38,8 @@
     "react-native-select-dropdown": "^4.0.1",
     "react-native-text-ticker": "^1.14.0",
     "expo-image-manipulator": "~13.0.6",
-    "expo-image": "~2.0.7"
+    "expo-image": "~2.0.7",
+    "expo-splash-screen": "~0.29.24"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

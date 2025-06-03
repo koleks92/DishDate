@@ -19,6 +19,14 @@
           "iosUrlScheme": "com.googleusercontent.apps.602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg"
         }
       ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon-dark.png",
+          "imageResizeMode": "contain",
+          "backgroundColor": "#f2de77"
+        }
+      ],
       "expo-image-picker",
       [
         "expo-apple-authentication"
@@ -50,7 +58,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "monochromeImage": "./assets/icons/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#f2de77"
       },
       "package": "com.koleks92.DishDate",
       "permissions": [
