@@ -27,6 +27,15 @@ import { useFonts, getLoadedFonts } from "expo-font";
 
 const Stack = createStackNavigator();
 
+const linking = {
+    prefixes: ["dishdate://", "https://dishdate.app"],
+    config: {
+        screens: {
+            StartScreen: "start",
+        },
+    },
+};
+
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -52,7 +61,7 @@ function App() {
                 style={{ flex: 1, backgroundColor: Colors.background }}
             >
                 <DDProvider>
-                    <NavigationContainer>
+                    <NavigationContainer linking={linking}>
                         <Stack.Navigator
                             initialRouteName="StartScreen" // Set the initial screen here
                             screenOptions={{
