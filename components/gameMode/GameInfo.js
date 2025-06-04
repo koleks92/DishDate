@@ -6,10 +6,13 @@ import ButtonLogo from "../UI/ButtonLogo";
 function GameInfo({gameId}) {
     // Sharing
     const handleShareGameId = async () => {
+
+        const link = `https://dishdate.app/join-game`;
+
         try {
             const result = await Share.share({
                 message:
-                    "dishdate://\n" +
+                    `Join my DishDate game: ${link}\n` +
                     "DishDate new game is waiting for you!\n" +
                     "Game ID is: " +
                     gameId,

@@ -49,6 +49,11 @@ function App() {
 
     const linking = {
         prefixes: [Linking.createURL("/"), "https://dishdate.app"],
+        config: {
+            screens: {
+                JoinGameScreen: "join-game",
+            },
+        },
     };
 
     useEffect(() => {
