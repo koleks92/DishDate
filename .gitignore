@@ -3,6 +3,7 @@
 # build
 /android
 /ios
+/builds
 
 # dependencies
 node_modules/
