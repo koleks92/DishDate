@@ -25,16 +25,9 @@ import { SafeAreaView, StatusBar } from "react-native";
 import Colors from "./constants/Colors";
 import { useFonts, getLoadedFonts } from "expo-font";
 
-const Stack = createStackNavigator();
+import * as Linking from "expo-linking";
 
-const linking = {
-    prefixes: ["dishdate://", "https://dishdate.app"],
-    config: {
-        screens: {
-            StartScreen: "start",
-        },
-    },
-};
+const Stack = createStackNavigator();
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -49,6 +42,14 @@ function App() {
         "Tektur-Regular": require("./assets/fonts/Tektur-Regular.ttf"),
         "Tektur-Bold": require("./assets/fonts/Tektur-Bold.ttf"),
     });
+
+    // EXpo Linking
+    // Pacakge installed: expo-linking
+    // https://reactnavigation.org/docs/deep-linking/?config=static
+
+    const linking = {
+        prefixes: [Linking.createURL("/"), "https://dishdate.app"],
+    };
 
     useEffect(() => {
         StatusBar.setBarStyle("dark-content"); // Dark icons on status bar
