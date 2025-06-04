@@ -11,18 +11,14 @@
     Make sure to read supabase auth before production ! SHA1 etc.
 
 ## Development build
-Using EAS
+Using EAS:
 ```eas build --profile development --platform android```
-or
-```eas build --profile development-simulator --platform ios```
+```eas build --profile development --platform ios```
 
+Uisn EAS locally:
+```eas build --profile development --platform android --local```
+```eas build --profile development --platform ios --local```
 
-Using locally:
-````npx expo run:android````
-To get local SHA1:
-````../gradlew signingReport```` in android folder
-or
-````eas build --platform android --local````
 
 To get EAS Sha1:
 ````eas credentials  ````
