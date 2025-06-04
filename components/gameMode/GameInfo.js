@@ -9,6 +9,7 @@ function GameInfo({gameId}) {
         try {
             const result = await Share.share({
                 message:
+                    "dishdate://\n" +
                     "DishDate new game is waiting for you!\n" +
                     "Game ID is: " +
                     gameId,
