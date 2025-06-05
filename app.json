@@ -62,7 +62,7 @@
                     "data": {
                         "scheme": "https",
                         "host": "dishdate.app",
-                        "pathPrefix": "/join-game"
+                        "pathPrefix": "/"
                     },
                     "category": ["BROWSABLE", "DEFAULT"]
                 }

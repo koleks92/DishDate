@@ -7,6 +7,8 @@
 
 - When created a game but never finished, or didinty even start, allow to finish !
 
+- Back must always lead somewhere, not only back ( Join game fx. )
+
 ## Extra
 
 - Messaging ( emojis on ressults maybe, small converstions etc.)
