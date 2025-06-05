@@ -7,7 +7,7 @@ function GameInfo({gameId}) {
     // Sharing
     const handleShareGameId = async () => {
 
-        const link = `dishdate://join-game`;
+        const link = `https://dishdate.app/join-game`;
 
         try {
             const result = await Share.share({
