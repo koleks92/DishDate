@@ -37,13 +37,14 @@ function InputField({
                     style={[
                         styles.textInput,
                         keyboardType === "numeric" && {
-                            fontSize: Sizes.inputTextSize * 1.6,
+                            fontSize: Sizes.inputTextSize * 1.7,
+                            padding: 0,
                         },
                         strech && {
                             textAlign: 'justify', // Align text to the left when stretched
                         },
                     ]}
-                    multiline={strech}
+                    multiline={!!strech}
                     autoCapitalize="none"
                     keyboardType={keyboardType}
                     maxLength={maxLength}
