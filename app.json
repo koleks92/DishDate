@@ -64,6 +64,7 @@
                         "host": "dishdate.app",
                         "pathPrefix": "/join-game"
                     },
+                    "autoVerify": true,
                     "category": ["BROWSABLE", "DEFAULT"]
                 }
             ],
