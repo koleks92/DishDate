@@ -37,6 +37,16 @@ Notifications.setNotificationHandler({
     }),
 });
 
+const linking = {
+    prefixes: ["dishdate://", "https://dishdate.app"],
+    config: {
+        screens: {
+            "StartScreen": "start",
+            "JoinGameScreen": "join-game",
+        },
+    },
+};
+
 function App() {
     const [loaded, error] = useFonts({
         "Tektur-Regular": require("./assets/fonts/Tektur-Regular.ttf"),
@@ -47,14 +57,6 @@ function App() {
     // Pacakge installed: expo-linking
     // https://reactnavigation.org/docs/deep-linking/?config=static
 
-    const linking = {
-        prefixes: [Linking.createURL("/"), "https://dishdate.app"],
-        config: {
-            screens: {
-                JoinGameScreen: "join-game",
-            },
-        },
-    };
 
     useEffect(() => {
         StatusBar.setBarStyle("dark-content"); // Dark icons on status bar
