@@ -65,7 +65,7 @@ function JoinGameScreen({ navigation, route }) {
                 <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
                     <Background />
                     <View>
-                        <BackContainer />
+                        <BackContainer goStart={true}/>
                     </View>
                     <View style={styles.joinGameContainer}>
                         <View>
