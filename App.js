@@ -42,7 +42,7 @@ const linking = {
     config: {
         screens: {
             "StartScreen": "start",
-            "JoinGameScreen": "join-game",
+            "JoinGameScreen": "join-game/:gameId",
         },
     },
 };

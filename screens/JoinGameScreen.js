@@ -17,8 +17,8 @@ import InputField from "../components/UI/InputField";
 import ButtonMain from "../components/UI/ButtonMain";
 import BackContainer from "../components/UI/BackContainer";
 
-function JoinGameScreen({ navigation }) {
-    const [gameId, setGameId] = useState("");
+function JoinGameScreen({ navigation, route }) {
+    const [gameId, setGameId] = useState(route.params?.gameId || "");
 
     const { databaseCheckGameId } = useContext(DDContext);
 
