@@ -24,7 +24,9 @@
                 {
                     "image": "./assets/splash/splash-icon-dark.png",
                     "resizeMode": "cover",
-                    "backgroundColor": "#f2de77"
+                    "backgroundColor": "#f2de77",
+                    "imageWidth": "100%"
+
                 }
             ],
             "expo-image-picker",
