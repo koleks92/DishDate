@@ -41,6 +41,10 @@
             ]
         ],
         "ios": {
+            "associatedDomains": [
+                "applinks:dishdate.app",
+                "applinks:*.dishdate.app"
+            ],
             "supportsTablet": true,
             "bundleIdentifier": "com.koleks92.DishDate",
             "infoPlist": {
