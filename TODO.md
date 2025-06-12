@@ -4,10 +4,8 @@
 - Test !
 
 - Sharing game id, deep linking so you can open the app
-
+ (ios)
 - When created a game but never finished, or didinty even start, allow to finish !
-
-- Back must always lead somewhere, not only back ( Join game fx. )
 
 ## Extra
 
