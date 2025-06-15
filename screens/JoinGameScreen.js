@@ -18,6 +18,7 @@ import ButtonMain from "../components/UI/ButtonMain";
 import BackContainer from "../components/UI/BackContainer";
 import CustomAlert from "../components/UI/CustomAlert";
 
+
 function JoinGameScreen({ navigation, route }) {
     const [gameId, setGameId] = useState(route.params?.gameId || "");
 
@@ -73,44 +74,44 @@ function JoinGameScreen({ navigation, route }) {
     };
 
     return (
-        <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
-                    <Background />
-                    <CustomAlert
-                        visible={alertVisible}
-                        message={alert.message}
-                        title={alert.title}
-                        type={alert.type}
-                        onClose={() => setAlertVisible(false)}
-                    />
-                    <View>
-                        <BackContainer goStart={true} />
-                    </View>
-                    <View style={styles.joinGameContainer}>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
+            >
+                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                    <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
+                        <Background />
+                        <CustomAlert
+                            visible={alertVisible}
+                            message={alert.message}
+                            title={alert.title}
+                            type={alert.type}
+                            onClose={() => setAlertVisible(false)}
+                        />
                         <View>
-                            <Text style={styles.gameIdText}>Game ID:</Text>
+                            <BackContainer goStart={true} />
                         </View>
-                        <View style={styles.inputFieldContainer}>
-                            <InputField
-                                value={gameId}
-                                onChangeText={setGameId}
-                                placeholder="Enter Game ID"
-                                keyboardType={"numeric"}
-                                maxLength={6}
+                        <View style={styles.joinGameContainer}>
+                            <View>
+                                <Text style={styles.gameIdText}>Game ID:</Text>
+                            </View>
+                            <View style={styles.inputFieldContainer}>
+                                <InputField
+                                    value={gameId}
+                                    onChangeText={setGameId}
+                                    placeholder="Enter Game ID"
+                                    keyboardType={"numeric"}
+                                    maxLength={6}
+                                />
+                            </View>
+                            <ButtonMain
+                                text="Join Game"
+                                onPress={joinGameHandler}
                             />
                         </View>
-                        <ButtonMain
-                            text="Join Game"
-                            onPress={joinGameHandler}
-                        />
-                    </View>
-                </Animated.View>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+                    </Animated.View>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
     );
 }
 
