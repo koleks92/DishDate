@@ -6,6 +6,8 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     Pressable,
+    KeyboardAvoidingView,
+    Platform,
 } from "react-native";
 import { supabase } from "../util/supabase";
 import Background from "../components/UI/Background";
@@ -185,7 +187,7 @@ function ProfileScreen({ navigation }) {
                 <View>
                     <BackContainer />
                 </View>
-                <View style={styles.profileContainer}>
+                <View>
                     <View style={styles.userEmailContainer}>
                         <Text style={styles.userEmailText}>{userEmail}</Text>
                     </View>
@@ -247,10 +249,6 @@ const styles = StyleSheet.create({
         display: "flex",
         flex: 1,
         alignItems: "center",
-    },
-    profileContainer: {
-        flex: 1,
-        justifyContent: "center",
     },
     userEmailContainer: {
         marginBottom: Sizes.profileScreenMargin,
