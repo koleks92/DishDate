@@ -16,9 +16,13 @@ import Colors from "../constants/Colors";
 import InputField from "../components/UI/InputField";
 import ButtonMain from "../components/UI/ButtonMain";
 import BackContainer from "../components/UI/BackContainer";
+import CustomAlert from "../components/UI/CustomAlert";
 
 function JoinGameScreen({ navigation, route }) {
     const [gameId, setGameId] = useState(route.params?.gameId || "");
+
+    const [alert, setAlert] = useState({});
+    const [alertVisible, setAlertVisible] = useState(false);
 
     const { databaseCheckGameId } = useContext(DDContext);
 
@@ -49,10 +53,22 @@ function JoinGameScreen({ navigation, route }) {
                     newGame: false,
                 });
             } else {
-                alert("Game not found or already finished");
+                setAlertVisible(true);
+                setAlert({
+                    title: "Ups!",
+                    message: "Game not found or already finished",
+                    type: "info",
+                });
+                return;
             }
         } else {
-            alert("Game code must be 6 digits");
+            setAlertVisible(true);
+            setAlert({
+                title: "Ups!",
+                message: "Game code must be 6 digits",
+                type: "info",
+            });
+            return;
         }
     };
 
@@ -64,8 +80,15 @@ function JoinGameScreen({ navigation, route }) {
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
                     <Background />
+                    <CustomAlert
+                        visible={alertVisible}
+                        message={alert.message}
+                        title={alert.title}
+                        type={alert.type}
+                        onClose={() => setAlertVisible(false)}
+                    />
                     <View>
-                        <BackContainer goStart={true}/>
+                        <BackContainer goStart={true} />
                     </View>
                     <View style={styles.joinGameContainer}>
                         <View>
@@ -101,8 +124,8 @@ const styles = StyleSheet.create({
     },
     joinGameContainer: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        justifyContent: "center",
+        alignItems: "center",
     },
     gameIdText: {
         fontSize: Sizes.gameIdTextSize,

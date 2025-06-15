@@ -3,9 +3,6 @@
 
 - Test !
 
-- Sharing game id, deep linking so you can open the app
- (ios)
-
 - RLS for supabase ! review, check errors etc.
 
 - When created a game but never finished, or didinty even start, allow to finish !
