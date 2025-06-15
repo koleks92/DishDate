@@ -1,9 +1,4 @@
-import {
-    Animated,
-    Easing,
-    ImageBackground,
-    StyleSheet,
-} from "react-native";
+import { Animated, Easing, ImageBackground, StyleSheet } from "react-native";
 import React, { useEffect, useRef } from "react";
 import backgroundImage from "../../assets//Images/background/logos_20.png";
 
@@ -49,8 +44,21 @@ function Background() {
     });
 
     return (
-        <Animated.View style={[styles.background, { transform: [{ translateX: translateAnimation }, { translateY: translateAnimation }] }]}>
-            <ImageBackground source={backgroundImage} style={styles.backgroundImage} />
+        <Animated.View
+            style={[
+                styles.background,
+                {
+                    transform: [
+                        { translateX: translateAnimation },
+                        { translateY: translateAnimation },
+                    ],
+                },
+            ]}
+        >
+            <ImageBackground
+                source={backgroundImage}
+                style={styles.backgroundImage}
+            />
         </Animated.View>
     );
 }
@@ -59,10 +67,13 @@ export default Background;
 
 const styles = StyleSheet.create({
     background: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: "Colors.background",
         position: "absolute",
         width: 2000,
         height: 2000,
         top: 0,
+        zIndex: -1,
         transform: [
             {
                 translateX: 0,
@@ -74,6 +85,8 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         flex: 1,
+        width: "100%",
+        height: "100%",
         resizeMode: "repeat", // Make sure the image repeats properly
     },
 });
