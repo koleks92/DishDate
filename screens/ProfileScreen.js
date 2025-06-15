@@ -17,6 +17,7 @@ import ImageCustom from "../components/UI/ImageCustom";
 import Loading from "../components/UI/Loading";
 import BackContainer from "../components/UI/BackContainer";
 import ImageModal from "../components/UI/ImageModal";
+import CustomAlert from "../components/UI/CustomAlert";
 
 function ProfileScreen({ navigation }) {
     const [userName, setUserName] = useState("No name");
@@ -25,6 +26,9 @@ function ProfileScreen({ navigation }) {
     const [userId, setUserId] = useState(null);
     const [updateLoading, setUpdateLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [alert, setAlert] = useState({});
+    const [alertVisible, setAlertVisible] = useState(false);
 
     const [imageModalVisible, setImageModalVisible] = useState(false);
 
@@ -71,10 +75,15 @@ function ProfileScreen({ navigation }) {
         }, 500);
 
         if (error) {
-            Alert.alert("Error", error.message);
+            console.error("Error updating user name:", error.message);
         } else {
-            Alert.alert("Success", "Name updated successfully!");
-            console.log("Updated user:", data);
+            setAlertVisible(true);
+            setAlert({
+                title: "Yay!",
+                message: "Name updated successfully!",
+                type: "info",
+            });
+            return;
         }
     };
 
@@ -133,7 +142,13 @@ function ProfileScreen({ navigation }) {
             });
 
             if (error) {
-                Alert.alert("Error", error.message);
+                setAlertVisible(true);
+                setAlert({
+                    title: "Ups!",
+                    message: "There was an error, try again!",
+                    type: "info",
+                });
+                return;
             } else {
                 setUserAvatar(publicURL);
             }
@@ -155,6 +170,13 @@ function ProfileScreen({ navigation }) {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={styles.root}>
                 <Background />
+                <CustomAlert
+                    visible={alertVisible}
+                    message={alert.message}
+                    title={alert.title}
+                    type={alert.type}
+                    onClose={() => setAlertVisible(false)}
+                />
                 <ImageModal
                     visible={imageModalVisible}
                     onSave={handleUpdateImage}
