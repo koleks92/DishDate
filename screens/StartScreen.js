@@ -27,6 +27,15 @@ import Colors from "../constants/Colors";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
 import NameModal from "../components/UI/NameModal";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
+
+// Set the animation options. This is optional.
+SplashScreen.setOptions({
+    duration: 400,
+    fade: true,
+});
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -85,9 +94,13 @@ function StartScreen({ navigation }) {
         setIsLoading(false);
     }, []);
 
+
     // Root view fade in animation
     useEffect(() => {
         if (!isLoading) {
+            // Hide the splash screen after the initial loading
+            SplashScreen.hideAsync();
+            // Start the fade-in animation
             Animated.timing(fadeAnim, {
                 toValue: 1,
                 duration: 200,
