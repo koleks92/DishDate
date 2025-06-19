@@ -58,10 +58,7 @@ const styles = StyleSheet.create({
         height: Sizes.imageSize,
         borderColor: Colors.black,
         borderWidth: 3,
-        transform: [
-            { translateX: -6 }, // Move horizontally
-            { translateY: -6 }, // Move vertically
-        ],
+
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: Colors.backgroundButton,
