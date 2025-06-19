@@ -13,7 +13,7 @@ import BackContainer from "../components/UI/BackContainer";
 
 function NewGameScreen({ navigation }) {
     const [choice, setChoice] = useState(null);
-    const [numOfDishes, setNumOfDishes] = useState(0);
+    const [numOfDishes, setNumOfDishes] = useState(15);
     const [availableDishes, setAvailableDishes] = useState();
 
     const [isLoading, setIsLoading] = useState(true);
