@@ -93,6 +93,9 @@ function CustomSelect({
                     <ScrollView
                         contentContainerStyle={styles.content}
                         style={styles.dropdown}
+                        keyboardShouldPersistTaps="handled"
+                        nestedScrollEnabled={true}
+                        showsVerticalScrollIndicator={true}
                     >
                         {data.map((item) => (
                             <View key={item.id}>{itemToRender(item)}</View>
@@ -109,7 +112,7 @@ export default CustomSelect;
 const styles = StyleSheet.create({
     root: {
         marginBottom: Sizes.buttonMarginBottom,
-        zIndex: 10,
+        zIndex: 1,
     },
     shadow: {
         width: Sizes.buttonWidth,
@@ -140,7 +143,6 @@ const styles = StyleSheet.create({
         maxHeight: Sizes.buttonHeight * 4,
         width: Sizes.buttonWidth,
     },
-
     content: {
         justifyContent: "center",
         alignItems: "center",
