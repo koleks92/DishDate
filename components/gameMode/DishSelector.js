@@ -1,8 +1,4 @@
-import {
-    StyleSheet,
-    Animated,
-    PanResponder,
-} from "react-native";
+import { StyleSheet, Animated, PanResponder, Image } from "react-native";
 import DishView from "./DishView";
 import { useState, useRef, useEffect } from "react";
 import Sizes from "../../constants/Sizes";
@@ -22,6 +18,12 @@ function DishSelector({ dishes, dishesResultHandler }) {
             dishesResultHandler(results);
         }
     }, [results]);
+
+    useEffect(() => {
+        if (dishes[currentIndex + 1]) {
+            Image.prefetch(dishes[currentIndex + 1].image);
+        }
+    }, [currentIndex]);
 
     useEffect(() => {
         currentIndexRef.current = currentIndex;
@@ -138,7 +140,7 @@ function DishSelector({ dishes, dishesResultHandler }) {
             setCurrentIndex((prevIndex) => prevIndex + 1);
         }
     };
-    
+
     const currentDish = dishes[currentIndex] || null;
 
     return (
