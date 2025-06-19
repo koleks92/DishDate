@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native"
+import { ScrollView } from "react-native-gesture-handler";
 import Sizes from "../../constants/Sizes";
 import Colors from "../../constants/Colors";
 
@@ -95,7 +96,6 @@ function CustomSelect({
                         style={styles.dropdown}
                         keyboardShouldPersistTaps="handled"
                         nestedScrollEnabled={true}
-                        showsVerticalScrollIndicator={true}
                     >
                         {data.map((item) => (
                             <View key={item.id}>{itemToRender(item)}</View>
