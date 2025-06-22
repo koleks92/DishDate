@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native"
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Sizes from "../../constants/Sizes";
 import Colors from "../../constants/Colors";
@@ -65,12 +65,15 @@ function CustomSelect({
             : selectedItem?.id === item.id;
 
         return (
-            <Pressable
-                style={[styles.item, isSelected && styles.selectedItem]}
-                onPress={() => handleSelect(item)}
-            >
-                <Text style={styles.itemText}>{item.name}</Text>
-            </Pressable>
+            <View>
+                <Pressable
+                    style={[styles.item, isSelected && styles.selectedItem]}
+                    onPress={() => handleSelect(item)}
+                >
+                    <Text style={styles.itemText}>{item.name}</Text>
+                </Pressable>
+                <View style={styles.bottomLine} />
+            </View>
         );
     };
 
@@ -139,29 +142,33 @@ const styles = StyleSheet.create({
 
     dropdown: {
         position: "absolute",
+        left: Sizes.buttonWidth * 0.05, // small gap to the left of button
         top: Sizes.buttonHeight * 0.1, // small gap below button
         maxHeight: Sizes.buttonHeight * 4,
-        width: Sizes.buttonWidth,
+        width: Sizes.buttonWidth * 0.9,
+        borderWidth: 3,
     },
     content: {
         justifyContent: "center",
         alignItems: "center",
     },
-
     item: {
         width: Sizes.buttonWidth * 0.9,
         height: Sizes.buttonHeight * 0.9,
         backgroundColor: Colors.white,
-        borderColor: Colors.black,
-        borderWidth: 0,
         justifyContent: "center",
         alignItems: "center",
+        position: "relative",
     },
-
+    bottomLine: {
+        bottom: 0,
+        height: 2,
+        width: "100%",
+        backgroundColor: Colors.black,
+    },
     selectedItem: {
-        borderWidth: 3,
+        backgroundColor: Colors.backgroundButton,
     },
-
     placeholderText: {
         fontSize: Sizes.inputTextSize,
         color: Colors.black,
