@@ -29,13 +29,16 @@ import Loading from "../components/UI/Loading";
 import NameModal from "../components/UI/NameModal";
 import * as SplashScreen from "expo-splash-screen";
 
+// SplashScreen configuration
 SplashScreen.preventAutoHideAsync();
-
-// Set the animation options. This is optional.
 SplashScreen.setOptions({
     duration: 400,
     fade: true,
 });
+
+// Google Client IDS
+const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -71,10 +74,8 @@ function StartScreen({ navigation }) {
 
         // Configure Google Cloud SignIn
         GoogleSignin.configure({
-            webClientId:
-                "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com",
-            iosClientId:
-                "602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg.apps.googleusercontent.com",
+            webClientId: webClientId,
+            iosClientId: iosClientId,
         });
 
         // Handle session
