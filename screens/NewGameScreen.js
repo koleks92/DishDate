@@ -8,6 +8,7 @@ import CustomSlider from "../components/UI/CustomSlider";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
 import BackContainer from "../components/UI/BackContainer";
+import { set } from "date-fns";
 
 // Fix user dishes filerting, now return empty array !
 
@@ -18,6 +19,8 @@ function NewGameScreen({ navigation }) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [userDishes, setUserDishes] = useState([]);
+
+    const [availableCuisines, setAvailableCuisines] = useState([]);
 
     const [selectedCuisine, setSelectedCuisine] = useState(null);
     const [selectedDishes, setSelectedDishes] = useState({
@@ -42,11 +45,16 @@ function NewGameScreen({ navigation }) {
 
     // Initial loading, getUserDishies
     useEffect(() => {
-        getUserDishes();
+        getUserDishes(); // Wait for state to be updated
+    }, []);
+
+    useEffect(() => {
+        getAvailableCuisines(); // Now safe to use updated userDishes
+
         setTimeout(() => {
             setIsLoading(false);
         }, 500);
-    }, []);
+    }, [userDishes]);
 
     // Root view fade in animation
     useEffect(() => {
@@ -89,6 +97,19 @@ function NewGameScreen({ navigation }) {
         }
 
         setUserDishes(data);
+    };
+
+    // Set cuisines list
+    const getAvailableCuisines = async () => {
+        const allDishes = dishes.concat(userDishes);
+
+        console.log(userDishes);
+
+        const filteredCuisines = cuisinesList.filter((cuisine) => {
+            return allDishes.some((dish) => dish.cuisine_id === cuisine.id);
+        });
+
+        setAvailableCuisines(filteredCuisines);
     };
 
     // Validate number of dishes
@@ -270,7 +291,7 @@ function NewGameScreen({ navigation }) {
                     />
                 </View>
                 <CustomSelect
-                    data={cuisinesList}
+                    data={availableCuisines}
                     onSelect={selectedCuisineHandler}
                     selected={selectedCuisine}
                     placeholder="All cuisines"
