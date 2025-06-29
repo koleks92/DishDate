@@ -287,6 +287,7 @@ function StartScreen({ navigation }) {
             });
 
             if (error) {
+                setIsLoading(false);
                 setAlertVisible(true);
                 setAlert({
                     title: "Ups!",
