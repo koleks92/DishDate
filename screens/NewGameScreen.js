@@ -103,8 +103,6 @@ function NewGameScreen({ navigation }) {
     const getAvailableCuisines = async () => {
         const allDishes = dishes.concat(userDishes);
 
-        console.log(userDishes);
-
         const filteredCuisines = cuisinesList.filter((cuisine) => {
             return allDishes.some((dish) => dish.cuisine_id === cuisine.id);
         });
