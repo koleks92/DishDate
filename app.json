@@ -46,7 +46,7 @@
                 "applinks:dishdate.app",
                 "applinks:*.dishdate.app"
             ],
-            "supportsTablet": true,
+            "supportsTablet": false,
             "bundleIdentifier": "com.koleks92.DishDate",
             "infoPlist": {
                 "NSPhotoLibraryUsageDescription": "The app accesses your photos to let you select photos.",
