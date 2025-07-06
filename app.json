@@ -81,8 +81,7 @@
                 "backgroundColor": "#f2de77"
             },
             "package": "com.koleks92.DishDate",
-            "permissions": ["android.permission.RECORD_AUDIO"],
-            "useNextNotificationsApi": true
+            "permissions": ["android.permission.RECORD_AUDIO"]
         },
         "web": {
             "favicon": "./assets/favicon.png"
