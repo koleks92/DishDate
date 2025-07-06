@@ -20,6 +20,9 @@ Uisn EAS locally:
 ```eas build --profile development --platform ios --local```
 
 
+If problem with provisioning profile on iOS use prefix:
+```EXPO_NO_CAPABILITY_SYNC=1```
+
 To get EAS Sha1:
 ````eas credentials  ````
 
