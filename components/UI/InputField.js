@@ -29,6 +29,7 @@ function InputField({
             <View style={styles.shadow}>
                 <TextInput
                     placeholder={placeholder}
+                    placeholderTextColor={Colors.black}
                     value={value}
                     onChangeText={onChangeText}
                     onFocus={() => setIsFocused(true)}
@@ -41,7 +42,7 @@ function InputField({
                             padding: 0,
                         },
                         strech && {
-                            textAlign: 'justify', // Align text to the left when stretched
+                            textAlign: "justify", // Align text to the left when stretched
                         },
                     ]}
                     multiline={!!strech}
