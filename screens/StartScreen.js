@@ -92,9 +92,9 @@ function StartScreen({ navigation }) {
                 upsertUser(session.user);
             }
         });
+
         setIsLoading(false);
     }, []);
-
 
     // Root view fade in animation
     useEffect(() => {
@@ -118,29 +118,22 @@ function StartScreen({ navigation }) {
             return; // Exit early if session is not ready
         }
 
-        if (notificationListener.current) {
-            Notifications.removeNotificationSubscription(
-                notificationListener.current
-            );
-        }
-        if (responseListener.current) {
-            Notifications.removeNotificationSubscription(
-                responseListener.current
-            );
-        }
-
+        // Register push token
         registerForPushNotificationsAsync()
             .then((token) => {
-                saveExpoPushToken(session.user.id, token);
+                if (token) {
+                    saveExpoPushToken(session.user.id, token);
+                }
             })
             .catch((error) => console.error(error));
 
-        notificationListener.current =
+        // Listeners
+        const notificationListener =
             Notifications.addNotificationReceivedListener((notification) => {
-                console.log(notification);
+                console.log("Notification received:", notification);
             });
 
-        responseListener.current =
+        const responseListener =
             Notifications.addNotificationResponseReceivedListener(
                 (response) => {
                     const notificationData =
@@ -152,6 +145,13 @@ function StartScreen({ navigation }) {
                     }
                 }
             );
+
+        // Clean up listeners
+        return () => {
+            notificationListener.remove(); // ✅ Correct way to unsubscribe
+            responseListener.remove(); // ✅ Correct way to unsubscribe
+            setIsLoading(false);
+        };
     }, [session]);
 
     // Function to upsert user info into Users table
@@ -211,26 +211,31 @@ function StartScreen({ navigation }) {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL,
                 ],
             });
+
             if (credential.identityToken) {
                 const { data, error } = await supabase.auth.signInWithIdToken({
                     provider: "apple",
                     token: credential.identityToken,
                 });
+
                 if (error) {
                     console.error("Supabase sign-in error:", error);
                 }
+            } else {
+                throw new Error("No identity token received from Apple.");
             }
+
+            await fetchUserName();
+            setNameModalVisible(true);
         } catch (e) {
             if (e.code === "ERR_REQUEST_CANCELED") {
-                // handle that the user canceled the sign-in flow
+                console.log("Apple sign-in cancelled by user.");
             } else {
-                console.error("Apple Sign-In error:", error);
+                console.error("Apple Sign-In error:", e);
             }
+        } finally {
+            setIsLoading(false); // Always stop the spinner
         }
-
-        await fetchUserName();
-
-        setNameModalVisible(true);
     };
 
     // Handle SignUp
