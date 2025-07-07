@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
         ],
     },
     modal: {
+        maxWidth: "75%",
         backgroundColor: Colors.backgroundButton,
         borderColor: Colors.black,
         borderWidth: 3,
