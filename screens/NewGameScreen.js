@@ -8,9 +8,7 @@ import CustomSlider from "../components/UI/CustomSlider";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
 import BackContainer from "../components/UI/BackContainer";
-import { set } from "date-fns";
 
-// Fix user dishes filerting, now return empty array !
 
 function NewGameScreen({ navigation }) {
     const [choice, setChoice] = useState(null);
