@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import {
     createStackNavigator,
     CardStyleInterpolators,
 } from "@react-navigation/stack";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import StartScreen from "./screens/StartScreen";
 import ProfileScreen from "./screens/ProfileScreen";
@@ -17,11 +17,12 @@ import JoinGameScreen from "./screens/JoinGameScreen";
 import GameResultScreen from "./screens/GameResultsScreen";
 import GamesListScreen from "./screens/GamesListScreen";
 import DishScreen from "./screens/DishScreen";
+import * as SplashScreen from "expo-splash-screen";
 
 import DDProvider from "./store/ContextStore";
 import * as Notifications from "expo-notifications";
 
-import { SafeAreaView, StatusBar } from "react-native";
+import { StatusBar } from "react-native";
 import Colors from "./constants/Colors";
 import { useFonts, getLoadedFonts } from "expo-font";
 
@@ -37,31 +38,45 @@ Notifications.setNotificationHandler({
     }),
 });
 
+SplashScreen.preventAutoHideAsync();
+
+// SplashScreen configuration
+SplashScreen.setOptions({
+    duration: 400,
+    fade: true,
+});
+
 const linking = {
     prefixes: ["dishdate://", "https://dishdate.app"],
     config: {
         screens: {
-            "StartScreen": "start",
-            "JoinGameScreen": "join-game/:gameId",
+            StartScreen: "start",
+            JoinGameScreen: "join-game/:gameId",
         },
     },
 };
 
 function App() {
+    const [appIsReady, setAppIsReady] = useState(false);
+
     const [loaded, error] = useFonts({
         "Tektur-Regular": require("./assets/fonts/Tektur-Regular.ttf"),
         "Tektur-Bold": require("./assets/fonts/Tektur-Bold.ttf"),
     });
 
-    // EXpo Linking
-    // Pacakge installed: expo-linking
-    // https://reactnavigation.org/docs/deep-linking/?config=static
-
-
     useEffect(() => {
-        StatusBar.setBarStyle("dark-content"); // Dark icons on status bar
-        StatusBar.setBackgroundColor(Colors.background); // Makes status bar background transparent
-    }, []);
+        async function prepare() {
+            StatusBar.setBarStyle("dark-content"); // Dark icons on status bar
+            StatusBar.setBackgroundColor(Colors.background); // Makes status bar background transparent
+
+            if (loaded) {
+                // Fonts are loaded, hide the splash screen
+                await SplashScreen.hideAsync();
+            }
+        }
+
+        prepare();
+    }, [loaded]);
 
     return (
         <SafeAreaProvider>
