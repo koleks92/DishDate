@@ -27,18 +27,12 @@ import Colors from "../constants/Colors";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
 import NameModal from "../components/UI/NameModal";
-import * as SplashScreen from "expo-splash-screen";
-
-// SplashScreen configuration
-SplashScreen.preventAutoHideAsync();
-SplashScreen.setOptions({
-    duration: 400,
-    fade: true,
-});
 
 // Google Client IDS
-const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
-const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+const webClientId =
+    "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com";
+const iosClientId =
+    "602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg.apps.googleusercontent.com";
 
 function StartScreen({ navigation }) {
     const [email, setEmail] = useState();
@@ -50,9 +44,6 @@ function StartScreen({ navigation }) {
 
     const [name, setName] = useState("");
     const [nameModalVisible, setNameModalVisible] = useState(false);
-
-    const notificationListener = useRef();
-    const responseListener = useRef();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -66,41 +57,60 @@ function StartScreen({ navigation }) {
         saveExpoPushToken,
     } = useContext(DDContext);
 
-    // Get dishes from database
     useEffect(() => {
-        setIsLoading(true);
-        loadDishesHandler();
-        loadCuisinesHandler();
+        async function prepare() {
+            try {
+                setIsLoading(true);
 
-        // Configure Google Cloud SignIn
-        GoogleSignin.configure({
-            webClientId: webClientId,
-            iosClientId: iosClientId,
-        });
+                // Load data:
+                await loadDishesHandler();
+                await loadCuisinesHandler();
 
-        // Handle session
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session);
-            if (session?.user) {
-                upsertUser(session.user);
+                // Configure Google SignIn:
+                GoogleSignin.configure({
+                    webClientId: webClientId,
+                    iosClientId: iosClientId,
+                });
+
+                // Get current session from supabase:
+                const {
+                    data: { session },
+                } = await supabase.auth.getSession();
+
+                setSession(session);
+
+                if (session?.user) {
+                    await upsertUser(session.user);
+                }
+
+                // Listen for auth state changes:
+                const { data: authListener } = supabase.auth.onAuthStateChange(
+                    async (_event, session) => {
+                        setSession(session);
+                        if (session?.user) {
+                            await upsertUser(session.user);
+                        }
+                    }
+                );
+
+                setIsLoading(false);
+
+                // Clean up auth listener on unmount
+                return () => {
+                    authListener?.unsubscribe();
+                };
+            } catch (e) {
+                console.warn("Error during app preparation:", e);
+                setIsLoading(false);
             }
-        });
+        }
 
-        supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session);
-            if (session?.user) {
-                upsertUser(session.user);
-            }
-        });
-
-        setIsLoading(false);
+        prepare();
     }, []);
 
     // Root view fade in animation
     useEffect(() => {
         if (!isLoading) {
-            // Hide the splash screen after the initial loading
-            SplashScreen.hideAsync();
             // Start the fade-in animation
             Animated.timing(fadeAnim, {
                 toValue: 1,
@@ -226,6 +236,7 @@ function StartScreen({ navigation }) {
             }
 
             await fetchUserName();
+
             setNameModalVisible(true);
         } catch (e) {
             if (e.code === "ERR_REQUEST_CANCELED") {
@@ -233,8 +244,6 @@ function StartScreen({ navigation }) {
             } else {
                 console.error("Apple Sign-In error:", e);
             }
-        } finally {
-            setIsLoading(false); // Always stop the spinner
         }
     };
 
