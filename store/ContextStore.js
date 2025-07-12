@@ -7,6 +7,7 @@ export const DDProvider = ({ children }) => {
     const [dishes, setDishes] = useState(null);
     const [session, setSession] = useState(null);
     const [cuisinesList, setCuisinesList] = useState(null);
+    const [initialNotification, setInitialNotification] = useState(false);
 
     // Handle SignOut
     const handleSignOut = async () => {
@@ -197,7 +198,9 @@ export const DDProvider = ({ children }) => {
                 saveExpoPushToken,
                 fetchGameResults,
                 fetchUserName,
-                setNotification
+                setNotification,
+                initialNotification,
+                setInitialNotification,
             }}
         >
             {children}
