@@ -27,6 +27,7 @@ import Colors from "../constants/Colors";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
 import NameModal from "../components/UI/NameModal";
+import { set } from "date-fns";
 
 // Google Client IDS
 const webClientId =
@@ -45,6 +46,8 @@ function StartScreen({ navigation }) {
     const [name, setName] = useState("");
     const [nameModalVisible, setNameModalVisible] = useState(false);
 
+    const hasHandledInitialNotificationRef = useRef(false);
+
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
     // Context Stores
@@ -55,6 +58,8 @@ function StartScreen({ navigation }) {
         setSession,
         loadCuisinesHandler,
         saveExpoPushToken,
+        initialNotification,
+        setInitialNotification,
     } = useContext(DDContext);
 
     useEffect(() => {
@@ -106,6 +111,48 @@ function StartScreen({ navigation }) {
         }
 
         prepare();
+
+        // Check for initial notification
+        const checkInitialNotification = async () => {
+            const response =
+                await Notifications.getLastNotificationResponseAsync();
+            if (response) {
+                const notificationData =
+                    response.notification.request.content.data;
+                if (notificationData.gameroomId) {
+                    setInitialNotification(true);
+                    navigation.navigate("GameResultsScreen", {
+                        id: notificationData.gameroomId,
+                    });
+                }
+            }
+        };
+
+        // Check if initial notification has been handled
+        if (!initialNotification) {
+            checkInitialNotification();
+        }
+
+        // Listeners
+
+        const responseListener =
+            Notifications.addNotificationResponseReceivedListener(
+                (response) => {
+                    const notificationData =
+                        response.notification.request.content.data;
+                    if (notificationData.gameroomId) {
+                        setInitialNotification(true);
+                        navigation.push("GameResultsScreen", {
+                            id: notificationData.gameroomId,
+                        });
+                    }
+                }
+            );
+
+        // Clean up listeners
+        return () => {
+            responseListener.remove();
+        };
     }, []);
 
     // Root view fade in animation
@@ -137,29 +184,8 @@ function StartScreen({ navigation }) {
             })
             .catch((error) => console.error(error));
 
-        // Listeners
-        const notificationListener =
-            Notifications.addNotificationReceivedListener((notification) => {
-                console.log("Notification received:", notification);
-            });
-
-        const responseListener =
-            Notifications.addNotificationResponseReceivedListener(
-                (response) => {
-                    const notificationData =
-                        response.notification.request.content.data;
-                    if (notificationData.gameroomId) {
-                        navigation.navigate("GameResultsScreen", {
-                            id: notificationData.gameroomId,
-                        });
-                    }
-                }
-            );
-
         // Clean up listeners
         return () => {
-            notificationListener.remove(); // ✅ Correct way to unsubscribe
-            responseListener.remove(); // ✅ Correct way to unsubscribe
             setIsLoading(false);
         };
     }, [session]);
