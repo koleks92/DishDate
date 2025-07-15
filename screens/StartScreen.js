@@ -46,8 +46,6 @@ function StartScreen({ navigation }) {
     const [name, setName] = useState("");
     const [nameModalVisible, setNameModalVisible] = useState(false);
 
-    const hasHandledInitialNotificationRef = useRef(false);
-
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
     // Context Stores
@@ -64,54 +62,65 @@ function StartScreen({ navigation }) {
 
     useEffect(() => {
         async function prepare() {
-            try {
-                setIsLoading(true);
+            setIsLoading(true);
 
-                // Load data:
-                await loadDishesHandler();
-                await loadCuisinesHandler();
+            await loadDishesHandler();
+            await loadCuisinesHandler();
 
-                // Configure Google SignIn:
-                GoogleSignin.configure({
-                    webClientId: webClientId,
-                    iosClientId: iosClientId,
-                });
+            GoogleSignin.configure({
+                webClientId,
+                iosClientId,
+            });
 
-                // Get current session from supabase:
-                const {
-                    data: { session },
-                } = await supabase.auth.getSession();
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
 
-                setSession(session);
+            setSession(session);
 
-                if (session?.user) {
-                    await upsertUser(session.user);
-                }
-
-                // Listen for auth state changes:
-                const { data: authListener } = supabase.auth.onAuthStateChange(
-                    async (_event, session) => {
-                        setSession(session);
-                        if (session?.user) {
-                            await upsertUser(session.user);
-                        }
-                    }
-                );
-
-                setIsLoading(false);
-
-                // Clean up auth listener on unmount
-                return () => {
-                    authListener?.unsubscribe();
-                };
-            } catch (e) {
-                console.warn("Error during app preparation:", e);
-                setIsLoading(false);
+            if (session?.user) {
+                await upsertUser(session.user);
             }
+
+            const { data: authListener } = supabase.auth.onAuthStateChange(
+                async (_event, session) => {
+                    setSession(session);
+                    if (session?.user) {
+                        await upsertUser(session.user);
+                    }
+                }
+            );
+
+            return () => {
+                authListener?.unsubscribe();
+            };
         }
 
         prepare();
 
+    }, []); 
+
+    useEffect(() => {
+        const register = async () => {
+            if (!session) {
+                console.log(
+                    "No session found, skipping push notification registration."
+                );
+                return;
+            }
+
+            const token = await registerForPushNotificationsAsync();
+            if (token) {
+                saveExpoPushToken(session.user.id, token);
+            }
+        };
+
+        register();
+
+        setIsLoading(false);
+    }, [session]);
+
+    useEffect(() => {
         // Check for initial notification
         const checkInitialNotification = async () => {
             const response =
@@ -128,13 +137,11 @@ function StartScreen({ navigation }) {
             }
         };
 
-        // Check if initial notification has been handled
         if (!initialNotification) {
             checkInitialNotification();
         }
 
-        // Listeners
-
+        // Notification tap listener
         const responseListener =
             Notifications.addNotificationResponseReceivedListener(
                 (response) => {
@@ -149,11 +156,10 @@ function StartScreen({ navigation }) {
                 }
             );
 
-        // Clean up listeners
         return () => {
             responseListener.remove();
         };
-    }, []);
+    }, [initialNotification]);
 
     // Root view fade in animation
     useEffect(() => {
@@ -166,29 +172,6 @@ function StartScreen({ navigation }) {
             }).start();
         }
     }, [isLoading]);
-
-    useEffect(() => {
-        if (!session || !session.user) {
-            console.log(
-                "Session not available yet, skipping push token registration."
-            );
-            return; // Exit early if session is not ready
-        }
-
-        // Register push token
-        registerForPushNotificationsAsync()
-            .then((token) => {
-                if (token) {
-                    saveExpoPushToken(session.user.id, token);
-                }
-            })
-            .catch((error) => console.error(error));
-
-        // Clean up listeners
-        return () => {
-            setIsLoading(false);
-        };
-    }, [session]);
 
     // Function to upsert user info into Users table
     const upsertUser = async (user) => {
