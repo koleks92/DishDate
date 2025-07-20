@@ -62,28 +62,15 @@ function LoginScreen({ navigation }) {
                 iosClientId,
             });
 
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
+            supabase.auth.getSession().then(({ data: { session } }) => {
+                setSession(session);
+            });
 
-            setSession(session);
-
-            if (session?.user) {
-                await upsertUser(session.user);
-            }
-
-            const { data: authListener } = supabase.auth.onAuthStateChange(
-                async (_event, session) => {
+            supabase.auth.onAuthStateChange((_event, session) => {
+                if (_event != "USER_UPDATED") {
                     setSession(session);
-                    if (session?.user) {
-                        await upsertUser(session.user);
-                    }
                 }
-            );
-
-            return () => {
-                authListener?.unsubscribe();
-            };
+            });
         }
 
         prepare();
@@ -183,7 +170,6 @@ function LoginScreen({ navigation }) {
             console.error("Error inserting user:", error);
         }
     };
-    
 
     // Handle Google Sign In
     const handleGoogleSignIn = async () => {
@@ -235,7 +221,6 @@ function LoginScreen({ navigation }) {
             }
 
             await fetchUserName();
-
         } catch (e) {
             if (e.code === "ERR_REQUEST_CANCELED") {
                 console.log("Apple sign-in cancelled by user.");
@@ -346,7 +331,7 @@ function LoginScreen({ navigation }) {
 
     if (isLoading) {
         return (
-            <View style={styles.root}> 
+            <View style={styles.root}>
                 <Loading visible={isLoading} />
             </View>
         );
