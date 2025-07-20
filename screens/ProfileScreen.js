@@ -98,7 +98,7 @@ function ProfileScreen({ navigation }) {
     };
 
     const saveAvatarToStorage = async (image) => {
-        const fileName = `${userId}/avatar.jpeg`;
+        const fileName = `${userId}/avatar_${Date.now()}.jpeg`;
 
         // Create new FormData to upload to supabase
         const formData = new FormData();
