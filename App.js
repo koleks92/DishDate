@@ -6,6 +6,7 @@ import {
 } from "@react-navigation/stack";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
+import LoginScreen from "./screens/LoginScreen";
 import StartScreen from "./screens/StartScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import DishesScreen from "./screens/DishesScreen";
@@ -86,7 +87,7 @@ function App() {
                 <DDProvider>
                     <NavigationContainer linking={linking}>
                         <Stack.Navigator
-                            initialRouteName="StartScreen" // Set the initial screen here
+                            initialRouteName="LoginScreen" // Set the initial screen here
                             screenOptions={{
                                 headerShown: false,
                                 cardStyle: {
@@ -97,6 +98,10 @@ function App() {
                                     CardStyleInterpolators.forHorizontalIOS, // <-- This makes Android behave like iOS // transition bg color
                             }}
                         >
+                            <Stack.Screen
+                                name="LoginScreen"
+                                component={LoginScreen}
+                            />
                             <Stack.Screen
                                 name="StartScreen"
                                 component={StartScreen}
