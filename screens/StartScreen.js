@@ -1,8 +1,7 @@
-import { useContext, useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
     View,
     StyleSheet,
-    Alert,
     Platform,
     Pressable,
     TouchableWithoutFeedback,
@@ -10,156 +9,19 @@ import {
     KeyboardAvoidingView,
     Animated,
 } from "react-native";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import * as AppleAuthentication from "expo-apple-authentication";
-import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
-import * as Notifications from "expo-notifications";
-import { registerForPushNotificationsAsync } from "../util/Push";
 import Background from "../components/UI/Background";
 import ButtonMain from "../components/UI/ButtonMain";
-import ButtonLogo from "../components/UI/ButtonLogo";
 import Sizes from "../constants/Sizes";
-import InputField from "../components/UI/InputField";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../components/UI/Logo";
 import Colors from "../constants/Colors";
-import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
-import NameModal from "../components/UI/NameModal";
-import { set } from "date-fns";
-
-// Google Client IDS
-const webClientId =
-    "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com";
-const iosClientId =
-    "602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg.apps.googleusercontent.com";
 
 function StartScreen({ navigation }) {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
     const [isLoading, setIsLoading] = useState(false);
 
-    const [alert, setAlert] = useState({});
-    const [alertVisible, setAlertVisible] = useState(false);
-
-    const [name, setName] = useState("");
-    const [nameModalVisible, setNameModalVisible] = useState(false);
-
     const fadeAnim = useRef(new Animated.Value(0)).current;
-
-    // Context Stores
-    const {
-        handleSignOut,
-        loadDishesHandler,
-        session,
-        setSession,
-        loadCuisinesHandler,
-        saveExpoPushToken,
-        initialNotification,
-        setInitialNotification,
-    } = useContext(DDContext);
-
-    useEffect(() => {
-        async function prepare() {
-            setIsLoading(true);
-
-            await loadDishesHandler();
-            await loadCuisinesHandler();
-
-            GoogleSignin.configure({
-                webClientId,
-                iosClientId,
-            });
-
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-
-            setSession(session);
-
-            if (session?.user) {
-                await upsertUser(session.user);
-            }
-
-            const { data: authListener } = supabase.auth.onAuthStateChange(
-                async (_event, session) => {
-                    setSession(session);
-                    if (session?.user) {
-                        await upsertUser(session.user);
-                    }
-                }
-            );
-
-            return () => {
-                authListener?.unsubscribe();
-            };
-        }
-
-        prepare();
-
-    }, []); 
-
-    useEffect(() => {
-        const register = async () => {
-            if (!session) {
-                console.log(
-                    "No session found, skipping push notification registration."
-                );
-                return;
-            }
-
-            const token = await registerForPushNotificationsAsync();
-            if (token) {
-                saveExpoPushToken(session.user.id, token);
-            }
-        };
-
-        register();
-
-        setIsLoading(false);
-    }, [session]);
-
-    useEffect(() => {
-        // Check for initial notification
-        const checkInitialNotification = async () => {
-            const response =
-                await Notifications.getLastNotificationResponseAsync();
-            if (response) {
-                const notificationData =
-                    response.notification.request.content.data;
-                if (notificationData.gameroomId) {
-                    setInitialNotification(true);
-                    navigation.navigate("GameResultsScreen", {
-                        id: notificationData.gameroomId,
-                    });
-                }
-            }
-        };
-
-        if (!initialNotification) {
-            checkInitialNotification();
-        }
-
-        // Notification tap listener
-        const responseListener =
-            Notifications.addNotificationResponseReceivedListener(
-                (response) => {
-                    const notificationData =
-                        response.notification.request.content.data;
-                    if (notificationData.gameroomId) {
-                        setInitialNotification(true);
-                        navigation.push("GameResultsScreen", {
-                            id: notificationData.gameroomId,
-                        });
-                    }
-                }
-            );
-
-        return () => {
-            responseListener.remove();
-        };
-    }, [initialNotification]);
 
     // Root view fade in animation
     useEffect(() => {
@@ -173,207 +35,26 @@ function StartScreen({ navigation }) {
         }
     }, [isLoading]);
 
-    // Function to upsert user info into Users table
-    const upsertUser = async (user) => {
-        const { id, email, user_metadata } = user;
-        const name = user_metadata?.name || "";
-        const avatar_url = user_metadata?.avatar_url || "";
-
-        const { error } = await supabase.from("users").upsert([
-            {
-                id,
-                email,
-                name,
-                avatar_url,
-            },
-        ]);
-
+    // Handle SignOut
+    const handleSignOut = async () => {
+        const { error } = await supabase.auth.signOut();
         if (error) {
-            console.error("Error inserting user:", error);
+            console.log("Error: ", error);
         }
-    };
-
-    // Handle Google Sign In
-    const handleGoogleSignIn = async () => {
-        setIsLoading(true);
-        try {
-            await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
-
-            if (userInfo.data.idToken) {
-                const { data, error } = await supabase.auth.signInWithIdToken({
-                    provider: "google",
-                    token: userInfo.data.idToken,
-                });
-                if (error) {
-                    console.error("Supabase sign-in error:", error);
-                }
-            } else {
-                throw new Error("No ID token present in Google response!");
-            }
-        } catch (error) {
-            console.error("Google Sign-In error:", error);
-        }
-
-        await fetchUserName();
-
-        setNameModalVisible(true);
-    };
-
-    // Handle Apple Sign in
-    const handleAppleSignIn = async () => {
-        setIsLoading(true);
-        try {
-            const credential = await AppleAuthentication.signInAsync({
-                requestedScopes: [
-                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
-                ],
-            });
-
-            if (credential.identityToken) {
-                const { data, error } = await supabase.auth.signInWithIdToken({
-                    provider: "apple",
-                    token: credential.identityToken,
-                });
-
-                if (error) {
-                    console.error("Supabase sign-in error:", error);
-                }
-            } else {
-                throw new Error("No identity token received from Apple.");
-            }
-
-            await fetchUserName();
-
-            setNameModalVisible(true);
-        } catch (e) {
-            if (e.code === "ERR_REQUEST_CANCELED") {
-                console.log("Apple sign-in cancelled by user.");
-            } else {
-                console.error("Apple Sign-In error:", e);
-            }
-        }
-    };
-
-    // Handle SignUp
-    const handleSignUp = async () => {
-        setIsLoading(true);
-        if (!email || !password) {
-            setAlertVisible(true);
-            setAlert({
-                title: "Ups!",
-                message: "Please fill in both fields",
-                type: "info",
-            });
-            return;
-        } else {
-            const {
-                data: { session },
-                error,
-            } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-            });
-
-            if (error) Alert.alert(error.message);
-            if (!session) {
-                setAlertVisible(true);
-                setAlert({
-                    title: "Ups!",
-                    message: "Please check your inbox for email verification!",
-                    type: "info",
-                });
-            }
-        }
-
-        await fetchUserName();
-
-        setNameModalVisible(true);
-    };
-
-    // Handle SignIn
-    const handleSignIn = async () => {
-        setIsLoading(true);
-        if (!email || !password) {
-            setAlertVisible(true);
-            setAlert({
-                title: "Ups!",
-                message: "Please fill in both fields",
-                type: "info",
-            });
-            return;
-        } else {
-            const { error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password,
-            });
-
-            if (error) {
-                setIsLoading(false);
-                setAlertVisible(true);
-                setAlert({
-                    title: "Ups!",
-                    message: error.message,
-                    type: "info",
-                });
-            }
-        }
-        await fetchUserName();
-
-        setNameModalVisible(true);
     };
 
     // Handle SignOut
     const handleSignOutHandler = async () => {
         setIsLoading(true);
         await handleSignOut();
+        navigation.navigate("LoginScreen");
         setIsLoading(false);
-    };
-
-    // Handle custom name save
-    const handleNameModalSave = async (name) => {
-        const { data, error } = await supabase.auth.updateUser({
-            data: { name: name }, // Updating metadata
-        });
-
-        setNameModalVisible(false);
-
-        setIsLoading(false);
-
-        return;
-    };
-
-    // Get user name from database
-    const fetchUserName = async () => {
-        const { data: user } = await supabase.auth.getUser();
-
-        if (user) {
-            const userId = user.user.id;
-
-            const { data, error } = await supabase
-                .from("users")
-                .select("name")
-                .eq("id", userId)
-                .single();
-
-            if (error) {
-                console.error("Error fetching name:", error.message);
-            } else {
-                setName(data.name);
-            }
-        }
     };
 
     if (isLoading) {
         return (
             <View style={styles.root}>
                 <Loading visible={isLoading} />
-                <NameModal
-                    visible={nameModalVisible}
-                    onSave={handleNameModalSave}
-                    sessionName={name}
-                />
             </View>
         );
     }
@@ -386,113 +67,56 @@ function StartScreen({ navigation }) {
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
                     <Background />
-                    <CustomAlert
-                        visible={alertVisible}
-                        message={alert.message}
-                        title={alert.title}
-                        type={alert.type}
-                        onClose={() => setAlertVisible(false)}
-                    />
 
-                    {session && (
-                        <View style={styles.profileContainer}>
-                            <Pressable onPress={handleSignOutHandler}>
-                                <Ionicons
-                                    name="log-out-outline"
-                                    color={Colors.black}
-                                    size={Sizes.profileContainerHeight}
-                                />
-                            </Pressable>
-                            <Pressable
-                                onPress={() =>
-                                    navigation.navigate("ProfileScreen")
-                                }
-                            >
-                                <Ionicons
-                                    name="person-outline"
-                                    color={Colors.black}
-                                    size={Sizes.profileContainerHeight * 0.9}
-                                />
-                            </Pressable>
-                        </View>
-                    )}
+                    <View style={styles.profileContainer}>
+                        <Pressable onPress={handleSignOutHandler}>
+                            <Ionicons
+                                name="log-out-outline"
+                                color={Colors.black}
+                                size={Sizes.profileContainerHeight}
+                            />
+                        </Pressable>
+                        <Pressable
+                            onPress={() => navigation.navigate("ProfileScreen")}
+                        >
+                            <Ionicons
+                                name="person-outline"
+                                color={Colors.black}
+                                size={Sizes.profileContainerHeight * 0.9}
+                            />
+                        </Pressable>
+                    </View>
                     <View style={styles.mainContainer}>
                         <View styles={styles.logoContainer}>
                             <Logo />
                         </View>
 
-                        {!session ? (
-                            <View>
-                                <InputField
-                                    placeholder={"Email"}
-                                    value={email}
-                                    onChangeText={setEmail}
-                                />
-                                <InputField
-                                    placeholder={"Password"}
-                                    value={password}
-                                    onChangeText={setPassword}
-                                    secureTextEntry={true}
-                                />
-                                <ButtonMain
-                                    text="Sign In"
-                                    onPress={handleSignIn}
-                                />
-                                <ButtonMain
-                                    text="Sign Up"
-                                    onPress={handleSignUp}
-                                />
-                                <View style={styles.socialContainer}>
-                                    <ButtonLogo
-                                        text={
-                                            <Ionicons
-                                                name="logo-google"
-                                                size={Sizes.buttonLogoSize}
-                                            />
-                                        }
-                                        onPress={handleGoogleSignIn}
-                                    />
-                                    {Platform.OS === "ios" && (
-                                        <ButtonLogo
-                                            text={
-                                                <Ionicons
-                                                    name="logo-apple"
-                                                    size={Sizes.buttonLogoSize}
-                                                />
-                                            }
-                                            onPress={handleAppleSignIn}
-                                        />
-                                    )}
-                                </View>
-                            </View>
-                        ) : (
-                            <View>
-                                <ButtonMain
-                                    text="New Game"
-                                    onPress={() =>
-                                        navigation.navigate("NewGameScreen")
-                                    }
-                                />
-                                <ButtonMain
-                                    text="Join Game"
-                                    onPress={() =>
-                                        navigation.navigate("JoinGameScreen")
-                                    }
-                                />
-                                <ButtonMain
-                                    text="My Dishes"
-                                    onPress={() =>
-                                        navigation.navigate("DishesScreen")
-                                    }
-                                />
-                                <ButtonMain
-                                    text="My Games"
-                                    onPress={() => {
-                                        navigation.navigate("GamesListScreen");
-                                    }}
-                                />
-                            </View>
-                        )}
+                        <View>
+                            <ButtonMain
+                                text="New Game"
+                                onPress={() =>
+                                    navigation.navigate("NewGameScreen")
+                                }
+                            />
+                            <ButtonMain
+                                text="Join Game"
+                                onPress={() =>
+                                    navigation.navigate("JoinGameScreen")
+                                }
+                            />
+                            <ButtonMain
+                                text="My Dishes"
+                                onPress={() =>
+                                    navigation.navigate("DishesScreen")
+                                }
+                            />
+                            <ButtonMain
+                                text="My Games"
+                                onPress={() => {
+                                    navigation.navigate("GamesListScreen");
+                                }}
+                            />
+                        </View>
                     </View>
                 </Animated.View>
             </TouchableWithoutFeedback>
