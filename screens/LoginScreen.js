@@ -164,7 +164,6 @@ function LoginScreen({ navigation }) {
             ? user_metadata.name
             : email?.split("@")[0] || "";
 
-
         // Check if user already exists
         const { data: existingUser, error: fetchError } = await supabase
             .from("users")
@@ -211,8 +210,8 @@ function LoginScreen({ navigation }) {
             }
         } catch (error) {
             console.error("Google Sign-In error:", error);
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
 
     // Handle Apple Sign in
@@ -234,6 +233,7 @@ function LoginScreen({ navigation }) {
 
                 if (error) {
                     console.error("Supabase sign-in error:", error);
+                    setIsLoading(false);
                 }
             } else {
                 throw new Error("No identity token received from Apple.");
@@ -244,8 +244,8 @@ function LoginScreen({ navigation }) {
             } else {
                 console.error("Apple Sign-In error:", e);
             }
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
 
     // Handle SignUp
@@ -275,9 +275,9 @@ function LoginScreen({ navigation }) {
                     message: error.message,
                     type: "info",
                 });
+                setIsLoading(false);
             }
         }
-        setIsLoading(false);
     };
 
     // Handle SignIn
