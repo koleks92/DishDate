@@ -8,6 +8,7 @@ export const DDProvider = ({ children }) => {
     const [session, setSession] = useState(null);
     const [cuisinesList, setCuisinesList] = useState(null);
     const [initialNotification, setInitialNotification] = useState(false);
+    const [initialSetup, setInitialSetup] = useState(false);
 
     // Handle SignOut
     const handleSignOut = async () => {
@@ -201,6 +202,8 @@ export const DDProvider = ({ children }) => {
                 setNotification,
                 initialNotification,
                 setInitialNotification,
+                initialSetup,
+                setInitialSetup
             }}
         >
             {children}
