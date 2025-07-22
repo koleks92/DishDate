@@ -17,7 +17,7 @@ Using EAS:
 
 Uisn EAS locally:
 ```eas build --profile development --platform android --local```
-```eas build --profile development --platform ios --local```
+```EXPO_NO_CAPABILITY_SYNC=1 eas build --profile development --platform ios --local```
 
 
 If problem with provisioning profile on iOS use prefix:
