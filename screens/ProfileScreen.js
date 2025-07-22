@@ -72,9 +72,10 @@ function ProfileScreen({ navigation }) {
     const handleUpdateName = async () => {
         setUpdateLoading(true);
 
-        const { data, error } = await supabase.auth.updateUser({
-            data: { name: userName }, // Updating metadata
-        });
+        const { data, error } = await supabase.from("users").update({
+            name: userName,
+        }).eq("id", userId);
+
 
         setTimeout(() => {
             setUpdateLoading(false);
