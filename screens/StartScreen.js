@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import {
     View,
     StyleSheet,
@@ -17,23 +17,27 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../components/UI/Logo";
 import Colors from "../constants/Colors";
 import Loading from "../components/UI/Loading";
+import { DDContext } from "../store/ContextStore";
 
 function StartScreen({ navigation }) {
     const [isLoading, setIsLoading] = useState(false);
 
+    const { session } = useContext(DDContext);
+
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
-    // Root view fade in animation
     useEffect(() => {
-        if (!isLoading) {
-            // Start the fade-in animation
-            Animated.timing(fadeAnim, {
-                toValue: 1,
-                duration: 200,
-                useNativeDriver: true,
-            }).start();
+        if (!session?.user) {
+            navigation.navigate("LoginScreen");
+            return;
         }
-    }, [isLoading]);
+
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+        }).start();
+    }, [session]);
 
     // Handle SignOut
     const handleSignOut = async () => {
