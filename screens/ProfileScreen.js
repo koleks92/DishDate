@@ -36,28 +36,32 @@ function ProfileScreen({ navigation }) {
 
     useEffect(() => {
         const fetchUserData = async () => {
+
             const {
                 data: { user },
                 error,
             } = await supabase.auth.getUser();
-            let metadata = user.user_metadata;
-
-            if (metadata) {
-                setUserName(metadata.name);
-                setUserEmail(metadata.email);
-                setUserAvatar(metadata.avatar_url);
-            }
 
             if (user) {
                 setUserId(user.id);
+            }
+
+            const { data: userData, error: errorUser } = await supabase.from("users")
+                .select("id, name, email, avatar_url"). eq("id", user.id)
+                .single();
+
+            if (userData) {
+                setUserName(userData.name || "No name");
+                setUserEmail(userData.email || "No email");
+                setUserAvatar(userData.avatar_url || null); 
             }
 
             setTimeout(() => {
                 setIsLoading(false);
             }, 500);
 
-            if (error) {
-                console.error("Error fetching user data:", error.message);
+            if (error || errorUser) {
+                console.error("Error fetching user data:", error.message || errorUser.message);
                 return null;
             }
         };
