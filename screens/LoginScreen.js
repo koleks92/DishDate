@@ -1,8 +1,7 @@
-import { useContext, useEffect, useState, useRef, use } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import {
     View,
     StyleSheet,
-    Alert,
     Platform,
     TouchableWithoutFeedback,
     Keyboard,
@@ -74,12 +73,20 @@ function LoginScreen({ navigation }) {
         }
 
         prepare();
+
+        // Start the fade-in animation
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+        }).start();
     }, []);
+
+    // Initial setup logic dosent work,
 
     useEffect(() => {
         if (session) {
-            // Register for push notifications
-            registerPushToken();
+            setupUser();
             navigation.navigate("StartScreen");
         }
     }, [session]);
@@ -125,18 +132,12 @@ function LoginScreen({ navigation }) {
         };
     }, [initialNotification]);
 
-    // Root view fade in animation
-    useEffect(() => {
-        if (!isLoading) {
-            // Start the fade-in animation
-            Animated.timing(fadeAnim, {
-                toValue: 1,
-                duration: 200,
-                useNativeDriver: true,
-            }).start();
-        }
-    }, [isLoading]);
+    const setupUser = async () => {
+        await insertUser(session?.user);
+        await registerPushToken();
+    };
 
+    // Register push token for notifications
     const registerPushToken = async () => {
         if (!session) {
             console.log(
@@ -151,13 +152,31 @@ function LoginScreen({ navigation }) {
         }
     };
 
-    // Function to upsert user info into Users table
-    const upsertUser = async (user) => {
+    // Function to insert user info into Users table
+    const insertUser = async (user) => {
+        if (!user) return;
+
         const { id, email, user_metadata } = user;
-        const name = user_metadata?.name || "";
         const avatar_url = user_metadata?.avatar_url || "";
 
-        const { error } = await supabase.from("users").upsert([
+        // Use name if present, else use the part of the email before '@'
+        const name = user_metadata?.name?.trim()
+            ? user_metadata.name
+            : email?.split("@")[0] || "";
+
+
+        // Check if user already exists
+        const { data: existingUser, error: fetchError } = await supabase
+            .from("users")
+            .select("id")
+            .eq("id", id)
+            .single();
+
+        if (existingUser) {
+            return; // Already exists, skip insert
+        }
+
+        const { error } = await supabase.from("users").insert([
             {
                 id,
                 email,
@@ -183,6 +202,7 @@ function LoginScreen({ navigation }) {
                     provider: "google",
                     token: userInfo.data.idToken,
                 });
+
                 if (error) {
                     console.error("Supabase sign-in error:", error);
                 }
@@ -192,8 +212,7 @@ function LoginScreen({ navigation }) {
         } catch (error) {
             console.error("Google Sign-In error:", error);
         }
-
-        await fetchUserName();
+        setIsLoading(false);
     };
 
     // Handle Apple Sign in
@@ -219,8 +238,6 @@ function LoginScreen({ navigation }) {
             } else {
                 throw new Error("No identity token received from Apple.");
             }
-
-            await fetchUserName();
         } catch (e) {
             if (e.code === "ERR_REQUEST_CANCELED") {
                 console.log("Apple sign-in cancelled by user.");
@@ -228,6 +245,7 @@ function LoginScreen({ navigation }) {
                 console.error("Apple Sign-In error:", e);
             }
         }
+        setIsLoading(false);
     };
 
     // Handle SignUp
@@ -250,18 +268,16 @@ function LoginScreen({ navigation }) {
                 password: password,
             });
 
-            if (error) Alert.alert(error.message);
-            if (!session) {
+            if (error) {
                 setAlertVisible(true);
                 setAlert({
                     title: "Ups!",
-                    message: "Please check your inbox for email verification!",
+                    message: error.message,
                     type: "info",
                 });
             }
         }
-
-        await fetchUserName();
+        setIsLoading(false);
     };
 
     // Handle SignIn
@@ -291,42 +307,7 @@ function LoginScreen({ navigation }) {
                 });
             }
         }
-        await fetchUserName();
-    };
-
-    // Get user name from database
-    const fetchUserName = async () => {
-        const { data: user } = await supabase.auth.getUser();
-
-        if (user) {
-            const userId = user.user.id;
-
-            const { data, error } = await supabase
-                .from("users")
-                .select("name")
-                .eq("id", userId)
-                .single();
-
-            if (error) {
-                console.error("Error fetching name:", error.message);
-            } else {
-                setName(data.name);
-            }
-        }
-    };
-
-    // Handle custom name save
-    const handleNameModalSave = async (name) => {
-        await supabase.auth.updateUser({
-            data: { name: name }, // ✅ this goes inside `data`
-        });
-        console.log("Name: ", name);
-
-        if (error) {
-            console.error("Error updating user name:", error.message);
-        } else {
-            navigation.navigate("StartScreen");
-        }
+        setIsLoading(false);
     };
 
     if (isLoading) {
