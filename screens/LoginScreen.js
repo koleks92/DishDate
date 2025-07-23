@@ -71,6 +71,7 @@ function LoginScreen({ navigation }) {
                     type: "info",
                 });
                 setIsLoading(true);
+                return;
             }
 
             await loadDishesHandler();
