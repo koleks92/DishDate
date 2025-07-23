@@ -23,7 +23,7 @@ import * as SplashScreen from "expo-splash-screen";
 import DDProvider from "./store/ContextStore";
 import * as Notifications from "expo-notifications";
 
-import { StatusBar } from "react-native";
+import { Platform, StatusBar } from "react-native";
 import Colors from "./constants/Colors";
 import { useFonts, getLoadedFonts } from "expo-font";
 
@@ -68,7 +68,9 @@ function App() {
     useEffect(() => {
         async function prepare() {
             StatusBar.setBarStyle("dark-content"); // Dark icons on status bar
-            StatusBar.setBackgroundColor(Colors.background); // Makes status bar background transparent
+            if (Platform.OS === "android") {
+                StatusBar.setBackgroundColor(Colors.background); // Makes status bar background transparent
+            }
 
             if (loaded) {
                 // Fonts are loaded, hide the splash screen
