@@ -56,9 +56,9 @@ function LoginScreen({ navigation }) {
         async function prepare() {
             const networkState = await Network.getNetworkStateAsync();
 
-            if (__DEV__) {
-                networkState.isInternetReachable = false;
-            }
+            // if (__DEV__) {
+            //     networkState.isInternetReachable = false;
+            // }
 
             // Check if the device is connected to the internet
             if (!networkState.isInternetReachable) {
