@@ -24,6 +24,7 @@ import Logo from "../components/UI/Logo";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
 import * as Network from "expo-network";
+import { set } from "date-fns";
 
 // Google Client IDS
 const webClientId =
@@ -106,6 +107,7 @@ function LoginScreen({ navigation }) {
     useEffect(() => {
         if (session) {
             setupUser();
+            setIsLoading(false);
             navigation.navigate("StartScreen");
         }
     }, [session]);
