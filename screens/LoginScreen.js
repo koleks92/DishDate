@@ -23,6 +23,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Logo from "../components/UI/Logo";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
+import * as Network from "expo-network";
 
 // Google Client IDS
 const webClientId =
@@ -53,6 +54,24 @@ function LoginScreen({ navigation }) {
 
     useEffect(() => {
         async function prepare() {
+            const networkState = await Network.getNetworkStateAsync();
+
+            if (__DEV__) {
+                networkState.isInternetReachable = false;
+            }
+
+            // Check if the device is connected to the internet
+            if (!networkState.isInternetReachable) {
+                setAlertVisible(true);
+                setAlert({
+                    title: "No Internet",
+                    message:
+                        "Please check your internet connection and restart application.",
+                    type: "info",
+                });
+                setIsLoading(true);
+            }
+
             await loadDishesHandler();
             await loadCuisinesHandler();
 
@@ -313,7 +332,20 @@ function LoginScreen({ navigation }) {
     if (isLoading) {
         return (
             <View style={styles.root}>
-                <Loading visible={isLoading} />
+                {isLoading && !alertVisible && <Loading visible={true} />}
+
+                {alertVisible && (
+                    <>
+                        <Background />
+                        <CustomAlert
+                            visible={true}
+                            message={alert.message}
+                            title={alert.title}
+                            type={alert.type}
+                            onClose={() => setAlertVisible(false)}
+                        />
+                    </>
+                )}
             </View>
         );
     }
