@@ -74,9 +74,6 @@ function LoginScreen({ navigation }) {
                 return;
             }
 
-            await loadDishesHandler();
-            await loadCuisinesHandler();
-
             GoogleSignin.configure({
                 webClientId,
                 iosClientId,
@@ -155,6 +152,8 @@ function LoginScreen({ navigation }) {
     }, [initialNotification]);
 
     const setupUser = async () => {
+        await loadDishesHandler();
+        await loadCuisinesHandler();
         await insertUser(session?.user);
         await registerPushToken();
     };
