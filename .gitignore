@@ -46,3 +46,4 @@ yarn-error.*
 # development
 /design
 /production
+.env.local
