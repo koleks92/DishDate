@@ -104,6 +104,7 @@ function LoginScreen({ navigation }) {
 
     useEffect(() => {
         if (session) {
+            setIsLoading(true);
             setupUser();
             setIsLoading(false);
             navigation.navigate("StartScreen");
@@ -212,7 +213,6 @@ function LoginScreen({ navigation }) {
 
     // Handle Google Sign In
     const handleGoogleSignIn = async () => {
-        setIsLoading(true);
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
@@ -231,13 +231,11 @@ function LoginScreen({ navigation }) {
             }
         } catch (error) {
             console.error("Google Sign-In error:", error);
-            setIsLoading(false);
         }
     };
 
     // Handle Apple Sign in
     const handleAppleSignIn = async () => {
-        setIsLoading(true);
         try {
             const credential = await AppleAuthentication.signInAsync({
                 requestedScopes: [
@@ -254,7 +252,6 @@ function LoginScreen({ navigation }) {
 
                 if (error) {
                     console.error("Supabase sign-in error:", error);
-                    setIsLoading(false);
                 }
             } else {
                 throw new Error("No identity token received from Apple.");
@@ -265,13 +262,11 @@ function LoginScreen({ navigation }) {
             } else {
                 console.error("Apple Sign-In error:", e);
             }
-            setIsLoading(false);
         }
     };
 
     // Handle SignUp
     const handleSignUp = async () => {
-        setIsLoading(true);
         if (!email || !password) {
             setAlertVisible(true);
             setAlert({
@@ -296,14 +291,12 @@ function LoginScreen({ navigation }) {
                     message: error.message,
                     type: "info",
                 });
-                setIsLoading(false);
             }
         }
     };
 
     // Handle SignIn
     const handleSignIn = async () => {
-        setIsLoading(true);
         if (!email || !password) {
             setAlertVisible(true);
             setAlert({
@@ -319,7 +312,6 @@ function LoginScreen({ navigation }) {
             });
 
             if (error) {
-                setIsLoading(false);
                 setAlertVisible(true);
                 setAlert({
                     title: "Ups!",
@@ -328,7 +320,6 @@ function LoginScreen({ navigation }) {
                 });
             }
         }
-        setIsLoading(false);
     };
 
     if (isLoading) {
