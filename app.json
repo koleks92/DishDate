@@ -1,111 +1,104 @@
 {
-  "expo": {
-    "name": "DishDate",
-    "scheme": "dishdate",
-    "slug": "DishDate",
-    "version": "1.0.1",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#f2de77",
-      "autoHide": false
-    },
-    "plugins": [
-      "expo-notifications",
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosUrlScheme": "com.googleusercontent.apps.602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg"
+    "expo": {
+        "name": "DishDate",
+        "scheme": "dishdate",
+        "slug": "DishDate",
+        "version": "1.0.1",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "light",
+        "splash": {
+            "image": "./assets/splash/splash-icon.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#f2de77",
+            "autoHide": false
+        },
+        "plugins": [
+            "expo-notifications",
+            [
+                "@react-native-google-signin/google-signin",
+                {
+                    "iosUrlScheme": "com.googleusercontent.apps.602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg"
+                }
+            ],
+            [
+                "expo-splash-screen",
+                {
+                    "image": "./assets/splash/splash-icon.png",
+                    "resizeMode": "contain",
+                    "backgroundColor": "#f2de77",
+                    "imageWidth": 200
+                }
+            ],
+            "expo-image-picker",
+            ["expo-apple-authentication"],
+            [
+                "expo-font",
+                {
+                    "fonts": [
+                        "./assets/fonts/Tektur-Regular.ttf",
+                        "./assets/fonts/Tektur-Bold.ttf"
+                    ]
+                }
+            ],
+            [
+                "@sentry/react-native/expo",
+                {
+                    "url": "https://sentry.io/",
+                    "project": "dishdate",
+                    "organization": "dishdate"
+                }
+            ]
+        ],
+        "ios": {
+            "associatedDomains": [
+                "applinks:dishdate.app",
+                "applinks:*.dishdate.app"
+            ],
+            "supportsTablet": false,
+            "bundleIdentifier": "com.koleks92.DishDate",
+            "infoPlist": {
+                "NSPhotoLibraryUsageDescription": "This app needs access to your photo library so you can select pictures of your dishes to add to your recipe entries or to choose an image for your profile picture. Other users will see these photos when Browse your dish database or viewing your profile.",
+                "NSCameraUsageDescription": "This app requires camera access to allow you to take new photos of your culinary creations directly for your dish entries, or to capture a new profile picture. These photos will be visible to other users when they explore your dishes or view your profile.",
+                "ITSAppUsesNonExemptEncryption": false
+            },
+            "usesAppleSignIn": true,
+            "icon": {
+                "dark": "./assets/icons/Dark.png",
+                "light": "./assets/icons/Light.png",
+                "tinted": "./assets/icons/Tinted.png"
+            }
+        },
+        "android": {
+            "edgeToEdgeEnabled": true,
+            "intentFilters": [
+                {
+                    "action": "VIEW",
+                    "data": {
+                        "scheme": "https",
+                        "host": "dishdate.app",
+                        "pathPrefix": "/join-game"
+                    },
+                    "autoVerify": true,
+                    "category": ["BROWSABLE", "DEFAULT"]
+                }
+            ],
+            "googleServicesFile": "./services/google-services.json",
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/icons/adaptive-icon.png",
+                "monochromeImage": "./assets/icons/adaptive-icon.png",
+                "backgroundColor": "#f2de77"
+            },
+            "package": "com.koleks92.DishDate",
+            "permissions": ["android.permission.RECORD_AUDIO"]
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        },
+        "extra": {
+            "eas": {
+                "projectId": "48da0c2c-3538-4f0e-848b-2b9f73087662"
+            }
         }
-      ],
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/splash/splash-icon.png",
-          "resizeMode": "contain",
-          "backgroundColor": "#f2de77",
-          "imageWidth": 200
-        }
-      ],
-      "expo-image-picker",
-      [
-        "expo-apple-authentication"
-      ],
-      [
-        "expo-font",
-        {
-          "fonts": [
-            "./assets/fonts/Tektur-Regular.ttf",
-            "./assets/fonts/Tektur-Bold.ttf"
-          ]
-        }
-      ],
-      [
-        "@sentry/react-native/expo",
-        {
-          "url": "https://sentry.io/",
-          "project": "dishdate",
-          "organization": "dishdate"
-        }
-      ]
-    ],
-    "ios": {
-      "associatedDomains": [
-        "applinks:dishdate.app",
-        "applinks:*.dishdate.app"
-      ],
-      "supportsTablet": false,
-      "bundleIdentifier": "com.koleks92.DishDate",
-      "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "The app accesses your photos to let you select photos.",
-        "NSCameraUsageDescription": "The app accesses your camera to let you take photos.",
-        "ITSAppUsesNonExemptEncryption": false
-      },
-      "usesAppleSignIn": true,
-      "icon": {
-        "dark": "./assets/icons/Dark.png",
-        "light": "./assets/icons/Light.png",
-        "tinted": "./assets/icons/Tinted.png"
-      }
-    },
-    "android": {
-      "edgeToEdgeEnabled": true,
-      "intentFilters": [
-        {
-          "action": "VIEW",
-          "data": {
-            "scheme": "https",
-            "host": "dishdate.app",
-            "pathPrefix": "/join-game"
-          },
-          "autoVerify": true,
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
-        }
-      ],
-      "googleServicesFile": "./services/google-services.json",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/adaptive-icon.png",
-        "monochromeImage": "./assets/icons/adaptive-icon.png",
-        "backgroundColor": "#f2de77"
-      },
-      "package": "com.koleks92.DishDate",
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "48da0c2c-3538-4f0e-848b-2b9f73087662"
-      }
     }
-  }
 }
