@@ -11,8 +11,9 @@ function CustomSelect({
     onSelect,
     selected,
     maxSelect,
+    isOpen,
+    onToggle,
 }) {
-    const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(multichoice ? [] : null);
 
     useEffect(() => {
@@ -55,7 +56,7 @@ function CustomSelect({
         } else {
             setSelectedItem(item);
             onSelect?.(item);
-            setOpen(false);
+            onToggle(false);
         }
     };
 
@@ -80,7 +81,12 @@ function CustomSelect({
     return (
         <View style={styles.root}>
             <View style={styles.shadow}>
-                <Pressable style={styles.button} onPress={() => setOpen(!open)}>
+                <Pressable
+                    style={styles.button}
+                    onPress={() => {
+                        onToggle();
+                    }}
+                >
                     <Text style={styles.placeholderText}>
                         {multichoice
                             ? selectedItem.length > 0
@@ -93,7 +99,7 @@ function CustomSelect({
                 </Pressable>
             </View>
             <View>
-                {open && (
+                {isOpen && (
                     <ScrollView
                         contentContainerStyle={styles.content}
                         style={styles.dropdown}
