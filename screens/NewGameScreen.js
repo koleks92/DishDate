@@ -1,5 +1,10 @@
 import { useState, useContext, useEffect, useRef } from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import {
+    View,
+    StyleSheet,
+    Animated,
+    TouchableWithoutFeedback,
+} from "react-native";
 import { DDContext } from "../store/ContextStore";
 import Background from "../components/UI/Background";
 import ButtonMain from "../components/UI/ButtonMain";
@@ -8,7 +13,6 @@ import CustomSlider from "../components/UI/CustomSlider";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
 import BackContainer from "../components/UI/BackContainer";
-
 
 function NewGameScreen({ navigation }) {
     const [choice, setChoice] = useState(null);
@@ -32,6 +36,7 @@ function NewGameScreen({ navigation }) {
     const [alertVisible, setAlertVisible] = useState(false);
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const [openSelectId, setOpenSelectId] = useState(null);
 
     const {
         loadUserDishes,
@@ -74,6 +79,11 @@ function NewGameScreen({ navigation }) {
             });
         }
     }, [newGameDishes]);
+
+    // Handle outside press to close select dropdowns
+    const handleOutsidePress = () => {
+        if (openSelectId) setOpenSelectId(null);
+    };
 
     // Get user dishes from the database
     const getUserDishes = async () => {
@@ -262,41 +272,58 @@ function NewGameScreen({ navigation }) {
     }
 
     return (
-        <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
-            <Background />
-            <CustomAlert
-                visible={alertVisible}
-                message={alert.message}
-                title={alert.title}
-                type={alert.type}
-                onClose={() => setAlertVisible(false)}
-            />
-            <View>
-                <BackContainer />
-            </View>
-            <View style={styles.newGameContainer}>
-                <CustomSlider
-                    sliderValueHandler={(val) => setNumOfDishes(val)}
+        <TouchableWithoutFeedback onPress={handleOutsidePress}>
+            <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
+                <Background />
+                <CustomAlert
+                    visible={alertVisible}
+                    message={alert.message}
+                    title={alert.title}
+                    type={alert.type}
+                    onClose={() => setAlertVisible(false)}
                 />
-                <View style={styles.zIndexFix}>
+                <View>
+                    <BackContainer />
+                </View>
+                <View style={styles.newGameContainer}>
+                    <CustomSlider
+                        sliderValueHandler={(val) => setNumOfDishes(val)}
+                    />
+                    <View style={styles.zIndexFix}>
+                        <CustomSelect
+                            data={availableDishes}
+                            onSelect={selectedDishesHandler}
+                            selected={selectedDishes}
+                            placeholder="Select dishes"
+                            isOpen={openSelectId === "dishes"}
+                            onToggle={() =>
+                                setOpenSelectId(
+                                    openSelectId === "dishes" ? null : "dishes"
+                                )
+                            }
+                        />
+                    </View>
                     <CustomSelect
-                        data={availableDishes}
-                        onSelect={selectedDishesHandler}
-                        selected={selectedDishes}
-                        placeholder="Select dishes"
+                        data={availableCuisines}
+                        onSelect={selectedCuisineHandler}
+                        selected={selectedCuisine}
+                        placeholder="All cuisines"
+                        multichoice={true}
+                        maxSelect={6}
+                        isOpen={openSelectId === "cuisines"}
+                        onToggle={() =>
+                            setOpenSelectId(
+                                openSelectId === "cuisines" ? null : "cuisines"
+                            )
+                        }
+                    />
+                    <ButtonMain
+                        text="Start Game"
+                        onPress={createNewGameHandler}
                     />
                 </View>
-                <CustomSelect
-                    data={availableCuisines}
-                    onSelect={selectedCuisineHandler}
-                    selected={selectedCuisine}
-                    placeholder="All cuisines"
-                    multichoice={true}
-                    maxSelect={6}
-                />
-                <ButtonMain text="Start Game" onPress={createNewGameHandler} />
-            </View>
-        </Animated.View>
+            </Animated.View>
+        </TouchableWithoutFeedback>
     );
 }
 

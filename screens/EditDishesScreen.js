@@ -5,6 +5,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
+    Text,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState, useContext } from "react";
@@ -28,6 +29,7 @@ function EditDishesScreen({ route, navigation }) {
     const [image, setImage] = useState("");
     const [cuisine, setCuisine] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [openSelectId, setOpenSelectId] = useState(null);
 
     const [alert, setAlert] = useState({});
     const [alertVisible, setAlertVisible] = useState(false);
@@ -50,6 +52,11 @@ function EditDishesScreen({ route, navigation }) {
             console.log("Cuisine:", cuisine);
         }
     }, [edit]);
+
+    // Handle outside press to close select dropdowns
+    const handleOutsidePress = () => {
+        if (openSelectId) setOpenSelectId(null);
+    };
 
     // Delete dish
     const deleteDish = async () => {
@@ -314,7 +321,11 @@ function EditDishesScreen({ route, navigation }) {
 
     // EDIT DISHES MODE
     return (
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <TouchableWithoutFeedback
+            onPress={() => {
+                Keyboard.dismiss();
+            }}
+        >
             <ScrollView contentContainerStyle={styles.root}>
                 <CustomAlert
                     visible={alertVisible}
@@ -355,6 +366,12 @@ function EditDishesScreen({ route, navigation }) {
                         data={cuisinesList}
                         onSelect={selectedCuisineHandler}
                         selected={cuisine}
+                        isOpen={openSelectId === "cuisine"}
+                        onToggle={() =>
+                            setOpenSelectId(
+                                openSelectId === "cuisine" ? null : "cuisine"
+                            )
+                        }
                     />
                     <Pressable
                         onPress={() => {
