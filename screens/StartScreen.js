@@ -18,11 +18,13 @@ import Logo from "../components/UI/Logo";
 import Colors from "../constants/Colors";
 import Loading from "../components/UI/Loading";
 import { DDContext } from "../store/ContextStore";
+import * as Notifications from "expo-notifications";
 
 function StartScreen({ navigation }) {
     const [isLoading, setIsLoading] = useState(false);
 
-    const { session } = useContext(DDContext);
+    const { session, initialNotification, setInitialNotification } =
+        useContext(DDContext);
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -38,6 +40,60 @@ function StartScreen({ navigation }) {
             useNativeDriver: true,
         }).start();
     }, [session]);
+
+    useEffect(() => {
+        // Check for initial notification
+        const checkInitialNotification = async () => {
+            const response =
+                await Notifications.getLastNotificationResponseAsync();
+            if (response) {
+                const notificationData =
+                    response.notification.request.content.data;
+                if (notificationData.gameroomId) {
+                    setInitialNotification(true);
+                    console.log("Initial notification data:", notificationData);
+                    // Navigate to GameResultsScreen with the gameroomId
+                    navigation.push("GameResultsScreen", {
+                        id: notificationData.gameroomId,
+                    });
+                }
+            }
+        };
+
+        if (!initialNotification) {
+            checkInitialNotification();
+        }
+
+        const notificationListener =
+            Notifications.addNotificationReceivedListener((notification) => {
+                const notificationData = notification.request.content.data;
+                if (notificationData.gameroomId) {
+                    setInitialNotification(true);
+                    navigation.navigate("GameResultsScreen", {
+                        id: notificationData.gameroomId,
+                    });
+                }
+            });
+
+        // Notification tap listener
+        const responseListener =
+            Notifications.addNotificationResponseReceivedListener(
+                (response) => {
+                    const notificationData =
+                        response.notification.request.content.data;
+                    if (notificationData.gameroomId) {
+                        setInitialNotification(true);
+                        navigation.push("GameResultsScreen", {
+                            id: notificationData.gameroomId,
+                        });
+                    }
+                }
+            );
+
+        return () => {
+            responseListener.remove();
+        };
+    }, [initialNotification]);
 
     // Handle SignOut
     const handleSignOut = async () => {
