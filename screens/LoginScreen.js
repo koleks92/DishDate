@@ -132,6 +132,17 @@ function LoginScreen({ navigation }) {
             checkInitialNotification();
         }
 
+        const notificationListener =
+            Notifications.addNotificationReceivedListener((notification) => {
+                const notificationData = notification.request.content.data;
+                if (notificationData.gameroomId) {
+                    setInitialNotification(true);
+                    navigation.navigate("GameResultsScreen", {
+                        id: notificationData.gameroomId,
+                    });
+                }
+            });
+
         // Notification tap listener
         const responseListener =
             Notifications.addNotificationResponseReceivedListener(
