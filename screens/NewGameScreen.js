@@ -309,7 +309,7 @@ function NewGameScreen({ navigation }) {
                         selected={selectedCuisine}
                         placeholder="All cuisines"
                         multichoice={true}
-                        maxSelect={6}
+                        maxSelect={5}
                         isOpen={openSelectId === "cuisines"}
                         onToggle={() =>
                             setOpenSelectId(
