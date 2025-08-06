@@ -149,10 +149,12 @@ function ProfileScreen({ navigation }) {
             // Save new image
             const publicURL = await saveAvatarToStorage(image);
 
-            // Save path for the new image in the database
-            const { data, error } = await supabase.auth.updateUser({
-                data: { avatar_url: publicURL }, // Updating metadata
-            });
+            const { data, error } = await supabase
+            .from("users")
+            .update({
+                avatar_url: publicURL,
+            })
+            .eq("id", userId);
 
             if (error) {
                 setAlertVisible(true);
