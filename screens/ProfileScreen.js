@@ -36,7 +36,6 @@ function ProfileScreen({ navigation }) {
 
     useEffect(() => {
         const fetchUserData = async () => {
-
             const {
                 data: { user },
                 error,
@@ -46,14 +45,16 @@ function ProfileScreen({ navigation }) {
                 setUserId(user.id);
             }
 
-            const { data: userData, error: errorUser } = await supabase.from("users")
-                .select("id, name, email, avatar_url"). eq("id", user.id)
+            const { data: userData, error: errorUser } = await supabase
+                .from("users")
+                .select("id, name, email, avatar_url")
+                .eq("id", user.id)
                 .single();
 
             if (userData) {
                 setUserName(userData.name || "No name");
                 setUserEmail(userData.email || "No email");
-                setUserAvatar(userData.avatar_url || null); 
+                setUserAvatar(userData.avatar_url || null);
             }
 
             setTimeout(() => {
@@ -61,7 +62,10 @@ function ProfileScreen({ navigation }) {
             }, 500);
 
             if (error || errorUser) {
-                console.error("Error fetching user data:", error.message || errorUser.message);
+                console.error(
+                    "Error fetching user data:",
+                    error.message || errorUser.message
+                );
                 return null;
             }
         };
@@ -72,10 +76,12 @@ function ProfileScreen({ navigation }) {
     const handleUpdateName = async () => {
         setUpdateLoading(true);
 
-        const { data, error } = await supabase.from("users").update({
-            name: userName,
-        }).eq("id", userId);
-
+        const { data, error } = await supabase
+            .from("users")
+            .update({
+                name: userName,
+            })
+            .eq("id", userId);
 
         setTimeout(() => {
             setUpdateLoading(false);
@@ -165,6 +171,62 @@ function ProfileScreen({ navigation }) {
         }
     };
 
+    const onDeleteHandler = async () => {
+        setAlertVisible(true);
+        setAlert({
+            title: "Are you sure?",
+            message: "This will delete your account and all your data!",
+            type: "question",
+        });
+    };
+
+    const deleteAccount = async () => {
+        try {
+            // Step 1: Call RPC to handle cleanup in other tables
+            const { error: rpcError } = await supabase.rpc("delete_user");
+
+            if (rpcError) {
+                console.error(
+                    "Error deleting account via RPC:",
+                    rpcError.message
+                );
+                showErrorAlert();
+                return;
+            }
+
+            // Step 2: Delete from users table
+            const { error: deleteError } = await supabase
+                .from("users")
+                .delete()
+                .eq("id", userId);
+
+            if (deleteError) {
+                console.error(
+                    "Error deleting from users table:",
+                    deleteError.message
+                );
+                showErrorAlert();
+                return;
+            }
+
+            console.log("User deleted successfully!");
+            await supabase.auth.signOut();
+            navigation.navigate("LoginScreen");
+        } catch (err) {
+            console.error("Unexpected error:", err);
+            showErrorAlert();
+        }
+    };
+
+    function showErrorAlert() {
+        setAlertVisible(true);
+        setAlert({
+            title: "Ups!",
+            message: "There was an error, try again!",
+            type: "info",
+        });
+    }
+
     if (isLoading) {
         return (
             <View style={styles.root}>
@@ -183,6 +245,11 @@ function ProfileScreen({ navigation }) {
                     title={alert.title}
                     type={alert.type}
                     onClose={() => setAlertVisible(false)}
+                    // For delete account
+                    onYes={async () => {
+                        setAlertVisible(false);
+                        await deleteAccount();
+                    }}
                 />
                 <ImageModal
                     visible={imageModalVisible}
@@ -190,7 +257,10 @@ function ProfileScreen({ navigation }) {
                     sessionImage={userAvatar}
                 />
                 <View>
-                    <BackContainer />
+                    <BackContainer
+                        deleteButton={true}
+                        onDelete={onDeleteHandler}
+                    />
                 </View>
                 <View>
                     <View style={styles.userEmailContainer}>
