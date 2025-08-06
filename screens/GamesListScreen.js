@@ -45,6 +45,15 @@ function GamesListScreen({ navigation }) {
                 console.error("Error fetching data:", error.message);
                 return;
             }
+            if (data.length === 0) {
+                setAlert({
+                title: "No Games Found",
+                message: "You have not participated in any games yet.",
+                type: "info",
+            });
+            setAlertVisible(true);
+            return;
+            }
 
             setGamesList(data);
 
@@ -56,16 +65,7 @@ function GamesListScreen({ navigation }) {
         fetchGamesList();
     }, []);
 
-    useEffect(() => {
-        if (gamesList.length === 0) {
-            setAlert({
-                title: "No Games Found",
-                message: "You have not participated in any games yet.",
-                type: "info",
-            });
-            setAlertVisible(true);
-        }
-    }, [gamesList]);
+
 
     // On game click handler
     const handleGamePress = (gameId) => {
