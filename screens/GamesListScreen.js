@@ -6,12 +6,16 @@ import GamesList from "../components/GamesList";
 import Background from "../components/UI/Background";
 import Loading from "../components/UI/Loading";
 import BackContainer from "../components/UI/BackContainer";
+import CustomAlert from "../components/UI/CustomAlert";
 
 function GamesListScreen({ navigation }) {
     const { session } = useContext(DDContext);
 
     const [isLoading, setIsLoading] = useState(true);
     const [gamesList, setGamesList] = useState([]);
+
+    const [alert, setAlert] = useState({});
+    const [alertVisible, setAlertVisible] = useState(false);
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -52,6 +56,17 @@ function GamesListScreen({ navigation }) {
         fetchGamesList();
     }, []);
 
+    useEffect(() => {
+        if (gamesList.length === 0) {
+            setAlert({
+                title: "No Games Found",
+                message: "You have not participated in any games yet.",
+                type: "info",
+            });
+            setAlertVisible(true);
+        }
+    }, [gamesList]);
+
     // On game click handler
     const handleGamePress = (gameId) => {
         // Navigate to the game screen with the selected gameId
@@ -68,6 +83,16 @@ function GamesListScreen({ navigation }) {
 
     return (
         <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
+            <CustomAlert
+                visible={alertVisible}
+                message={alert.message}
+                title={alert.title}
+                type={alert.type}
+                onClose={() => {
+                    setAlertVisible(false);
+                    navigation.goBack();
+                }}
+            />
             <Background />
             <View>
                 <BackContainer />
