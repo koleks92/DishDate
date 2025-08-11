@@ -7,6 +7,7 @@ import Background from "../components/UI/Background";
 import Loading from "../components/UI/Loading";
 import BackContainer from "../components/UI/BackContainer";
 import CustomAlert from "../components/UI/CustomAlert";
+import { set } from "date-fns";
 
 function GamesListScreen({ navigation }) {
     const { session } = useContext(DDContext);
@@ -45,15 +46,6 @@ function GamesListScreen({ navigation }) {
                 console.error("Error fetching data:", error.message);
                 return;
             }
-            if (data.length === 0) {
-                setAlert({
-                title: "No Games Found",
-                message: "You have not participated in any games yet.",
-                type: "info",
-            });
-            setAlertVisible(true);
-            return;
-            }
 
             setGamesList(data);
 
@@ -65,7 +57,16 @@ function GamesListScreen({ navigation }) {
         fetchGamesList();
     }, []);
 
-
+    useEffect(() => {
+        if (gamesList.length === 0) {
+            setAlert({
+                title: "No Games Found",
+                message: "You have not participated in any games yet.",
+                type: "info",
+            });
+            setAlertVisible(true);
+        }
+        }, [gamesList]);
 
     // On game click handler
     const handleGamePress = (gameId) => {
