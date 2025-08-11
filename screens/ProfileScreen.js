@@ -142,7 +142,7 @@ function ProfileScreen({ navigation }) {
     };
 
     const handleUpdateImage = async (image) => {
-        if (image === userAvatar) {
+        if (image === userAvatar || !image) {
             setImageModalVisible(false);
             return;
         } else {
