@@ -77,6 +77,7 @@ export default Sizes = {
 
     // GamesListScreen sizes
     gameListTitleSize: scrH * 0.04,
+    gameListSubtitleSize: scrH * 0.03,
     gameListTitleMargin: scrH * 0.02,
     gameListItemWidth: scrW * 0.8,
     gameListItemHeight: scrH * 0.08,
