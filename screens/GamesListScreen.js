@@ -1,22 +1,17 @@
-import { useContext, useEffect, useState, useRef } from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import { useContext, useEffect, useState, useRef, useCallback } from "react";
+import { View, StyleSheet, Animated, Text, Pressable } from "react-native";
 import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
 import GamesList from "../components/GamesList";
 import Background from "../components/UI/Background";
 import Loading from "../components/UI/Loading";
 import BackContainer from "../components/UI/BackContainer";
-import CustomAlert from "../components/UI/CustomAlert";
-import { set } from "date-fns";
 
 function GamesListScreen({ navigation }) {
     const { session } = useContext(DDContext);
 
     const [isLoading, setIsLoading] = useState(true);
     const [gamesList, setGamesList] = useState([]);
-
-    const [alert, setAlert] = useState({});
-    const [alertVisible, setAlertVisible] = useState(false);
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -57,22 +52,13 @@ function GamesListScreen({ navigation }) {
         fetchGamesList();
     }, []);
 
-    useEffect(() => {
-        if (gamesList.length === 0) {
-            setAlert({
-                title: "No Games Found",
-                message: "You have not participated in any games yet.",
-                type: "info",
-            });
-            setAlertVisible(true);
-        }
-        }, [gamesList]);
-
     // On game click handler
     const handleGamePress = (gameId) => {
         // Navigate to the game screen with the selected gameId
         navigation.navigate("GameResultsScreen", { id: gameId });
     };
+
+    // If still loading, show loading indicator
 
     if (isLoading) {
         return (
@@ -84,25 +70,24 @@ function GamesListScreen({ navigation }) {
 
     return (
         <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
-            <CustomAlert
-                visible={alertVisible}
-                message={alert.message}
-                title={alert.title}
-                type={alert.type}
-                onClose={() => {
-                    setAlertVisible(false);
-                    navigation.goBack();
-                }}
-            />
             <Background />
             <View>
                 <BackContainer />
             </View>
             <View style={styles.gamesListContainer}>
-                <GamesList
-                    gamesList={gamesList}
-                    handleGamePress={handleGamePress}
-                />
+                {gamesList.length > 0 ? (
+                    <GamesList
+                        gamesList={gamesList}
+                        handleGamePress={handleGamePress}
+                    />
+                ) : (
+                    <View style={{ alignItems: "center" }}>
+                        <Text style={styles.title}>No games found</Text>
+                        <Pressable onPress={() => navigation.navigate("NewGameScreen")}>
+                            <Text style={styles.subtitle}>Start one now!</Text>
+                        </Pressable>
+                    </View>
+                )}
             </View>
         </Animated.View>
     );
@@ -125,5 +110,10 @@ const styles = StyleSheet.create({
         fontFamily: "Tektur-Bold",
         color: Colors.black,
         marginBottom: Sizes.gameListTitleMargin,
+    },
+    subtitle: {
+        fontSize: Sizes.gameListSubtitleSize,
+        fontFamily: "Tektur-Regular",
+        color: Colors.black,
     },
 });
