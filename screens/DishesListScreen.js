@@ -1,11 +1,10 @@
-import { Text, View, StyleSheet, Animated } from "react-native";
+import { Text, View, StyleSheet, Animated, Pressable } from "react-native";
 import DishesList from "../components/DishesList";
 import { useCallback, useContext, useState, useRef, useEffect } from "react";
 import { DDContext } from "../store/ContextStore";
 import { useFocusEffect } from "@react-navigation/native";
 import Background from "../components/UI/Background";
 import Loading from "../components/UI/Loading";
-import CustomAlert from "../components/UI/CustomAlert";
 import Colors from "../constants/Colors";
 import BackContainer from "../components/UI/BackContainer";
 
@@ -16,9 +15,6 @@ function DishesListScreen({ route, navigation }) {
     const [isLoading, setIsLoading] = useState(true);
     const [userDishes, setUserDishes] = useState([]);
 
-    const [alert, setAlert] = useState({});
-    const [alertVisible, setAlertVisible] = useState(false);
-
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
     const editButtonHandler = (dish) => {
@@ -28,13 +24,11 @@ function DishesListScreen({ route, navigation }) {
     // Root view fade in animation
     useEffect(() => {
         if (!isLoading) {
-            setTimeout(() => {
-                Animated.timing(fadeAnim, {
-                    toValue: 1,
-                    duration: 250,
-                    useNativeDriver: true,
-                }).start();
-            }, 700);
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 250,
+                useNativeDriver: true,
+            }).start();
         }
     }, [isLoading]);
 
@@ -46,22 +40,7 @@ function DishesListScreen({ route, navigation }) {
 
                     setUserDishes(data);
 
-                    setTimeout(() => {
-                        if (data.length === 0) {
-                            setAlert({
-                                title: "Ups",
-                                message:
-                                    "There are no dishes in the database. Please add some.",
-                                type: "info",
-                            });
-
-                            setTimeout(() => {
-                                setAlertVisible(true);
-                            }, 500);
-                        }
-
-                        setIsLoading(false);
-                    }, 500);
+                    setIsLoading(false);
                 };
                 getUserDishes();
             }
@@ -78,17 +57,7 @@ function DishesListScreen({ route, navigation }) {
 
     if (edit) {
         return (
-            <View style={styles.root}>
-                <CustomAlert
-                    visible={alertVisible}
-                    message={alert.message}
-                    title={alert.title}
-                    type={alert.type}
-                    onClose={() => {
-                        setAlertVisible(false);
-                        navigation.goBack();
-                    }}
-                />
+            <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
                 <Background />
                 <View>
                     <BackContainer />
@@ -101,17 +70,23 @@ function DishesListScreen({ route, navigation }) {
                             editButtonHandler={editButtonHandler}
                         />
                     ) : (
-                        <Animated.View style={{ opacity: fadeAnim }}>
-                            <Text style={styles.backupText}>
-                                There are no dishes in the database
+                        <View styles={styles.emptyTextContainer}>
+                            <Text style={styles.title}>
+                                There are no dishes
                             </Text>
-                            <Text style={styles.backupText}>
-                                Please add some.
-                            </Text>
-                        </Animated.View>
+                            <Pressable
+                                onPress={() =>
+                                    navigation.navigate("EditDishesScreen")
+                                }
+                            >
+                                <Text style={styles.subtitle}>
+                                    Add one now!
+                                </Text>
+                            </Pressable>
+                        </View>
                     )}
                 </View>
-            </View>
+            </Animated.View>
         );
     }
 }
@@ -127,11 +102,21 @@ const styles = StyleSheet.create({
     dishesListContainer: {
         flex: 1,
         width: "100%",
-        justifyContent: 'center',
+        justifyContent: "center",
     },
-    backupText: {
+    emptyTextContainer: {
+        marginVertical: 20,
+    },
+    title: {
+        fontSize: Sizes.gameListTitleSize,
         fontFamily: "Tektur-Bold",
-        fontSize: 24,
+        color: Colors.black,
+        marginBottom: Sizes.gameListTitleMargin,
+        textAlign: "center",
+    },
+    subtitle: {
+        fontSize: Sizes.gameListSubtitleSize,
+        fontFamily: "Tektur-Regular",
         color: Colors.black,
         textAlign: "center",
     },
