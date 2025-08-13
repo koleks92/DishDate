@@ -19,7 +19,7 @@ function GamesList({ gamesList, handleGamePress }) {
                 if (game.status === "closed") {
                     const player1Name = await fetchUserName(game.player1_id);
                     const player2Name = await fetchUserName(game.player2_id);
-
+                    
                     if (game.player1_id === session.user.id) {
                         updatedNames[game.id] = {
                             player: player2Name,
@@ -28,11 +28,19 @@ function GamesList({ gamesList, handleGamePress }) {
                         updatedNames[game.id] = {
                             player: player1Name,
                         };
+                    } else {
+                        updatedNames[game.id] = {
+                            player: "Unknown",
+                        };
                     }
                 } else if (game.status === "open") {
                     updatedNames[game.id] = {
                         player: "Not finished",
                     };
+                } else {
+                    updatedNames[game.id] = {
+                        player: "Unknown",
+                    };  
                 }
             }
 

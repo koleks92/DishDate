@@ -155,32 +155,42 @@ export const DDProvider = ({ children }) => {
     };
 
     const fetchUserName = async (userId) => {
-        const { data, error } = await supabase
-            .from("users")
-            .select("name")
-            .eq("id", userId);
+        try {
+            const { data, error } = await supabase
+                .from("users")
+                .select("name")
+                .eq("id", userId);
 
+            if (error) {
+                console.error("Error fetching data:", error.message);
+                return "Unknown User";
+            }
 
-        if (error) {
-            console.error("Error fetching data:", error.message);
-            return null;
+            if (data && data.length > 0 && data[0].name) {
+                console.log("User name fetched successfully:", data[0].name);
+                return data[0].name;
+            } else {
+                return "Unknown User";
+            }
+        } catch (err) {
+            console.error("Unexpected error fetching user name:", err);
+            return "Unknown User";
         }
-
-        return data[0].name;
-    }
+    };
 
     const setNotification = async (gameId) => {
-        const { data, error } = await supabase.from("GameRoom").update({
-            notificationSend: true,
-        }).eq("id", gameId);
+        const { data, error } = await supabase
+            .from("GameRoom")
+            .update({
+                notificationSend: true,
+            })
+            .eq("id", gameId);
 
         if (error) {
             console.error("Error updating data:", error.message);
             return null;
         }
-    }
-
- 
+    };
 
     return (
         <DDContext.Provider
@@ -203,7 +213,7 @@ export const DDProvider = ({ children }) => {
                 initialNotification,
                 setInitialNotification,
                 initialSetup,
-                setInitialSetup
+                setInitialSetup,
             }}
         >
             {children}
