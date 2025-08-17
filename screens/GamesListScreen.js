@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useRef, useCallback } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { View, StyleSheet, Animated, Text, Pressable } from "react-native";
 import { DDContext } from "../store/ContextStore";
 import { supabase } from "../util/supabase";
@@ -57,8 +57,6 @@ function GamesListScreen({ navigation }) {
         // Navigate to the game screen with the selected gameId
         navigation.navigate("GameResultsScreen", { id: gameId });
     };
-
-    // If still loading, show loading indicator
 
     if (isLoading) {
         return (

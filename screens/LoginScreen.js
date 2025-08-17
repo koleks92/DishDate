@@ -46,9 +46,7 @@ function LoginScreen({ navigation }) {
         session,
         setSession,
         loadCuisinesHandler,
-        saveExpoPushToken,
-        initialNotification,
-        setInitialNotification,
+        saveExpoPushToken
     } = useContext(DDContext);
 
     useEffect(() => {
@@ -108,6 +106,7 @@ function LoginScreen({ navigation }) {
         }
     }, [session]);
 
+    // Setup user data in the database
     const setupUser = async () => {
         await loadDishesHandler();
         await loadCuisinesHandler();

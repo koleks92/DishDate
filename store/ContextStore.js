@@ -167,7 +167,6 @@ export const DDProvider = ({ children }) => {
             }
 
             if (data && data.length > 0 && data[0].name) {
-                console.log("User name fetched successfully:", data[0].name);
                 return data[0].name;
             } else {
                 return "Unknown User";

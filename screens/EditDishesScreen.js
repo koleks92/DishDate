@@ -5,9 +5,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
-    Text,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState, useContext } from "react";
 import { supabase } from "../util/supabase";
 import { DDContext } from "../store/ContextStore";
@@ -52,11 +50,6 @@ function EditDishesScreen({ route, navigation }) {
             console.log("Cuisine:", cuisine);
         }
     }, [edit]);
-
-    // Handle outside press to close select dropdowns
-    const handleOutsidePress = () => {
-        if (openSelectId) setOpenSelectId(null);
-    };
 
     // Delete dish
     const deleteDish = async () => {

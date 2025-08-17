@@ -53,6 +53,7 @@ function GameResultScreen({ route, navigation }) {
         }, 1000);
     }, []);
 
+    // Refresh GameRoom function
     const refreshGameRoom = async () => {
         setIsLoading(true);
         const timer = setTimeout(() => {

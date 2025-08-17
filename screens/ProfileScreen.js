@@ -34,6 +34,7 @@ function ProfileScreen({ navigation }) {
 
     const [imageModalVisible, setImageModalVisible] = useState(false);
 
+    // Fetch user data
     useEffect(() => {
         const fetchUserData = async () => {
             const {
@@ -73,6 +74,7 @@ function ProfileScreen({ navigation }) {
         fetchUserData();
     }, []);
 
+    // Handle update name in the database
     const handleUpdateName = async () => {
         setUpdateLoading(true);
 
@@ -108,6 +110,7 @@ function ProfileScreen({ navigation }) {
         return data.publicUrl;
     };
 
+    // Save image to storage
     const saveAvatarToStorage = async (image) => {
         const fileName = `${userId}/avatar_${Date.now()}.jpeg`;
 
@@ -141,6 +144,7 @@ function ProfileScreen({ navigation }) {
         }
     };
 
+    // Handle image update
     const handleUpdateImage = async (image) => {
         if (image === userAvatar || !image) {
             setImageModalVisible(false);
@@ -173,6 +177,7 @@ function ProfileScreen({ navigation }) {
         }
     };
 
+    // On delete account handler
     const onDeleteHandler = async () => {
         setAlertVisible(true);
         setAlert({
@@ -182,6 +187,7 @@ function ProfileScreen({ navigation }) {
         });
     };
 
+    // Delete account function
     const deleteAccount = async () => {
         try {
             // Step 1: Call RPC to handle cleanup in other tables
@@ -220,6 +226,7 @@ function ProfileScreen({ navigation }) {
         }
     };
 
+    // Show error alert
     function showErrorAlert() {
         setAlertVisible(true);
         setAlert({

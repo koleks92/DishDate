@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import BackContainer from "../components/UI/BackContainer";
 import Background from "../components/UI/Background";
-import { Text, View, StyleSheet, Animated } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import Sizes from "../constants/Sizes";
 import Colors from "../constants/Colors";
 import ImageCustom from "../components/UI/ImageCustom";
@@ -12,6 +12,7 @@ function DishScreen({ route }) {
 
     const { cuisinesList } = useContext(DDContext);
 
+    // Get the cuisine name based on the cuisine_id from supabase
     const getCuisineName = (cuisineId) => {
         const cuisine = cuisinesList.find((c) => c.id === cuisineId);
         return cuisine ? cuisine.name : "Unknown";

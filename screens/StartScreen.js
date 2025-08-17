@@ -28,6 +28,7 @@ function StartScreen({ navigation }) {
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
+    // Loading state for the initial screen
     useEffect(() => {
         if (!session?.user) {
             navigation.navigate("LoginScreen");
