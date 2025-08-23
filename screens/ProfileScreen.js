@@ -154,11 +154,11 @@ function ProfileScreen({ navigation }) {
             const publicURL = await saveAvatarToStorage(image);
 
             const { data, error } = await supabase
-            .from("users")
-            .update({
-                avatar_url: publicURL,
-            })
-            .eq("id", userId);
+                .from("users")
+                .update({
+                    avatar_url: publicURL,
+                })
+                .eq("id", userId);
 
             if (error) {
                 setAlertVisible(true);
@@ -271,10 +271,10 @@ function ProfileScreen({ navigation }) {
                         onDelete={onDeleteHandler}
                     />
                 </View>
+                <View style={styles.userEmailContainer}>
+                    <Text style={styles.userEmailText}>{userEmail}</Text>
+                </View>
                 <View>
-                    <View style={styles.userEmailContainer}>
-                        <Text style={styles.userEmailText}>{userEmail}</Text>
-                    </View>
                     <View style={styles.userNameContainer}>
                         <InputField
                             placeholder="Enter new name"
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     userEmailContainer: {
-        marginBottom: Sizes.profileScreenMargin,
+        marginVertical: Sizes.profileScreenMargin,
     },
     userEmailText: {
         fontFamily: "Tektur-Bold",
