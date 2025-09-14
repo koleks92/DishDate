@@ -8,3 +8,4 @@ All notable changes to this project will be documented here.
 
 ### Fixed
 - Removed default alert from RequestPermissions in ImageModal
+- Changed way of adding users into database
