@@ -46,7 +46,7 @@ function LoginScreen({ navigation }) {
         session,
         setSession,
         loadCuisinesHandler,
-        saveExpoPushToken
+        saveExpoPushToken,
     } = useContext(DDContext);
 
     useEffect(() => {
@@ -96,9 +96,9 @@ function LoginScreen({ navigation }) {
         }).start();
     }, []);
 
-
     useEffect(() => {
         if (session) {
+            console.log("ReRendering after session change");
             setIsLoading(true);
             setupUser();
             setIsLoading(false);
@@ -152,15 +152,18 @@ function LoginScreen({ navigation }) {
             return; // Already exists, skip insert
         }
 
-        const { error } = await supabase.from("users").insert([
-            {
-                id,
-                email,
-                name,
-                avatar_url,
-            },
-        ]);
-
+        const { error } = await supabase.from("users").upsert(
+            [
+                {
+                    id,
+                    email,
+                    name,
+                    avatar_url,
+                },
+            ],
+            { onConflict: "id" }
+        );
+        
         if (error) {
             console.error("Error inserting user:", error);
         }
