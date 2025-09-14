@@ -6,13 +6,11 @@
 
 - When created a game but never finished, or didinty even start, allow to finish !
 
-- Report error ( for dishes, descriptions or image )
-
 - Login with email, double check if email i correct ? or use only name
 
-- When NOT allowing to use pictures/camera, there is a bug. It should warn and not all to NOT accept as its the app basic functiuonality, Show diffrent alert also !
-
 - If permission not granted for push, show diffrenet alert
+
+- Divide dishes into deserts separate
 
 
 
