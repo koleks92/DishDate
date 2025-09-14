@@ -3,7 +3,7 @@ import Sizes from "../../constants/Sizes";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 
-function BackContainer({ goStart, deleteButton, onDelete }) {
+function BackContainer({ goStart, deleteButton, reportButton, onReport, onDelete }) {
     const navigation = useNavigation();
 
     return (
@@ -29,6 +29,21 @@ function BackContainer({ goStart, deleteButton, onDelete }) {
                 >
                     <Ionicons
                         name="trash-outline"
+                        color={Colors.black}
+                        size={Sizes.backContainerHeight}
+                    />
+                </Pressable>
+            ) : (
+                <></>
+            )}
+            {reportButton ? (
+                <Pressable
+                    onPress={() => {
+                        onReport();
+                    }}
+                >
+                    <Ionicons
+                        name="bug-outline"
                         color={Colors.black}
                         size={Sizes.backContainerHeight}
                     />
