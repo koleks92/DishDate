@@ -7,14 +7,17 @@ import Sizes from "../../constants/Sizes";
 import ImageCustom from "./ImageCustom";
 import ButtonMain from "./ButtonMain";
 import * as ImagePicker from "expo-image-picker";
-import {
-    ImageManipulator,
-    SaveFormat,
-    useImageManipulator,
-} from "expo-image-manipulator";
+import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
+import CustomAlert from "./CustomAlert";
+import { useNavigation } from "@react-navigation/native";
 
 function ImageModal({ visible, onSave, sessionImage }) {
     const [image, setImage] = useState(sessionImage || "");
+
+    const [alert, setAlert] = useState({});
+    const [alertVisible, setAlertVisible] = useState(false);
+
+    const navigation = useNavigation();
 
     useEffect(() => {
         if (sessionImage) {
@@ -35,9 +38,12 @@ function ImageModal({ visible, onSave, sessionImage }) {
                 await ImagePicker.requestMediaLibraryPermissionsAsync();
 
             if (cameraStatus !== "granted" || libraryStatus !== "granted") {
-                alert(
-                    "Sorry, we need camera roll permissions to make this work!"
-                );
+                setAlert({
+                    title: "Ups",
+                    message: "We need camera and media library permissions!",
+                    type: "info",
+                });
+                setAlertVisible(true);
             }
         }
     };
@@ -52,7 +58,7 @@ function ImageModal({ visible, onSave, sessionImage }) {
 
         const result = await newImage.saveAsync({
             format: SaveFormat.PNG,
-          });
+        });
 
         return result.uri;
     };
@@ -69,7 +75,7 @@ function ImageModal({ visible, onSave, sessionImage }) {
         if (!result.canceled) {
             const newImage = await compressImage(result.assets[0].uri);
 
-            setImage(newImage); 
+            setImage(newImage);
         }
     };
 
@@ -94,40 +100,51 @@ function ImageModal({ visible, onSave, sessionImage }) {
     };
 
     return (
-        <Modal animationType="slide" transparent={true} visible={visible}>
-            <View style={styles.modalOverlay}>
-                <View style={styles.shadow}>
-                    <View style={styles.modal}>
-                        {image ? (
-                            <ImageCustom source={{ uri: image }} />
-                        ) : (
-                            <ImageCustom empty={true} />
-                        )}
-                        <ButtonMain
-                            text="Pick an image"
-                            onPress={pickImageHandler}
-                        />
-                        <ButtonMain
-                            text="Take a picture"
-                            onPress={openCameraHandler}
-                        />
-                        <View style={styles.questionButtonContainer}>
-                            <ButtonLogo
-                                text={
-                                    <Ionicons
-                                        name="checkmark-sharp"
-                                        size={Sizes.buttonLogoSize}
-                                    />
-                                }
-                                onPress={() => {
-                                    handleOnSave();
-                                }}
+        <>
+            <CustomAlert
+                visible={alertVisible}
+                message={alert.message}
+                title={alert.title}
+                type={alert.type}
+                onClose={() => {setAlertVisible(false)
+                    navigation.goBack();
+                }}
+            />
+            <Modal animationType="slide" transparent={true} visible={visible}>
+                <View style={styles.modalOverlay}>
+                    <View style={styles.shadow}>
+                        <View style={styles.modal}>
+                            {image ? (
+                                <ImageCustom source={{ uri: image }} />
+                            ) : (
+                                <ImageCustom empty={true} />
+                            )}
+                            <ButtonMain
+                                text="Pick an image"
+                                onPress={pickImageHandler}
                             />
+                            <ButtonMain
+                                text="Take a picture"
+                                onPress={openCameraHandler}
+                            />
+                            <View style={styles.questionButtonContainer}>
+                                <ButtonLogo
+                                    text={
+                                        <Ionicons
+                                            name="checkmark-sharp"
+                                            size={Sizes.buttonLogoSize}
+                                        />
+                                    }
+                                    onPress={() => {
+                                        handleOnSave();
+                                    }}
+                                />
+                            </View>
                         </View>
                     </View>
                 </View>
-            </View>
-        </Modal>
+            </Modal>
+        </>
     );
 }
 
