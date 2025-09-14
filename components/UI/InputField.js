@@ -11,8 +11,8 @@ function InputField({
     keyboardType,
     maxLength,
     strech,
+    long,
 }) {
-    const [long, setLong] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const heightAnim = useRef(new Animated.Value(Sizes.buttonHeight)).current; // Initial height
 
@@ -25,7 +25,13 @@ function InputField({
     }, [isFocused]);
 
     return (
-        <Animated.View style={[styles.root, strech && { height: heightAnim }]}>
+        <Animated.View
+            style={[
+                styles.root,
+                strech && { height: heightAnim },
+                long && { height: Sizes.buttonHeight * 4 }
+            ]}
+        >
             <View style={styles.shadow}>
                 <TextInput
                     placeholder={placeholder}
@@ -44,6 +50,7 @@ function InputField({
                         strech && {
                             textAlign: "justify", // Align text to the left when stretched
                         },
+                        long && { textAlign: "justify" },
                     ]}
                     multiline={!!strech}
                     autoCapitalize="none"
