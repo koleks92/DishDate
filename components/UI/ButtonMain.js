@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Colors from "../../constants/Colors";
 import Sizes from "../../constants/Sizes";
+import { Pressable, Text, StyleSheet, View } from "react-native";
 
-const { Pressable, Text, StyleSheet, View } = require("react-native");
 function ButtonMain({ text, onPress, disabled }) {
     const [buttonPressed, setButtonPressed] = useState(false);
 
