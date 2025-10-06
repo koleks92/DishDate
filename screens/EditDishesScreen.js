@@ -20,12 +20,14 @@ import CustomAlert from "../components/UI/CustomAlert";
 import CustomSelect from "../components/UI/CustomSelect";
 import BackContainer from "../components/UI/BackContainer";
 import ImageModal from "../components/UI/ImageModal";
+import Checkbox from "../components/UI/Checkbox";
 
 function EditDishesScreen({ route, navigation }) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [image, setImage] = useState("");
     const [cuisine, setCuisine] = useState("");
+    const [dessert, setDessert] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [openSelectId, setOpenSelectId] = useState(null);
 
@@ -45,6 +47,7 @@ function EditDishesScreen({ route, navigation }) {
             setName(dish.name);
             setDescription(dish.description);
             setImage(dish.image);
+            setDessert(dish.dessert);
             const cuisine = cuisinesList.find((c) => c.id === dish.cuisine_id);
             setCuisine(cuisine);
             console.log("Cuisine:", cuisine);
@@ -112,6 +115,7 @@ function EditDishesScreen({ route, navigation }) {
                 name: name,
                 description: description,
                 image: imageURL,
+                dessert: dessert,
                 cuisine_id: cuisine.id,
             })
             .eq("id", dish.id);
@@ -204,6 +208,7 @@ function EditDishesScreen({ route, navigation }) {
                         name: name,
                         description: description,
                         image: imageURL,
+                        dessert: dessert,
                         cuisine_id: cuisine.id,
                     },
                 ]);
@@ -312,6 +317,11 @@ function EditDishesScreen({ route, navigation }) {
         setImageModalVisible(false);
     };
 
+    // Handle checkbox to set isDessert to true or false
+    const handleCheckbox = () => {
+        setDessert((prev) => !prev);
+    }
+
     // EDIT DISHES MODE
     return (
         <TouchableWithoutFeedback
@@ -365,6 +375,11 @@ function EditDishesScreen({ route, navigation }) {
                                 openSelectId === "cuisine" ? null : "cuisine"
                             )
                         }
+                    />
+                    <Checkbox
+                        label={"Is Dessert ?"}
+                        checked={dessert}
+                        onPress={handleCheckbox}
                     />
                     <Pressable
                         onPress={() => {
