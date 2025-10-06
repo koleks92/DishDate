@@ -54,6 +54,10 @@ export default Sizes = {
     tickWidth: scrW * 0.08,
     tickTextSize: scrH * 0.025,
 
+    // Checkbox sizes
+    checkbox: scrH * 0.06,
+    checkboxText: scrH * 0.02,
+    
     // GameScreen sizes
     gameIdTextSize: scrH * 0.04,
     gameIdTextNumberSize: scrH * 0.05,
