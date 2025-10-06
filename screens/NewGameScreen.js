@@ -13,9 +13,10 @@ import CustomSlider from "../components/UI/CustomSlider";
 import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
 import BackContainer from "../components/UI/BackContainer";
+import Checkbox from "../components/UI/Checkbox";
 
 function NewGameScreen({ navigation }) {
-    const [choice, setChoice] = useState(null);
+    const [includeDesserts, setIncludeDesserts] = useState(false);
     const [numOfDishes, setNumOfDishes] = useState(15);
     const [availableDishes, setAvailableDishes] = useState();
 
@@ -145,23 +146,19 @@ function NewGameScreen({ navigation }) {
 
     // Create dishes array
     const createDishesArray = (dishes, length) => {
-        if (dishes.length < length) {
-            return dishes;
-        } else {
-            let dishesArray = [];
-            for (let i = 0; i < length; i++) {
-                let randomDish;
-                do {
-                    const randomIndex = Math.floor(
-                        Math.random() * dishes.length
-                    );
-                    randomDish = dishes[randomIndex];
-                } while (dishesArray.includes(randomDish)); // Check if already in the array
+        console.log(dishes.length);
 
-                dishesArray.push(randomDish);
-            }
-            return dishesArray;
+        let dishesArray = [];
+        for (let i = 0; i < length; i++) {
+            let randomDish;
+            do {
+                const randomIndex = Math.floor(Math.random() * dishes.length);
+                randomDish = dishes[randomIndex];
+            } while (dishesArray.includes(randomDish)); // Check if already in the array
+
+            dishesArray.push(randomDish);
         }
+        return dishesArray;
     };
 
     // Create new game
@@ -199,6 +196,24 @@ function NewGameScreen({ navigation }) {
                 }
             }
 
+            // Filter desserts if not included
+            if (!includeDesserts) {
+                if (standardDishesArray) {
+                    standardDishesArray = standardDishesArray.filter(
+                        (dish) => !dish.dessert
+                    );
+                }
+
+                if (userDishesArray) {
+                    userDishesArray = userDishesArray.filter(
+                        (dish) => !dish.dessert
+                    );
+                }
+            }
+
+            // Create dishes array based on selected dishes option
+            setIsLoading(true);
+
             if (selectedDishes.id === 0) {
                 // Only standard dishes
                 if (standardDishesArray.length < numOfDishes) {
@@ -215,6 +230,7 @@ function NewGameScreen({ navigation }) {
                     standardDishesArray,
                     numOfDishes
                 );
+
                 setNewGameDishes(dishesArray);
             } else if (selectedDishes.id === 1) {
                 // Only user dishes
@@ -258,8 +274,11 @@ function NewGameScreen({ navigation }) {
                     mixedDishes,
                     numOfDishes
                 );
+
                 setNewGameDishes(mixedDishesArray);
             }
+
+            setIsLoading(false);
         }
     };
 
@@ -317,6 +336,11 @@ function NewGameScreen({ navigation }) {
                             )
                         }
                     />
+                    <Checkbox
+                        label="Desserts?"
+                        checked={includeDesserts}
+                        onPress={() => setIncludeDesserts((prev) => !prev)}
+                    />
                     <ButtonMain
                         text="Start Game"
                         onPress={createNewGameHandler}
@@ -339,51 +363,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-    },
-    dropdownButtonStyle: {
-        width: 200,
-        height: 50,
-        backgroundColor: "#E9ECEF",
-        borderRadius: 12,
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 12,
-    },
-    dropdownButtonTxtStyle: {
-        flex: 1,
-        fontSize: 18,
-        fontWeight: "500",
-        color: "#151E26",
-    },
-    dropdownButtonArrowStyle: {
-        fontSize: 28,
-    },
-    dropdownButtonIconStyle: {
-        fontSize: 28,
-        marginRight: 8,
-    },
-    dropdownMenuStyle: {
-        backgroundColor: "#E9ECEF",
-        borderRadius: 8,
-    },
-    dropdownItemStyle: {
-        width: "100%",
-        flexDirection: "row",
-        paddingHorizontal: 12,
-        justifyContent: "center",
-        alignItems: "center",
-        paddingVertical: 8,
-    },
-    dropdownItemTxtStyle: {
-        flex: 1,
-        fontSize: 18,
-        fontWeight: "500",
-        color: "#151E26",
-    },
-    dropdownItemIconStyle: {
-        fontSize: 28,
-        marginRight: 8,
     },
     zIndexFix: {
         zIndex: 11,
