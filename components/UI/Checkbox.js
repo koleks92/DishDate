@@ -23,10 +23,12 @@ export default Checkbox;
 
 const styles = StyleSheet.create({
     root: {
+        width: Sizes.buttonWidth,
+        height: Sizes.buttonHeight,
+        marginBottom: Sizes.buttonMarginBottom,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginBottom: Sizes.buttonMarginBottom,
     },
     shadow: {
         backgroundColor: Colors.black,
