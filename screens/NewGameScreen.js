@@ -146,8 +146,6 @@ function NewGameScreen({ navigation }) {
 
     // Create dishes array
     const createDishesArray = (dishes, length) => {
-        console.log(dishes.length);
-
         let dishesArray = [];
         for (let i = 0; i < length; i++) {
             let randomDish;
