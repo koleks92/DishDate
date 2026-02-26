@@ -24,11 +24,9 @@ import CustomAlert from "../components/UI/CustomAlert";
 import Loading from "../components/UI/Loading";
 import * as Network from "expo-network";
 
-// Google Client IDS
-const webClientId =
-    "602018707783-ddo4gqideosf5ajktskbpgea6su94tlp.apps.googleusercontent.com";
-const iosClientId =
-    "602018707783-iobmkug410uncofs1m5fdpgjvb2f85hg.apps.googleusercontent.com";
+const webClientId = process.env.EXPO_PUBLIC_WEBCLIENT_ID;
+const iosClientId = process.env.EXPO_PUBLIC_IOSCLIENT_ID;
+
 
 function LoginScreen({ navigation }) {
     const [email, setEmail] = useState();
